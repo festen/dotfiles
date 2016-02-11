@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+if ! [ -t 0 ]; then
+    read -r line
+    eval set -- $1 $line
+fi

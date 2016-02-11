@@ -1,0 +1,44 @@
+[hub]
+        protocol = https
+[user]
+        name = D. Festen
+        email = d.festen@gmail.com
+[alias]
+        count   = !git shortlog -sn
+        logx = log --all --graph --decorate=short --color --format=format:'%C(bold blue)%h%C(reset)+%C(dim black)(%cr)%C(reset)+%C(auto)%d%C(reset)++\n+++       %C(bold black)%an%C(reset)%C(black): %s%C(reset)'
+        stree = !zsh -c '"                                                                             \
+            while IFS=+ read -r hash time branch message; do                                            \
+                timelength=$(echo \"$time\" | sed -E \"s:[^ ][[]([0-9]{1,2}(;[0-9]{1,2})?)?m::g\");     \
+                timelength=$(echo \"16+${#time}-${#timelength}\" | bc);                                 \
+                printf \"%${timelength}s    %s %s %s\n\" \"$time\" \"$hash\" \"$branch\" \"\";          \
+            done < <(git logx -n 12 && echo);"'
+        vtree = !zsh -c '"                                                                             \
+            while IFS=+ read -r hash time branch message; do                                            \
+                timelength=$(echo \"$time\" | sed -E \"s:[^ ][[]([0-9]{1,2}(;[0-9]{1,2})?)?m::g\");     \
+                timelength=$(echo \"16+${#time}-${#timelength}\" | bc);                                 \
+                printf \"%${timelength}s    %s %s %s\n\" \"$time\" \"$hash\" \"$branch\" \"$message\";  \
+            done < <(git logx -n 25 && echo);"'
+[color]
+        diff = auto
+        status = auto
+        branch = auto
+        ui = true
+[core]
+	excludesfile = /Users/david/.gitignore
+	editor = atom --wait
+[apply]
+        whitespace = nowarn
+[mergetool]
+        keepBackup = false
+[difftool]
+        prompt = false
+[help]
+        autocorrect = 1
+[push]
+        default = simple
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /opt/homebrew-cask/Caskroom/sourcetree/2.1/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

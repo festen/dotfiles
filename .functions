@@ -1,0 +1,75 @@
+#!/usr/bin/env zsh
+
+# Quick shortcut to an editor.
+# Usage: edit [<path>]
+edit() {
+    eval $EDITOR "${@:-.}"
+}
+
+# Extracts archived files / mounts disk images
+# Usage: extract <file>
+extract () {
+    if [ -f $1 ]; then
+        case $1 in
+            *.tar.bz2)  tar -jxvf $1                        ;;
+            *.tar.gz)   tar -zxvf $1                        ;;
+            *.bz2)      bunzip2 $1                          ;;
+            *.dmg)      hdiutil mount $1                    ;;
+            *.gz)       gunzip $1                           ;;
+            *.tar)      tar -xvf $1                         ;;
+            *.tbz2)     tar -jxvf $1                        ;;
+            *.tgz)      tar -zxvf $1                        ;;
+            *.zip)      unzip $1                            ;;
+            *.ZIP)      unzip $1                            ;;
+            *.pax)      cat $1 | pax -r                     ;;
+            *.pax.Z)    uncompress $1 --stdout | pax -r     ;;
+            *.Z)        uncompress $1                       ;;
+            *)          echo "$RED'$1' cannot be extracted/mounted via extract()$RESET_COLOR" ;;
+        esac
+    else
+        echo "$RED'$1' is not a valid file.$RESET_COLOR"
+    fi
+}
+
+# Concat using printf
+# Usage: concat <seperator> <arg1> [... <argN>]
+concat() {
+    local d=$1; shift
+    echo -n "$1"; shift
+    printf "%s" "${@/#/$d}"
+}
+
+# Make dmg from folder
+# Usage: mkdmg <src> [<dest>]
+mkdmg() {
+    if [ -z "$1" -o -z "${2:-1}" ]; then echo "usage: $0 <src> [<dest>]"; exit 1; fi
+    hdiutil create -ov -volname "$(basename "$1")" -srcfolder "$1" -format UDZO "${2:-1}.dmg"
+}
+
+check_updates() {
+  local tempfile=/tmp/me.festen.dotupdater.check_updates-timer
+  local since=$(timer get $tempfile)
+  local cooldown=43200 # 0.5 day in seconds
+  test "$since" -ne -1 && test "$since" -lt "$cooldown" && return 0
+  timer set $tempfile
+  test "$since" -ne -1 && printf "Last update was $(format $since) ago. "
+  echo "Running dotupdater script."
+  update
+  echo "System updated, enjoy $DEFAULT_USER!"
+}
+
+reload() {
+  [ "$1" = "-f" ] && rm /tmp/me.festen.dotupdater.check_updates-timer
+  exec $SHELL -l
+}
+
+cleanup() {
+    sudo -v
+    (sleep .1 && find {/opt,$HOME,/Applications} -type f -name '.DS_Store' -delete) & NO2
+    (sleep .1 && sudo rm -rfv /Volumes/*/.Trashes(N)) & NO2
+    (sleep .1 && sudo rm -rfv $HOME/.Trash) & NO2
+    (sleep .1 && sudo rm -rfv /private/var/log/asl/*.asl(N)) & NO2
+    (sleep .1 && sudo rm -rfv $HOME/.{zsh,sh}_history) & NO2
+    (sleep .1 && sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent') & NO2
+    wait
+}

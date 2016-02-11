@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+cmd() {
+    $TOOL/print -i "$2"
+    $TOOL/indicator spinner "$1"
+    $TOOL/print "$3"
+}
+
+timer start
+echo 'Building MC-2.0\n'
+cd "$HOME/code/mc/web"
+
+cmd 'vagrant up' 'Checking Vagrant' 'Vagrant up'
+cmd 'gulp dev' 'Compiling' 'Compiled'
+cmd 'vagrant rsync' 'Syncing' 'Synced'
+
+echo "\nAll done in $(timer stop | format)!"

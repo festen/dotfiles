@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+
+timerfile=${2:-/tmp/timer}
+
+if [ "$1" = "set" ]; then
+    date +%s > $timerfile
+elif [ "$1" = "get" ]; then
+    test ! -f $timerfile && echo -1 && exit
+    start=$(cat $timerfile)
+    stop=$(date +%s)
+    echo $(( $stop - $start ))
+else
+    cat <<EOF
+Usage: $0 [<arg>]
+
+Options for <arg>:
+    set   Starts the timing function (default)
+    get   Stops the timing function and returns num seconds
+EOF
+fi

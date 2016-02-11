@@ -1,0 +1,58 @@
+#!/usr/bin/env zsh
+source "$(dirname $0)/pipeable"
+reprint_hysteresis=1 # number of lines to overwrite with blanks
+
+# functions
+boxprint() {
+    color="$1"
+    content="$2"
+    shift 2
+    printf " [$color$content$RESET_COLOR] "
+    echo -n "$@"
+}
+save() {
+    tput sc
+}
+overwrite() {
+    tput rc
+    for (( i = 0; i < reprint_hysteresis; i++ )); do tput el;  echo ''; done
+    tput rc
+}
+success() { overwrite; boxprint "$GREEN" ' OK ' "$@\n" }
+fail() { overwrite; boxprint "$RED" ' !! ' "$@\n" }
+info() { save; boxprint "$BLUE" ' .. ' "$@" }
+user() { overwrite; boxprint "$YELLOW" ' ?? ' "$@" }
+warn() { overwrite; boxprint "$YELLOW" ' ~~ ' "$@\n" }
+help() {
+    cat <<EOL
+Usage: $0 -iuowfh <msg>
+Prints formatted message
+
+Options for <type>:
+    -i  Displays info intermediate message (start of cmd)
+    -u  Displays user intermediate message
+    -s  Displays success exit messages
+    -w  Displays warning exit messages
+    -f  Displays failure exit messages
+    -h  Displays this help function
+
+When no type is chosen, defaults to ok messages.
+EOL
+}
+
+# read the options
+cmd='ok'
+while getopts :siuwfh opt "$@"; do
+    case "$opt" in
+        h) help; exit;;
+        s) cmd='success';;
+        i) cmd='info';;
+        u) cmd='user';;
+        w) cmd='warn';;
+        f) cmd='fail';;
+        \?) help; exit 1;;
+    esac
+done
+# execute chosen option
+shift $((OPTIND-1))
+eval $cmd $@

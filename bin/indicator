@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+
+# variables
+speed=0.5
+default=spinner
+
+# functions
+dots() { while kill -0 "$child_pid" 2>/dev/null; do sleep $speed; printf .; done }
+spinner() {
+    chars='\|/-'
+    speed=$(eval "python -c 'print $speed/${#chars}.0'")
+    i=0
+    printf ' '
+    while kill -0 "$child_pid" 2>/dev/null; do
+        i=$(( (i+1) % ${#chars} ))
+        printf '\b'
+        printf " ${chars:$i:1}"
+        printf '\b'
+        sleep $speed
+    done
+}
+help() {
+    cat <<EOF
+Usage: $0 <indicator> <cmd>
+
+Options for <indicator>:
+    spinner Displays a progress spinner
+    dots    Displays dots (default)
+EOF
+}
+
+# check if valid method
+if [ ${#} = "1" ]; then 2=$1; 1=$default; fi
+case "${1=$default}" in
+    dots|spinner) indicator=$1;;
+    *)
+        echo ${RED}Error: Unknown progress indicator: $1${RESET_COLOR}
+        help
+        exit 1;;
+esac
+
+if [ -n "$2" ]; then
+    eval "$2" >/dev/null 2>&1 &
+    child_pid=$!
+    eval $indicator
+else
+    echo ${RED}Error: No command given${RESET_COLOR}
+    help
+    exit 1
+fi

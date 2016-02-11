@@ -1,0 +1,81 @@
+#!/usr/bin/env zsh
+source "$(dirname $0)/pipeable"
+
+# functions
+help() {
+    cat <<EOL
+Usage: $0 [-h] [-o <format>] <datetime>
+Formats the given datetime to the given datetime
+
+<format> can either be 'short', 'long' or a format string as described in gdate
+
+When no <format> is chosen, the output defaults to 'long'
+EOL
+}
+
+extractParts() {
+    d=$(($t/86400))
+    h=$((($t-$d*86400)/3600))
+    m=$((($t-$d*86400-$h*3600)/60))
+    s=$(($t-$d*86400-$h*3600-$m*60))
+}
+
+concat() {
+    local d=$1; shift
+    echo -n "$1"; shift
+    printf "%s" "${@/#/$d}"
+}
+
+long() {
+    parts=()
+    extractParts "$@"
+    if [ "$d" -eq 1 ]; then
+        parts+="$d day"
+    elif [ "$d" -gt 1 ]; then
+        parts+="$d days"
+    fi
+    if [ "$h" -eq 1 ]; then
+        parts+="$h hour"
+    elif [ "$h" -gt 1 ]; then
+        parts+="$h hours"
+    fi
+    if [ "$m" -eq 1 ]; then
+        parts+="$m minute"
+    elif [ "$m" -gt 1 ]; then
+        parts+="$m minutes"
+    fi
+    if [ "$s" -eq 1 ]; then
+        parts+="$s second"
+    elif [ "$s" -gt 1 ]; then
+        parts+="$s seconds"
+    fi
+    concat ', ' $parts
+    echo ''
+}
+
+short() {
+    output=""
+    extractParts "$@"
+    if [ "$d" -ne 0 ]; then printf "${d}d "; fi
+    if [ "$t" -ge 3600 ]; then output+="%H:"; fi
+    if [ "$t" -ge 60 ]; then output+="%M:"; fi
+    output+="%S"
+    date -ud @$t +$output
+    echo ''
+}
+# read the options
+input=%s
+output=long
+case "$1" in
+    -o) output="$2"; shift 2;;
+    -h) help; exit 1;;
+esac
+t=$(date -ud @${1:-0} +${input})
+
+if [ "$output" = 'short' ]; then
+    short $t
+elif [ "$output" = 'long' ]; then
+    long $t
+else
+    date -u -d @$t +$output
+fi

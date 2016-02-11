@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# delay script for 5 seconds
+sleep 5
+
+check='ExpressVPN iTerm ChitChat'
+start=$(date +%s)
+interval=1
+maxRunTime=60
+end=$(($start+$maxRunTime))
+
+removeFromCheckList() {
+    check=$(echo "$check" | sed -E "s/$1 ?//g")
+}
+
+isLoaded() {
+    [ -n "$(osascript -e "tell application \"System Events\" to get windows of process \"$1\"")" ]
+    return $?
+}
+
+close() {
+    osascript -e "
+    tell application \"System Events\"
+    	tell process \"$1\"
+    		set visible to true
+    		set frontmost to true
+    		keystroke \"w\" using command down
+    		set visible to false
+    	end tell
+    end tell"
+}
+
+while [ -n "$check" ]; do
+    for app in $check; do
+        if isLoaded "$app"; then
+            close $app
+            removeFromCheckList "$app"
+        fi
+    done
+    if [ -n "$check" ]; then sleep $interval; fi
+    if [ $(date +%s) -ge "$end" ]; then exit 1; fi
+done
