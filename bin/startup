@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# delay script for 5 seconds
-sleep 5
+# delay script for 3 seconds
+sleep 3
 
 check='ExpressVPN iTerm ChitChat'
 start=$(date +%s)
@@ -33,6 +33,7 @@ close() {
 while [ -n "$check" ]; do
     for app in $check; do
         if isLoaded "$app"; then
+            test $app = 'iTerm' && sleep 6
             close $app
             removeFromCheckList "$app"
         fi
