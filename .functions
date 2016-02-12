@@ -47,15 +47,28 @@ mkdmg() {
 }
 
 check_updates() {
-  local tempfile=/tmp/me.festen.dotupdater.check_updates-timer
-  local since=$(timer get $tempfile)
-  local cooldown=43200 # 0.5 day in seconds
-  test "$since" -ne -1 && test "$since" -lt "$cooldown" && return 0
-  timer set $tempfile
-  test "$since" -ne -1 && printf "Last update was $(format $since) ago. "
-  echo "Running dotupdater script."
-  update
-  echo "System updated, enjoy $DEFAULT_USER!"
+
+    -cooldown-expired() { test "$since" -ge "$cooldown"; return $? }
+    -first-check() { test "$lastcheck" -lt "$boottime"; return $? }
+
+    local appdir="$HOME/Library/Application Support/me.festen.check_updates"
+    mkdir -p "$appdir"
+    local timefile="$appdir/lastupdate"
+    test ! -f "$timefile" && echo -1 > "$timefile"
+    local since=$(timer get "$timefile")
+    local boottime=$(sysctl -n kern.boottime | sed -e 's/{ sec = \([[:digit:]]\+\).*/\1/')
+    local lastcheck=$(cat $timefile)
+    local cooldown=43200 # 0.5 day in seconds
+
+    # check if we can skip
+    ! -cooldown-expired && return 0
+
+    -first-check && echo "First update since boot."
+    -cooldown-expired && echo "Most recent update was $(format $since) ago."
+    echo "Running update script."
+    timer set $timefile
+    update
+    echo "System updated, enjoy $DEFAULT_USER!"
 }
 
 reload() {
