@@ -11,11 +11,11 @@ maxRunTime=60
 end=$(($start+$maxRunTime))
 
 removeFromHideList() {
-    check=$(echo "$hideOnly" | sed -E "s/$1 ?//g")
+    hideOnly=$(echo "$hideOnly" | sed -E "s/$1 ?//g")
 }
 
 removeFromCloseList() {
-    check=$(echo "$closeWindow" | sed -E "s/$1 ?//g")
+    closeWindow=$(echo "$closeWindow" | sed -E "s/$1 ?//g")
 }
 
 isLoaded() {
