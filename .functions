@@ -65,14 +65,14 @@ reload() {
 
 cleanup() {
     sudo -v
-    {
-        (sleep .1 && find {/opt,$HOME,/Applications} -type f -name '.DS_Store' -delete) &
-        (sleep .1 && sudo rm -rfv /Volumes/*/.Trashes(N)) &
-        (sleep .1 && sudo rm -rfv $HOME/.Trash) &
-        (sleep .1 && sudo rm -rfv /private/var/log/asl/*.asl(N)) &
-        (sleep .1 && sudo rm -rfv $HOME/.{zsh,sh}_history) &
-        (sleep .1 && sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent') &
-        (sleep .1 && find -L $HOME(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} + ) & NO2
-    } NO2
-    wait
+    (
+        find {/opt,/Applications,$HOME} -type f -name '.DS_Store' -delete &
+        sudo rm -rfv /Volumes/*/.Trashes(N) &
+        sudo rm -rfv $HOME/.Trash &
+        sudo rm -rfv /private/var/log/asl/*.asl(N) &
+        sudo rm -rfv $HOME/.{zsh,sh}_history &
+        sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent' &
+        find -L $HOME(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} + &
+        wait
+    ) NO2
 }
