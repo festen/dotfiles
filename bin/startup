@@ -3,14 +3,19 @@
 # delay script for 3 seconds
 sleep 3
 
-check='ExpressVPN iTerm ChitChat'
+closeWindow='ExpressVPN ChitChat'
+hideOnly='iTerm'
 start=$(date +%s)
 interval=1
 maxRunTime=60
 end=$(($start+$maxRunTime))
 
-removeFromCheckList() {
-    check=$(echo "$check" | sed -E "s/$1 ?//g")
+removeFromHideList() {
+    check=$(echo "$hideOnly" | sed -E "s/$1 ?//g")
+}
+
+removeFromCloseList() {
+    check=$(echo "$closeWindow" | sed -E "s/$1 ?//g")
 }
 
 isLoaded() {
@@ -30,14 +35,28 @@ close() {
     end tell"
 }
 
-while [ -n "$check" ]; do
-    for app in $check; do
+hide() {
+    osascript -e "
+    tell application \"System Events\"
+    	tell process \"$1\"
+    		set visible to false
+    	end tell
+    end tell"
+}
+
+while [ -n "$closeWindow$hideOnly" ]; do
+    for app in "$closeWindow"; do
         if isLoaded "$app"; then
-            test $app = 'iTerm' && sleep 6
-            close $app
-            removeFromCheckList "$app"
+            close "$app"
+            removeFromCloseList "$app"
         fi
     done
-    if [ -n "$check" ]; then sleep $interval; fi
+    for app in "$hideOnly"; do
+        if isLoaded "$app"; then
+            hide "$app"
+            removeFromHideList "$app"
+        fi
+    done
+    if [ -n "$closeWindow$hideOnly" ]; then sleep $interval; fi
     if [ $(date +%s) -ge "$end" ]; then exit 1; fi
 done
