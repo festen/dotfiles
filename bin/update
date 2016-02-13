@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-start=$(gdate +%s%3N)
+start=$(gdate +%s.%3N)
 
 CLOUD=$HOME/stack
 DOTS=$HOME/stack/dots
@@ -184,5 +184,7 @@ case "$1" in
         -cleanup
         ;;
 esac
-stop=$(gdate +%s%3N)
-echo "script ran for $(( $stop - $start )) ms"
+stop=$(gdate +%s.%3N)
+t=$(($stop - $start))
+t=`$BIN/format -o short $t`
+echo "script ran for $t"

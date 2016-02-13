@@ -30,10 +30,13 @@ long() {
     parts=()
     extractParts "$@"
     if [ "$d" -eq 1 ]; then
-        parts+="$d day"
+        echo "$d day"
+        return 0
     elif [ "$d" -gt 1 ]; then
-        parts+="$d days"
+        echo "$d days"
+        return 0
     fi
+
     if [ "$h" -eq 1 ]; then
         parts+="$h hour"
     elif [ "$h" -gt 1 ]; then
@@ -44,10 +47,13 @@ long() {
     elif [ "$m" -gt 1 ]; then
         parts+="$m minutes"
     fi
-    if [ "$s" -eq 1 ]; then
-        parts+="$s second"
-    elif [ "$s" -gt 1 ]; then
-        parts+="$s seconds"
+    if [ "$h" -eq 0 ]; then
+        test "$tms" -ne 0 && sms="$s.$tms" || sms="$s"
+        if [ "$s" -eq 1 ]; then
+            parts+="$sms second"
+        elif [ "$s" -gt 1 ]; then
+            parts+="$sms seconds"
+        fi
     fi
     concat ', ' $parts
     echo ''
