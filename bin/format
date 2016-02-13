@@ -14,10 +14,10 @@ EOL
 }
 
 extractParts() {
-    d=$(($t/86400))
-    h=$((($t-$d*86400)/3600))
-    m=$((($t-$d*86400-$h*3600)/60))
-    s=$(($t-$d*86400-$h*3600-$m*60))
+    d=$(($td/86400))
+    h=$((($td-$d*86400)/3600))
+    m=$((($td-$d*86400-$h*3600)/60))
+    s=$(($td-$d*86400-$h*3600-$m*60))
 }
 
 concat() {
@@ -54,23 +54,28 @@ long() {
 }
 
 short() {
-    output=""
     extractParts "$@"
-    if [ "$d" -ne 0 ]; then printf "${d}d "; fi
-    if [ "$t" -ge 3600 ]; then output+="%H:"; fi
-    if [ "$t" -ge 60 ]; then output+="%M:"; fi
-    output+="%S"
-    date -ud @$t +$output
-    echo ''
+    if [ "$td" -gt 86400 ]; then
+        echo "${d}d ${h}h${m}m"
+    elif [ "$td" -gt 3600 ]; then
+        printf "%d:%02d:%02d\n" $h $m $s
+    elif [ "$td" -gt 60 ]; then
+        echo $m\'$s\"$tms
+    else
+        echo $s\"$tms
+    fi
 }
 # read the options
-input=%s
+input=%s.%N
 output=long
 case "$1" in
     -o) output="$2"; shift 2;;
     -h) help; exit 1;;
 esac
 t=$(date -ud @${1:-0} +${input})
+td=$(printf %d $t)
+tms=$(printf %d $((($t-$td)*100)) )
+
 
 if [ "$output" = 'short' ]; then
     short $t
