@@ -80,7 +80,7 @@ case "$1" in
 esac
 t=$(date -ud @${1:-0} +${input})
 td=$(printf %d $t)
-tms=$(printf %d $((($t-$td)*100)) )
+tms=$(printf %03d $((($t-$td)*1000)) )
 
 
 if [ "$output" = 'short' ]; then

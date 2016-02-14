@@ -48,9 +48,6 @@ mkdmg() {
 
 check_updates() {
 
-    -cooldown-expired() { test "$since" -ge "$cooldown"; return $? }
-    -first-check() { test "$lastcheck" -lt "$boottime"; return $? }
-
     local appdir="$HOME/Library/Application Support/me.festen.check_updates"
     mkdir -p "$appdir"
     local timefile="$appdir/lastupdate"
@@ -60,15 +57,18 @@ check_updates() {
     local lastcheck=$(cat $timefile)
     local cooldown=43200 # 0.5 day in seconds
 
-    # check if we can skip
-    ! -cooldown-expired && return 0
+    -cooldown-expired() { test "$since" -ge "$cooldown"; return $? }
+    -first-check() { test "$lastcheck" -lt "$boottime"; return $? }
 
-    -first-check && echo "First update since boot."
-    -cooldown-expired && echo "Most recent update was $(format $since) ago."
-    echo "Running update script."
+    # check if we can skip
+    ! -cooldown-expired && ! -first-check && return 0
+
+    echo 'Checking update status'
+    -first-check && echo " *) Not updated since boot."
+    test "$lastcheck" -ne -1 && echo " *) Most recent update was $(format $since) ago."
+    echo " !) Update required, now executing.\n"
     timer set $timefile
     update
-    echo "System updated, enjoy $DEFAULT_USER!"
 }
 
 reload() {

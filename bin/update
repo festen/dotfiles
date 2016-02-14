@@ -186,5 +186,5 @@ case "$1" in
 esac
 stop=$(gdate +%s.%3N)
 t=$(($stop - $start))
-t=`$BIN/format -o short $t`
-echo "script ran for $t"
+tf=`$BIN/format -o short $t`
+echo "System updated in $tf, enjoy $DEFAULT_USER!"
