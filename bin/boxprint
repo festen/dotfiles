@@ -1,58 +1,85 @@
 #!/usr/bin/env zsh
+version=1.0.0
+name=$(basename $0)
+
 source "$(dirname $0)/pipeable"
 reprint_hysteresis=1 # number of lines to overwrite with blanks
+default=success # default message (do not forget to update help function)
+
+# print functions
+boxprint-success() { -print "$GREEN" ' OK ' "$@" }
+boxprint-fail()    { -print "$RED" ' !! ' "$@" }
+boxprint-info()    { -print "$BLUE" ' .. ' "$@" }
+boxprint-user()    { -print "$YELLOW" ' ?? ' "$@" }
+boxprint-warn()    { -print "$YELLOW" ' ~~ ' "$@" }
 
 # functions
-boxprint() {
+-print() {
+    -save-pos
+    test "$overwrite" = 'true' && -clear-line
     color="$1"
     content="$2"
     shift 2
-    printf " [$color$content$RESET_COLOR] "
-    echo -n "$@"
+    echo " [$color$content$RESET_COLOR] $@"
 }
-save() {
+-save-pos() {
+    test "$overwrite" = 'true' && return 0
     tput sc
 }
-overwrite() {
+-clear-line() {
     tput rc
-    for (( i = 0; i < reprint_hysteresis; i++ )); do tput el;  echo ''; done
-    tput rc
+    tput el
 }
-success() { overwrite; boxprint "$GREEN" ' OK ' "$@\n" }
-fail() { overwrite; boxprint "$RED" ' !! ' "$@\n" }
-info() { save; boxprint "$BLUE" ' .. ' "$@" }
-user() { overwrite; boxprint "$YELLOW" ' ?? ' "$@" }
-warn() { overwrite; boxprint "$YELLOW" ' ~~ ' "$@\n" }
-help() {
-    cat <<EOL
-Usage: $0 -iuowfh <msg>
-Prints formatted message
-
-Options for <type>:
-    -i  Displays info intermediate message (start of cmd)
-    -u  Displays user intermediate message
-    -s  Displays success exit messages
-    -w  Displays warning exit messages
-    -f  Displays failure exit messages
-    -h  Displays this help function
-
-When no type is chosen, defaults to ok messages.
-EOL
+-error() {
+    err='Unknown error'
+    case "$1" in
+        args) err="Missing argument for $2";;
+        unknown_type) err="Unknown type: $2";;
+        flag) err="Unknown argument $2"
+    esac
+    echo ${RED}Error: $err${RESET_COLOR}; -help; exit 1
+}
+-is-valid-type() {
+    type "boxprint-$1" | grep -q 'shell function'
+}
+-help() {
+    echo "Usage: $name [OPTION] <msg>"
+    echo 'Prints formatted message'
+    echo "Example: $name -t success 'We did it!'"
+    echo
+    echo "Options for OPTION"
+    echo "  -h, --help        Display this help message."
+    echo "  -o, --overwrite   If set, overwrites previous message"
+    echo "  -t, --type=TYPE   Display a message of the given type."
+    echo "                    TYPE is one of following: info, user, success, warn"
+    echo "                    fail. Default: success"
+    echo "-v, --version     Display current version of this program."
 }
 
 # read the options
-cmd='ok'
-while getopts :siuwfh opt "$@"; do
-    case "$opt" in
-        h) help; exit;;
-        s) cmd='success';;
-        i) cmd='info';;
-        u) cmd='user';;
-        w) cmd='warn';;
-        f) cmd='fail';;
-        \?) help; exit 1;;
+cmd=$default
+set -- $(echo $@ | tr '=' ' ')
+while [ "${1:0:1}" = '-' ]; do
+    case "$1" in
+        -h|--help) -help; exit;;
+        -o|--overwrite) overwrite=true; shift;;
+        -t|--type)
+            test -z "$2" && -error args "$1"
+            -is-valid-type "$2" || -error unknown_type "$2"
+            cmd="$2"
+            shift 2
+            ;;
+        -v|--version) echo $version; exit;;
+        *)
+            if [ "${#1}" -gt 2 ] && ! [ "${1:1:1}" = '-' ]; then
+                set -- -${1:1:1} -${1:2} ${@:2}
+            else
+                -error flag "$1"
+            fi
+            ;;
     esac
 done
+
+
 # execute chosen option
-shift $((OPTIND-1))
-eval $cmd $@
+eval "boxprint-$cmd" $@

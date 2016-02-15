@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+version=1.0.0
+name=$(basename $0)
+
 start=$(gdate +%s.%3N)
 
 CLOUD=$HOME/stack
@@ -15,7 +18,8 @@ requested_shell=/bin/zsh
 pass="$2"
 put="$BIN/boxprint"
 alias -g NOOP="> /dev/null 2>&1"
-alias put="$put"
+alias put="$put -o"
+alias puti="$put --type=info"
 
 # Functions
 log() {
@@ -23,12 +27,8 @@ log() {
     echo $1 >> $logfile
 }
 help() {
-    echo "Usage: $0 [install|update|remove]"
-    echo ''
-    echo "    install     Downloads dotfiles source and then runs the 'update' command"
-    echo '    update      Links dotfiles and installs/upgrade packages'
-    echo '    remove      Unlinks dotfiles and packages'
-    echo ''
+    echo "Usage: $name [-hv]"
+    echo 'Updates the dotfiles and runs package managers'
 }
 -init() {
     -init-ensure-dots
@@ -56,7 +56,8 @@ help() {
     test -z "$pass" && return 0
     sudo -k
     sudo -Sv <<< $pass NOOP
-    test $? -eq 1 && put -f 'Password incorrect, exiting script.' && exit 1 || put 'Password provided'
+    put --type=user # placeholder
+    test $? -eq 1 && put --type=fail 'Password incorrect, exiting script.' && exit 1 || put 'Password provided'
     while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 -link() {
@@ -65,18 +66,18 @@ help() {
     -link-folder 'var'
     -link-folder 'env'
 
-    put -i "Linking stackignore file"
+    puti "Linking stackignore file"
         rm -rf "$HOME/Library/Application Support/STACK/sync-exclude.lst" &&\
         ln -sf "$HOME/.stackignore" "$HOME/Library/Application Support/STACK/sync-exclude.lst"
-    put -s 'Linked stackignore file'
+    put 'Linked stackignore file'
 }
 -link-folder() {
-    put -i "Linking $1"
+    puti "Linking $1"
     for x in $(/usr/bin/find "$1/" -depth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
         rm -rf "$(basename $x)"
         ln -fs "$1/$(basename $x)"
     done
-    put -s "Linked $1"
+    put "Linked $1"
     # TODO logging | log "$(echo "$src $dst" | sed -e 's:/Users/david/::g' | sed -e 's:stack/dots:$DOTS:g' | xargs -n2 printf '  Link: %-25s -> %s')"
 }
 -install() {
@@ -86,30 +87,30 @@ help() {
     -install-antigen
 }
 -install-homebrew() {
-    put -i "Verifying Homebrew installation"
+    puti "Verifying Homebrew installation"
     if ! brew --version NOOP; then
-        put -w "Homebrew not found, now installing Homebrew"
+        put --type=warn "Homebrew not found, now installing Homebrew"
         log '  Brew: installing'
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"<<<y NOOP
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"<<<\n NOOP
         log '  Brew: installed'
     fi
-    put -s "Homebrew installed and updated"
+    put "Homebrew installed and updated"
 }
 -install-packages() {
-    put -i "Checking packages"
+    puti "Checking packages"
     log '  Brew: running bundle'
-    brew bundle --global 2>/dev/null | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" | sed -e 's/├── Success/└── Success/' >> $logfile) | tr -u "\n" "\0" | xargs -0n1 $put -w "Installing packages - " 2>/dev/null
+    brew bundle --global 2>/dev/null | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" | sed -e 's/├── Success/└── Success/' >> $logfile) | tr -u "\n" "\0" | xargs -0n1 $put -o --type=warn "Installing packages - " 2>/dev/null
     log '  Brew: bundle ran'
     log '  Brew: upgrading'
-    brew upgrade 2>/dev/null | tr -s "\n" | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" >> $logfile) | tr -u "\n" "\0" | xargs -0n1 $put -w "Updating packages - " 2>/dev/null
+    brew upgrade 2>/dev/null | tr -s "\n" | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" >> $logfile) | tr -u "\n" "\0" | xargs -0n1 $put -o --type=warn "Updating packages - " 2>/dev/null
     log '  Brew: upgraded'
-    put -s "Packages installed and updated"
+    put "Packages installed and updated"
 }
 -install-antigen() {
-    put -i "Checking antigen"
+    puti "Checking antigen"
     curl -L https://raw.githubusercontent.com/zsh-users/antigen/master/antigen.zsh > $CLOUD/var/antigen.sh 2>/dev/null
-    put -s "Antigen installed and updated"
+    put "Antigen installed and updated"
 }
 -verify() {
     -verify-shell
@@ -117,21 +118,21 @@ help() {
     -verify-rc
 }
 -verify-shell() {
-    put -i "Checking shell"
+    puti "Checking shell"
     if [ "$SHELL" = "$requested_shell" ]; then
-        put -s "Shell is $requested_shell"
+        put "Shell is $requested_shell"
     elif [ -n "$pass" ]; then
         sudo -S chsh -s $requested_shell david <<< $pass NOOP
-        put -s "Shell set to $requested_shell"
+        put "Shell set to $requested_shell"
         log "  Shell: set to $requested_shell"
     else
-        put -f "Shell is $SHELL instead of $requested_shell."
-        put -i '' # needed to NOT overwrite previous line
-        put -f "No sudo pass provided so please change manually."
+        put --type=fail "Shell is $SHELL instead of $requested_shell."
+        puti '' # needed to NOT overwrite previous line
+        put --type=fail "No sudo pass provided so please change manually."
     fi
 }
 -verify-permissions() {
-    put -i "Checking file permissions"
+    puti "Checking file permissions"
     chmod 755 $HOME/bin/*(N) NOOP
     log "  Permissions: ~/bin/* -> 755"
     chmod 644 $HOME/.ssh/{config,known_hosts}
@@ -140,42 +141,42 @@ help() {
     log "  Permissions: ~/.ssh/*.pub -> 444"
     chmod 400 $HOME/.ssh/*.key(N) NOOP
     log "  Permissions: ~/.ssh/*.key -> 400"
-    put -s "File permissions checked"
+    put "File permissions checked"
 }
 -verify-rc() {
-    put -i 'Sourcing .zshrc/antigen'
+    puti 'Sourcing .zshrc/antigen'
     source $HOME/.zshrc NOOP
-    put -s 'Sourced .zshrc/antigen'
+    put 'Sourced .zshrc/antigen'
 }
 -cleanup() {
     -cleanup-broken-links
     echo "Finished in $(format `timer get`) seconds\n" >> $logfile
 }
 -cleanup-broken-links() {
-    put -i 'Removing broken links'
+    puti 'Removing broken links'
     find -L {/usr/local/bin,/Applications,$HOME,$HOME/Applications}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} +
-    test $? -eq 0 && put -s 'Removed broken links' || put -f "Removing broken links failed"
+    test $? -eq 0 && put 'Removed broken links' || put --type=fail "Removing broken links failed"
 }
 -rm-brew() {
     if [ "$(uname)" = 'Darwin' ]; then
-        put -i 'Uninstalling Homebrew'
+        puti 'Uninstalling Homebrew'
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" <<< y NOOP
         rm -rf /usr/local/bin/brew /usr/local/Cellar /opt/hombrew-cask
-        test $? -eq 0 && put -s 'Uninstalled Homebrew' || put -f "Uninstalling Homebrew failed"
+        test $? -eq 0 && put 'Uninstalled Homebrew' || put --type=fail "Uninstalling Homebrew failed"
     fi
 }
 -rm-npm() {
     if $(which npm NOOP); then
-        info 'Uninstalling NPM'
+        puti 'Uninstalling NPM'
         rm -rf /usr/local/{lib/node{,/.npm,_modules},bin,share/man}/npm* NOOP
         rm -rf /usr/local/lib/node_modules NOOP
-        test $? -eq 0 && put -s 'Uninstalled NPM' || put -f 'Uninstalling NPM failed'
+        test $? -eq 0 && put 'Uninstalled NPM' || put --type=fail 'Uninstalling NPM failed'
     fi
 }
 
 case "$1" in
-    -r|--remove|r|remove) echo '"remove" not yet implemented. exiting...'; exit 1;;
-    h|help|-h|--help) help;;
+    -h|--help) help; exit;;
+    -v|--version) echo $version; exit;;
     *)
         -init
         -link
