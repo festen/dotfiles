@@ -35,7 +35,7 @@ boxprint-warn()    { -print "$YELLOW" ' ~~ ' "$@" }
     case "$1" in
         args) err="Missing argument for $2";;
         unknown_type) err="Unknown type: $2";;
-        flag) err="Unknown argument $2"
+        flag) err="Unknown argument $2";;
     esac
     echo ${RED}Error: $err${RESET_COLOR}; -help; exit 1
 }
