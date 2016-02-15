@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-version=1.0.0
+version=1.0.1
 name=$(basename $0)
 
 source "$(dirname $0)/pipeable"
@@ -44,16 +44,15 @@ boxprint-warn()    { -print "$YELLOW" ' ~~ ' "$@" }
 }
 -help() {
     echo "Usage: $name [OPTION] <msg>"
-    echo 'Prints formatted message'
+    echo 'Prints formatted message. Can be pipe-feeded.'
     echo "Example: $name -t success 'We did it!'"
     echo
-    echo "Options for OPTION"
     echo "  -h, --help        Display this help message."
     echo "  -o, --overwrite   If set, overwrites previous message"
     echo "  -t, --type=TYPE   Display a message of the given type."
     echo "                    TYPE is one of following: info, user, success, warn"
     echo "                    fail. Default: success"
-    echo "-v, --version     Display current version of this program."
+    echo "  -v, --version     Display current version of this program."
 }
 
 # read the options

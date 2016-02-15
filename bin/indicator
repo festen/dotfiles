@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-version=1.0.1
+version=1.0.2
 
 # variables
 name=$(basename $0)
