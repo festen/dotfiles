@@ -1,12 +1,14 @@
 #!/usr/bin/env zsh
+version=1.0.0
 
 # variables
-speed=0.5
+name=$(basename $0)
+speed=0.3
 default=spinner
 
 # functions
-dots() { while kill -0 "$child_pid" 2>/dev/null; do sleep $speed; printf .; done }
-spinner() {
+i-dots() { while kill -0 "$child_pid" 2>/dev/null; do sleep $speed; printf .; done }
+i-spinner() {
     chars='\|/-'
     speed=$(eval "python -c 'print $speed/${#chars}.0'")
     i=0
@@ -19,31 +21,52 @@ spinner() {
         sleep $speed
     done
 }
-help() {
+-help() {
     cat <<EOF
-Usage: $0 <indicator> <cmd>
+Usage: $name [OPTION] <cmd>
+Displays an indicator while running command
+Example: $name -t dots sleep 5
 
-Options for <indicator>:
-    spinner Displays a progress spinner
-    dots    Displays dots (default)
+  -h, --help        Displays this help text.
+  -s, --silent      Do not print output of running command
+  -t, --type=TYPE   Type of indicator to use: 'dots' or 'spinner'.
+  -v, --version     Displays version number.
 EOF
 }
+-error() {
+    err='Unknown error'
+    case "$1" in
+        args) err="Missing argument for $2";;
+        no_command) err='No command given';;
+        unknown_indicator) err="Unknown progress indicator: $2";;
+    esac
+    echo ${RED}Error: $err${RESET_COLOR}; -help; exit 1
+}
+-is-indicator() {
+    type "i-$1" | grep -q 'shell function'
+}
 
-# check if valid method
-if [ ${#} = "1" ]; then 2=$1; 1=$default; fi
-case "$1" in
-    dots|spinner) indicator=$1; shift;;
-    *)
-        echo ${RED}Error: Unknown progress indicator: $1${RESET_COLOR}
-        help
-        exit 1;;
-esac
-if [ "$1" = 'dots' -o "$1" = 'spinner' ]; then
-    echo ${RED}Error: No command given${RESET_COLOR}
-    help
-    exit 1
-else
+# check flags
+indicator=$default
+while [ "${1:0:1}" = '-' ]; do
+    case "$1" in
+        -h|--help) -help; exit 0;;
+        -v|--version) echo $version; exit 0;;
+        -s|--silent) silent=true; shift;;
+        -t|--type)
+            test -z "$2" && -error args $1
+            -is-indicator "$2" || -error unknown_indicator $2
+            indicator=$2
+            shift 2;;
+    esac
+done
+
+test ${#@} -eq 0 && -error no_command
+
+if [ "$silent" = 'true' ]; then
     eval "$@" >/dev/null 2>&1 &
-    child_pid=$!
-    eval $indicator
+else
+    eval "$@" &
 fi
+child_pid=$!
+eval "i-$indicator"
