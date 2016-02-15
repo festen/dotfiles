@@ -31,20 +31,19 @@ EOF
 
 # check if valid method
 if [ ${#} = "1" ]; then 2=$1; 1=$default; fi
-case "${1=$default}" in
-    dots|spinner) indicator=$1;;
+case "$1" in
+    dots|spinner) indicator=$1; shift;;
     *)
         echo ${RED}Error: Unknown progress indicator: $1${RESET_COLOR}
         help
         exit 1;;
 esac
-
-if [ -n "$2" ]; then
-    eval "$2" >/dev/null 2>&1 &
-    child_pid=$!
-    eval $indicator
-else
+if [ "$1" = 'dots' -o "$1" = 'spinner' ]; then
     echo ${RED}Error: No command given${RESET_COLOR}
     help
     exit 1
+else
+    eval "$@" >/dev/null 2>&1 &
+    child_pid=$!
+    eval $indicator
 fi

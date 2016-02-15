@@ -62,13 +62,12 @@ check_updates() {
 
     # check if we can skip
     ! -cooldown-expired && ! -first-check && return 0
-
-    echo 'Checking update status'
-    -first-check && echo " *) Not updated since boot."
-    test "$lastcheck" -ne -1 && echo " *) Most recent update was $(format $since) ago."
-    echo " !) Update required, now executing.\n"
+    printf 'Updating'
+    start=$(gdate +%s.%3N)
     timer set $timefile
-    update
+    indicator dots '(update NOOP)'
+    t=$(format -o short "$(($(gdate +%s.%3N) - $start))")
+    echo " done in $t, enjoy $DEFAULT_USER!"
 }
 
 reload() {
