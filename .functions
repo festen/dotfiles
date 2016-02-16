@@ -47,14 +47,11 @@ mkdmg() {
 }
 
 check_updates() {
-
-    local appdir="$HOME/Library/Application Support/me.festen.check_updates"
-    mkdir -p "$appdir"
-    local timefile="$appdir/lastupdate"
-    test ! -f "$timefile" && echo -1 > "$timefile"
-    local since=$(timer get "$timefile")
+    local timefile="$HOME/Library/Application Support/me.festen.functions.check_updates.timefile"
+    test ! -f "$timefile" && echo 0 > "$timefile"
+    local since=$(format -o %s $(timer get $timefile))
     local boottime=$(sysctl -n kern.boottime | sed -e 's/{ sec = \([[:digit:]]\+\).*/\1/')
-    local lastcheck=$(cat $timefile)
+    local lastcheck=$(format -o %s $(cat $timefile))
     local cooldown=43200 # 0.5 day in seconds
 
     -cooldown-expired() { test "$since" -ge "$cooldown"; return $? }
@@ -65,7 +62,7 @@ check_updates() {
     printf 'Updating'
     start=$(gdate +%s.%3N)
     timer set $timefile
-    indicator dots '(update NOOP)'
+    indicator --type=dots '(update >/dev/null 2>&1)'
     t=$(format -o short "$(($(gdate +%s.%3N) - $start))")
     echo " done in $t, enjoy $DEFAULT_USER!"
 }

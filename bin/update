@@ -2,8 +2,6 @@
 version=1.0.0
 name=$(basename $0)
 
-start=$(gdate +%s.%3N)
-
 CLOUD=$HOME/stack
 DOTS=$HOME/stack/dots
 BIN=$HOME/stack/dots/bin
@@ -13,6 +11,7 @@ repo_dl_only='https://github.com/festen/dotfiles'
 logfile=$HOME/Library/Logs/festen.update
 linkignore='.git|.csync_journal*|.owncloudsync|zcompdump|zdata|history|antigen|antigen.sh'
 requested_shell=/bin/zsh
+timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 
 # shortcuts
 pass="$2"
@@ -36,7 +35,7 @@ help() {
     tput sc
     [ "$(pwd)" = "$HOME" ] || cd $HOME
     log "Starting @ $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-    timer set
+    $BIN/timer set $timefile
 }
 -init-ensure-dots() {
     printf 'Searching for existing dotfiles... '
@@ -150,7 +149,7 @@ help() {
 }
 -cleanup() {
     -cleanup-broken-links
-    echo "Finished in $(format `timer get`) seconds\n" >> $logfile
+    echo "Finished in $(format `$BIN/timer get $timefile`) seconds\n" >> $logfile
 }
 -cleanup-broken-links() {
     puti 'Removing broken links'
@@ -185,7 +184,5 @@ case "$1" in
         -cleanup
         ;;
 esac
-stop=$(gdate +%s.%3N)
-t=$(($stop - $start))
-tf=`$BIN/format -o short $t`
-echo "System updated in $tf, enjoy $DEFAULT_USER!"
+t=$($BIN/format -o short $($BIN/timer get $timefile))
+echo "System updated in $t, enjoy $DEFAULT_USER!"

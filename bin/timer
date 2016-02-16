@@ -1,20 +1,30 @@
 #!/usr/bin/env zsh
+version=1.0.0
+name=$(basename $0)
+timerfile=$HOME/Library/Application\ Support/me.festen.timer.timefile
+(date --version | grep 'GNU coreutils') >/dev/null 2>&1 || alias date='gdate'
 
-timerfile=${2:-/tmp/timer}
+# functions
+-help() {
+    echo "Usage: $name [get|set] [FILE]"
+    echo "Returns a timesstamp between the most recent invocations of get and set."
+    echo "Example: $name set; sleep 3; $name get"
+    echo
+    echo "  FILE     Use a count file instead of default"
+}
 
+if [ "$1" = '-h' -o "$1" = '--help' ]; then -help; exit; fi
+if [ "$1" = '-v' -o "$1" = '--version' ]; then echo $version; exit; fi
+test "${#@}" -gt 1 && timerfile="${@:2}"
+
+# execute
 if [ "$1" = "set" ]; then
-    date +%s > $timerfile
+    date +%s.%N > $timerfile
 elif [ "$1" = "get" ]; then
-    test ! -f $timerfile && echo -1 && exit
+    test ! -f $timerfile && echo 0 && exit
     start=$(cat $timerfile)
-    stop=$(date +%s)
+    stop=$(date +%s.%N)
     echo $(( $stop - $start ))
 else
-    cat <<EOF
-Usage: $0 [<arg>]
-
-Options for <arg>:
-    set   Starts the timing function (default)
-    get   Stops the timing function and returns num seconds
-EOF
+    -help
 fi
