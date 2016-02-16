@@ -9,7 +9,7 @@ PATH=$BIN:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 repo='git@github.com:festen/dotfiles'
 repo_dl_only='https://github.com/festen/dotfiles'
 logfile=$HOME/Library/Logs/festen.update
-linkignore='.git|.gitignore|.csync_journal*|.owncloudsync|zcompdump|zdata|history|antigen|antigen.sh'
+linkignore='.git|.csync_journal*|.owncloudsync|zcompdump|zdata|history|antigen|antigen.sh'
 requested_shell=/bin/zsh
 timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 
@@ -62,9 +62,9 @@ help() {
 }
 -link() {
     -link-folder 'stack'
-    -link-folder 'dots'
     -link-folder 'var'
-    -link-folder 'env'
+    -link-folder 'dots' # overwrites var
+    -link-folder 'env' # overwrites everything
 
     puti "Linking stackignore file"
         rm -rf "$HOME/Library/Application Support/STACK/sync-exclude.lst" &&\
