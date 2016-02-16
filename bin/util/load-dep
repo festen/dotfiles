@@ -1,0 +1,35 @@
+#!/bin/zsh
+
+version=1.0.0
+name=$(basename $0)
+util=$(dirname $0)
+bin=$(dirname $(dirname $0))
+context=$ZSH_EVAL_CONTEXT
+
+-is-sourced() {
+    if ! [[ $context =~ 'toplevel:'(shfunc:)*'file' ]]; then
+        echo "${RED}Util $name should be sourced, not called as subshell${RESET_COLOR}"
+        exit 2
+    fi
+}
+
+-is-sourced
+
+case "$1" in;
+    date)
+        if ! (date --version | grep 'GNU coreutils') >/dev/null 2>&1; then
+            alias date='gdate'
+            if (date --version) >/dev/null 2>&1; then
+                echo ${RED}Error: No date binary found!${RESET_COLOR}
+                exit 2
+            fi
+        fi
+        ;;
+    pipeable)
+        if [ "${#@}" -lt 2 ]; then
+            ${RED}ERROR: no pipeable bin provided${RESET_COLOR}
+            exit 2
+        fi
+        . $util/pipeable $@;;
+    sourced) -is-sourced;;
+esac

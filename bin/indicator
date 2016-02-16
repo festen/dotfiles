@@ -1,8 +1,9 @@
 #!/usr/bin/env zsh
-version=1.0.2
 
 # variables
+version=1.0.3
 name=$(basename $0)
+bin=$(dirname $0)
 speed=0.3
 default=spinner
 

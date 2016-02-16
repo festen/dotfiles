@@ -1,12 +1,20 @@
 #!/usr/bin/env zsh
-version=1.0.0
-name=$(basename $0)
+#
+# Formats time in seconds to human readable strings
+#
+# Depends on: date or gdate (gnu-date) w/ fallback to date (bsd-date)
+#
 
-# make pipeable
-source "$(dirname $0)/pipeable"
+# check dependencies
 
 # variables
+version=1.0.1
+name=$(basename $0)
+bin=$(dirname $0)
 output=long
+
+# dependencies
+. $bin/util/load-dep pipeable $0 $@
 
 # format functions
 format-long() {
@@ -54,7 +62,7 @@ format-short() {
     fi
 }
 
-# functions
+# other functions
 -help() {
     echo "Usage: $name [OPTION] <timestamp>"
     echo "Formats the given datetime to the given datetime"

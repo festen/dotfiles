@@ -30,9 +30,10 @@ help() {
     echo 'Updates the dotfiles and runs package managers'
 }
 -init() {
+    clear
+    tput sc
     -init-ensure-dots
     -init-ask-sudo
-    tput sc
     [ "$(pwd)" = "$HOME" ] || cd $HOME
     log "Starting @ $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
     $BIN/timer set $timefile
