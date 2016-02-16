@@ -62,7 +62,7 @@ check_updates() {
     printf 'Updating'
     start=$(gdate +%s.%3N)
     timer set $timefile
-    indicator --type=dots '(update >/dev/null 2>&1)'
+    indicator --type=spinner '(update >/dev/null 2>&1)'
     t=$(format -o short "$(($(gdate +%s.%3N) - $start))")
     echo " done in $t, enjoy $DEFAULT_USER!"
 }
