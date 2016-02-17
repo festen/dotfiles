@@ -18,13 +18,11 @@ indicator-spinner() {
     chars='\|/-'
     speed=$(eval "python -c 'print $speed/${#chars}.0'")
     i=0
-    printf ' '
     while kill -0 "$child_pid" 2>/dev/null; do
         i=$(( (i+1) % ${#chars} ))
-        printf '\b'
-        printf " ${chars:$i:1}"
-        printf '\b'
+        printf "${chars:$i:1}"
         sleep $speed
+        printf '\b'
     done
 }
 -help() {

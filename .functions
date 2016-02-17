@@ -47,7 +47,7 @@ mkdmg() {
 }
 
 check_updates() {
-    local timefile="$HOME/Library/Application Support/me.festen.functions.check_updates.timefile"
+    local timefile="$HOME/Library/Application Support/me.festen.update.timefile"
     test ! -f "$timefile" && echo 0 > "$timefile"
     local since=$(format -o %s $(timer get $timefile))
     local boottime=$(sysctl -n kern.boottime | sed -e 's/{ sec = \([[:digit:]]\+\).*/\1/')
@@ -68,7 +68,7 @@ check_updates() {
 }
 
 reload() {
-  [ "$1" = "-f" ] && rm /tmp/me.festen.dotupdater.check_updates-timer
+  [ "$1" = "-f" ] && rm "$HOME/Library/Application Support/me.festen.update.timefile"
   exec $SHELL -l
 }
 
