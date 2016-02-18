@@ -11,8 +11,15 @@ __pycache__
 .apm
 .node-gyp
 .npm
-blob-store
-compile-cache
-storage/editor-*
-Thumbnails
 antigen
+
+# Atom
+*.atom/blob-store*
+*.atom/compile-cache*
+*.atom/storage*
+
+# Photos
+*.photoslibrary/database*
+*.photoslibrary/resources*
+*.photoslibrary/Previews*
+*.photoslibrary/Thumbnails*
