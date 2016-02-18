@@ -7,19 +7,17 @@ __pycache__
 *cache*
 *tmp*
 *temp*
-*~
 .apm
 .node-gyp
 .npm
-antigen
 
-# Atom
-*.atom/blob-store*
-*.atom/compile-cache*
-*.atom/storage*
+var/antigen
 
-# Photos
-*.photoslibrary/database*
-*.photoslibrary/resources*
-*.photoslibrary/Previews*
-*.photoslibrary/Thumbnails*
+dots/.atom/blob-store*
+dots/.atom/compile-cache*
+dots/.atom/storage
+
+media/*.photoslibrary/database
+media/*.photoslibrary/resources
+media/*.photoslibrary/Previews
+media/*.photoslibrary/Thumbnails
