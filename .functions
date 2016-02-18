@@ -65,6 +65,7 @@ check_updates() {
     indicator --type=spinner '(update >/dev/null 2>&1)'
     t=$(format -o short "$(($(gdate +%s.%3N) - $start))")
     echo " done in $t, enjoy $DEFAULT_USER!"
+    -first-check && sleep 1 && exit 0 # exit if this was a boot check
 }
 
 reload() {
