@@ -48,7 +48,9 @@ mkdmg() {
 
 check_updates() {
     local timefile="$HOME/Library/Application Support/me.festen.update.timefile"
+    local runtimefile="$HOME/Library/Application Support/me.festen.update.runtimefile"
     test ! -f "$timefile" && echo 0 > "$timefile"
+    test ! -f "$runtimefile" && echo 0 > "$runtimefile"
     local since=$(format -o %s $(timer get $timefile))
     local boottime=$(sysctl -n kern.boottime | sed -e 's/{ sec = \([[:digit:]]\+\).*/\1/')
     local lastcheck=$(format -o %s $(cat $timefile))
@@ -59,13 +61,19 @@ check_updates() {
 
     # check if we can skip
     ! -cooldown-expired && ! -first-check && return 0
-    printf 'Updating'
+    printf 'Updating '
     start=$(gdate +%s.%3N)
     timer set $timefile
-    indicator --type=spinner '(update >/dev/null 2>&1)'
-    t=$(format -o short "$(($(gdate +%s.%3N) - $start))")
-    echo " done in $t, enjoy $DEFAULT_USER!"
-    -first-check && sleep 1 && exit 0 # exit if this was a boot check
+    indicator --type=countdown-using seconds $(cat $runtimefile) '(update >/dev/null 2>&1)'
+    t=$(($(gdate +%s.%3N) - $start))
+    tf=$(format -o short $t)
+    echo "done in $tf, enjoy $DEFAULT_USER!"
+    if -first-check; then
+        echo $t > $runtimefile
+        echo 'Exiting in 3 seconds'
+        sleep 3
+        exit 0
+    fi
 }
 
 reload() {
