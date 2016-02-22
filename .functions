@@ -84,7 +84,7 @@ reload() {
 cleanup() {
     sudo -v
     (
-        find {/opt,/Applications,$HOME} -type f -name '.DS_Store' -delete &
+        find {/opt,/Applications,$HOME} -name '.DS_Store' -delete &
         sudo rm -rfv /Volumes/*/.Trashes(N) &
         sudo rm -rfv $HOME/.Trash &
         sudo rm -rfv /private/var/log/asl/*.asl(N) &
