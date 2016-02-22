@@ -9,7 +9,7 @@ PATH=$BIN:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 repo='git@github.com:festen/dotfiles'
 repo_dl_only='https://github.com/festen/dotfiles'
 logfile=$HOME/Library/Logs/festen.update
-linkignore='.git|.csync_journal*|.owncloudsync|zcompdump|zdata|history|antigen|antigen.sh'
+linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh'
 requested_shell=/bin/zsh
 timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 
