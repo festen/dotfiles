@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
-version=1.0.0
+version=1.1.0
 name=$(basename $0)
 
 CLOUD=$HOME/stack
-DOTS=$HOME/dots
+DOTS=$HOME/.dotfiles
 BIN=$DOTS/bin
 PATH=$BIN:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 repo='git@github.com:festen/dotfiles'
