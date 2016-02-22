@@ -16,6 +16,7 @@ timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 # shortcuts
 pass="$2"
 put="$BIN/boxprint"
+put="echo"
 alias -g NOOP="> /dev/null 2>&1"
 alias put="$put -o"
 alias puti="$put --type=info"
@@ -75,6 +76,7 @@ help() {
     puti "Linking $1"
     for x in $(/usr/bin/find "$1/" -depth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
         rm -rf "$(basename $x)"
+	echo "Linking folder: $1/$(basename $x)"
         ln -fs "$1/$(basename $x)"
     done
     put "Linked $1"
