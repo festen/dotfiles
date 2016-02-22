@@ -62,9 +62,9 @@ help() {
     while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 -link() {
-    -link-folder $CLOUD
+    -link-folder $(basename $CLOUD)
     -link-folder 'var'
-    -link-folder $DOTS # overwrites var
+    -link-folder $(basename $DOTS) # overwrites var
     -link-folder 'env' # overwrites everything
 
     puti "Linking stackignore file"
