@@ -68,12 +68,7 @@ check_updates() {
     t=$(($(gdate +%s.%3N) - $start))
     tf=$(format -o short $t)
     echo "done in $tf, enjoy $DEFAULT_USER!"
-    if -first-check; then
-        echo $t > $runtimefile
-        echo 'Exiting in 3 seconds'
-        sleep 3
-        exit 0
-    fi
+    -first-check && echo $t > $runtimefile
 }
 
 reload() {
