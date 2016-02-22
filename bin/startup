@@ -7,7 +7,7 @@ closeWindow='ExpressVPN ChitChat'
 hideOnly='iTerm'
 start=$(date +%s)
 interval=1
-maxRunTime=60
+maxRunTime=20
 end=$(($start+$maxRunTime))
 
 removeFromHideList() {
@@ -45,13 +45,13 @@ hide() {
 }
 
 while [ -n "$closeWindow$hideOnly" ]; do
-    for app in "$closeWindow"; do
+    for app in $(echo $closeWindow); do
         if isLoaded "$app"; then
             close "$app"
             removeFromCloseList "$app"
         fi
     done
-    for app in "$hideOnly"; do
+    for app in $(echo $hideOnly); do
         if isLoaded "$app"; then
             hide "$app"
             removeFromHideList "$app"
