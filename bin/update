@@ -3,8 +3,8 @@ version=1.0.0
 name=$(basename $0)
 
 CLOUD=$HOME/stack
-DOTS=$HOME/stack/dots
-BIN=$HOME/stack/dots/bin
+DOTS=$HOME/dots
+BIN=$DOTS/bin
 PATH=$BIN:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 repo='git@github.com:festen/dotfiles'
 repo_dl_only='https://github.com/festen/dotfiles'
