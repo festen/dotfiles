@@ -11,9 +11,9 @@ source $VAR/antigen.sh
   antigen bundle zsh-users/zsh-completions src
   antigen theme agnoster
   antigen apply
-alias l='ls -lh'
 eval "$(docker-machine env dev NOOP)"
 eval "$(thefuck --alias fck NOOP)"
+alias l='ls -lh' # this gets overwritten by antigen
 
 # TODO: move this to a .inputrc file
 setopt extended_glob

@@ -1,8 +1,12 @@
 #!/usr/bin/env zsh
 
-# generic aliases
+# Generic aliases
 alias copy='rsync -ah --info progress2'
 alias rm='rm -rfv'
+alias cl='clear && l'
+alias cla='clear && la'
+
+# Output suppression
 alias -g NO1='1>/dev/null'
 alias -g NO2='2>/dev/null'
 alias -g NO12='NO1 NO2'
@@ -10,7 +14,7 @@ alias -g NOOP='NO1 NO2'
 
 ## General
 alias pubkey="cat $HOME/.ssh/personal.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
-alias wrapoff="printf '\033[?7l'"
+alias wrapoff="printf '\033[?7l'" 
 alias wrapon="printf '\033[?7h'"
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""

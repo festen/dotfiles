@@ -1,17 +1,23 @@
 #!/usr/bin/env zsh
 
+set -e
+
+for cmd in {boxprint,indicator,vagrant,timer,format}; do
+    test $+commands[$cmd] || (echo "missing command: $cmd" && exit 1)
+done
+
 cmd() {
-    $TOOL/print -i "$2"
-    $TOOL/indicator spinner "$1"
-    $TOOL/print "$3"
+    boxprint -t info $2
+    indicator "($1 >/dev/null 2>&1)"
+    boxprint -ot success $3
 }
 
-timer start
-echo 'Building MC-2.0\n'
 cd "$HOME/code/mc/web"
+timer set
+echo "Building MC-$(cat $HOME/code/mc/version)\n"
 
 cmd 'vagrant up' 'Checking Vagrant' 'Vagrant up'
 cmd 'gulp dev' 'Compiling' 'Compiled'
 cmd 'vagrant rsync' 'Syncing' 'Synced'
 
-echo "\nAll done in $(timer stop | format)!"
+echo "\nAll done in $(timer get | format)!"
