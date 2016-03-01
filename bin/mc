@@ -13,12 +13,13 @@ cmd() {
 }
 
 cd "$HOME/code/mc/web"
+clear
 timer set
-echo "Building MC-$(cat $HOME/code/mc/version)\n"
+echo "Building M&C webshop [v$(cat $HOME/code/mc/version)]"
 
 cmd 'vagrant up' 'Checking Vagrant' 'Vagrant up'
 cmd 'gulp dev' 'Compiling' 'Compiled'
 cmd 'vagrant rsync' 'Syncing' 'Synced'
-cmd 'vagrant ssh -c \'sudo chmod 777 /var/www/api/{tmp,logs,uploads}\'' 'Updating permissions' 'Permissions updated'
+cmd "vagrant ssh -c 'sudo chmod 777 /var/www/api/{tmp,logs,uploads}'" 'Updating permissions' 'Permissions updated'
 
-echo "\nAll done in $(timer get | format)!"
+echo "All done in $(timer get | format)!"
