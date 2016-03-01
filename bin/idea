@@ -9,7 +9,7 @@ import time
 
 # see com.intellij.idea.SocketLock for the server side of this interface
 
-RUN_PATH = u'/Users/david/Applications/IntelliJ IDEA 15.app'
+RUN_PATH = u'/Applications/IntelliJ IDEA 15.app'
 CONFIG_PATH = u'/Users/david/Library/Preferences/IntelliJIdea15'
 
 args = []
