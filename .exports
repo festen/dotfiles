@@ -22,7 +22,8 @@ export HISTFILE=$VAR/history
 PATH=''
 nbin='node_modules/.bin'
 -add-path() { PATH="$PATH:$@" }
--add-path "./bin:./scripts"
+-add-path "./bin"
+-add-path "./scripts:../scripts:../../scripts:../../../scripts:../../../../scripts"
 -add-path "./$nbin:../$nbin:../../$nbin:../../../$nbin:../../../../$nbin"
 -add-path "$BIN"
 -add-path "/usr/local/opt/coreutils/libexec/gnubin"
