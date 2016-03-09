@@ -11,7 +11,7 @@ source $VAR/antigen.sh
   antigen bundle zsh-users/zsh-completions src
   antigen theme agnoster
   antigen apply
-eval $(docker-machine env dev)
+(eval $(docker-machine env dev)) NOOP
 # eval "$(thefuck --alias fck NOOP)"
 alias l='ls -lh' # this gets overwritten by antigen
 
