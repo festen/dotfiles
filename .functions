@@ -62,7 +62,10 @@ check_updates() {
     # check if we can skip
     ! -cooldown-expired && ! -first-check && return 0
     printf "Update? [y/N] "
-    (read -q && echo) || (echo && return 0)
+    read -q
+    ans=$?
+    echo
+    test $ans -eq 0 || return 0
     start=$(gdate +%s.%3N)
     timer set $timefile
     update
