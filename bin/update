@@ -44,7 +44,7 @@ help() {
     if [ -d $DOTS ]; then
         cd ~
         ln -sf $CLOUD/env/.ssh NOOP # ensure credentials can be found
-        (cd $DOTS && git stash && git pull && git stash pop) NOOP
+        (cd $DOTS && git stash && git pull && git stash pop || return 0) NOOP
         test $? -eq 0 && echo 'found' && return
     fi
     printf 'dotfiles not found!\nDownloading dotfiles... '
