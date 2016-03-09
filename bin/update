@@ -181,11 +181,13 @@ case "$1" in
     -h|--help) help; exit;;
     -v|--version) echo $version; exit;;
     *)
+        tput smcup
         -init
         -link
         -install
         -verify
         -cleanup
+        tput rmcup
         ;;
 esac
 t=$($BIN/format -o short $($BIN/timer get $timefile))
