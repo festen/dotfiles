@@ -187,6 +187,7 @@ case "$1" in
         -install
         -verify
         -cleanup
+        sleep 3
         tput rmcup
         ;;
 esac
