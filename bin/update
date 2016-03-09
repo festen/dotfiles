@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-version=1.1.0
+version=1.2.0
 name=$(basename $0)
 
 CLOUD=$HOME/stack
@@ -42,8 +42,9 @@ help() {
     printf 'Searching for existing dotfiles... '
     mkdir -p $CLOUD
     if [ -d $DOTS ]; then
+        cd ~
         ln -sf $CLOUD/env/.ssh NOOP # ensure credentials can be found
-        (cd $DOTS && git pull) NOOP
+        (cd $DOTS && git stash && git pull && git stash pop) NOOP
         test $? -eq 0 && echo 'found' && return
     fi
     printf 'dotfiles not found!\nDownloading dotfiles... '
@@ -67,6 +68,7 @@ help() {
     -link-folder 'env' # overwrites everything
 
     puti "Linking stackignore file"
+        cd ~
         rm -rf "$HOME/Library/Application Support/STACK/sync-exclude.lst" &&\
         ln -sf "$HOME/.stackignore" "$HOME/Library/Application Support/STACK/sync-exclude.lst"
     put 'Linked stackignore file'
@@ -74,6 +76,7 @@ help() {
 -link-folder() {
     puti "Linking $1"
     for x in $(/usr/bin/find "$1/" -depth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
+        cd ~
         rm -rf "$(basename $x)"
         ln -fs "$1/$(basename $x)"
     done
