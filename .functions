@@ -61,19 +61,14 @@ check_updates() {
 
     # check if we can skip
     ! -cooldown-expired && ! -first-check && return 0
-    read -rp "Update? [y/N] " response
-    case $response in
-        [yY][eE][sS]|[yY])
-            printf 'Updating '
-            start=$(gdate +%s.%3N)
-            timer set $timefile
-            indicator --type=countdown-using seconds $(cat $runtimefile) update
-            t=$(($(gdate +%s.%3N) - $start))
-            tf=$(format -o short $t)
-            echo "done in $tf, enjoy $DEFAULT_USER!"
-            -first-check && echo $t > $runtimefile
-            ;;
-    esac
+    printf "Update? [y/N] "
+    (read -q && echo) || (echo && return 0)
+    start=$(gdate +%s.%3N)
+    timer set $timefile
+    update
+    t=$(($(gdate +%s.%3N) - $start))
+    tf=$(format -o short $t)
+    -first-check && echo $t > $runtimefile
 }
 
 reload() {
