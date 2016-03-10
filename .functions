@@ -65,10 +65,12 @@ check_updates() {
     read -q
     ans=$?
     echo
+    sudo -v
     test $ans -eq 0 || return 0
     start=$(gdate +%s.%3N)
     timer set $timefile
     update
+    cleanup
     t=$(($(gdate +%s.%3N) - $start))
     tf=$(format -o short $t)
     -first-check && echo $t > $runtimefile
