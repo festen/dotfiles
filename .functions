@@ -65,8 +65,8 @@ check_updates() {
     read -q
     ans=$?
     echo
-    sudo -v
     test $ans -eq 0 || return 0
+    sudo -v
     start=$(gdate +%s.%3N)
     timer set $timefile
     update

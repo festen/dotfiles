@@ -2,7 +2,7 @@
 source $HOME/.exports
 source $HOME/.aliases
 source $HOME/.functions
-check_updates # check if config still up to date
+# check_updates # check if config still up to date
 source $VAR/antigen.sh
   antigen use oh-my-zsh
   antigen bundle git
