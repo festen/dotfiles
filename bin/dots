@@ -20,20 +20,17 @@ timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 
 # shortcuts
 alias -g NOOP="> /dev/null 2>&1"
+alias -g NO2="2> /dev/null"
 put="$BIN/boxprint"
 alias put="$put -o"
 alias puti="$put --type=info"
 
 # Functions
 dots-install() {
-    tput smcup
     -before
-    -link
     # -install
     # -verify
-    # -cleanup
-    # sleep 3
-    # tput rmcup
+    -cleanup
 }
 
 log() {
@@ -62,6 +59,7 @@ help() {
     -link-folder 'var'
     -link-folder 'env'
     -link-folder $(basename $DOTS)
+    source $HOME/.exports
 }
 -ensure-dotfiles() {
     printf 'Searching for existing dotfiles... '
@@ -153,7 +151,10 @@ help() {
 }
 -cleanup() {
     -cleanup-broken-links
-    echo "Finished in $(format `$BIN/timer get $timefile`) seconds\n" >> $logfile
+    puti "Cleaning up leftovers"
+    source $HOME/.functions
+    cleanup
+    put "Cleaned up"
 }
 -cleanup-broken-links() {
     puti 'Removing broken links'
@@ -184,5 +185,6 @@ case "$1" in
     *) help; exit;;
 esac
 
+echo "Finished in $(format `$BIN/timer get $timefile`) seconds\n" >> $logfile
 t=$($BIN/format -o short $($BIN/timer get $timefile))
-echo "System updated in $t, enjoy $DEFAULT_USER!"
+echo "Finished in $t, enjoy $DEFAULT_USER!"
