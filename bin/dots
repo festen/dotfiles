@@ -14,7 +14,7 @@ PATH=$BIN:$DOTS/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 repo='git@github.com:festen/dotfiles'
 repo_guest='https://github.com/festen/dotfiles' # credentialless repo
 logfile=$HOME/Library/Logs/festen.update
-linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh'
+linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh|iterm.sh'
 requested_shell=/bin/zsh
 timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 
@@ -49,6 +49,7 @@ help() {
 -before() {
     sudo -v
     while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+    tput sc
     tput sc
     -ensure-dotfiles
     [ "$(pwd)" = "$HOME" ] || cd $HOME
