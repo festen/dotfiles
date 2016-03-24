@@ -54,3 +54,7 @@ node_modules
 #################
 .private
 .ssh
+
+# Ignore ~/var files except for scripts
+var/*
+var/!*.sh

@@ -58,7 +58,6 @@ help() {
     -link-folder $(basename $DOTS)
     -link-folder 'var'
     -link-folder 'env'
-    -link-folder $(basename $DOTS)
     source $HOME/.exports
 }
 -ensure-dotfiles() {
