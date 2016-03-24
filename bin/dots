@@ -1,26 +1,41 @@
 #!/usr/bin/env zsh
-version=1.2.0
-name=$(basename $0)
+#
+# dots --help           help file
+# dots install          (re)installs dotfiles, brews, casks
+# dots upgrade          upgrades dotfiles
+# dots upgrade --full   upgrades dotfiles, brews, casks
+#
 
-CLOUD=$HOME/stack
-DOTS=$HOME/.dotfiles
-BIN=$DOTS/bin
-PATH=$BIN:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+name=$(basename $0)
+DOTS=$HOME/dots
+ENV=$HOME/env
+BIN=$HOME/bin
+PATH=$BIN:$DOTS/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 repo='git@github.com:festen/dotfiles'
-repo_dl_only='https://github.com/festen/dotfiles'
+repo_guest='https://github.com/festen/dotfiles' # credentialless repo
 logfile=$HOME/Library/Logs/festen.update
 linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh'
 requested_shell=/bin/zsh
 timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 
 # shortcuts
-pass="$2"
-put="$BIN/boxprint"
 alias -g NOOP="> /dev/null 2>&1"
+put="$BIN/boxprint"
 alias put="$put -o"
 alias puti="$put --type=info"
 
 # Functions
+dots-install() {
+    tput smcup
+    -before
+    -link
+    # -install
+    # -verify
+    # -cleanup
+    # sleep 3
+    # tput rmcup
+}
+
 log() {
     [ "$(uname)" = 'Darwin' ] && echo $1 | logger -t 'dotupdater'
     echo $1 >> $logfile
@@ -29,49 +44,29 @@ help() {
     echo "Usage: $name [-hv]"
     echo 'Updates the dotfiles and runs package managers'
 }
--init() {
+-before() {
+    -ensure-dotfiles
+    sudo -v
+    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
     clear
     tput sc
-    -init-ensure-dots
-    -init-ask-sudo
     [ "$(pwd)" = "$HOME" ] || cd $HOME
     log "Starting @ $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
     $BIN/timer set $timefile
+    -link-folder $(basename $DOTS)
+    -link-folder 'var'
+    -link-folder 'env'
+    -link-folder $(basename $DOTS)
 }
--init-ensure-dots() {
+-ensure-dotfiles() {
     printf 'Searching for existing dotfiles... '
     mkdir -p $CLOUD
-    if [ -d $DOTS ]; then
-        cd ~
-        ln -sf $CLOUD/env/.ssh NOOP # ensure credentials can be found
-        (cd $DOTS && git stash && git pull && git stash pop || return 0) NOOP
-        test $? -eq 0 && echo 'found' && return
-    fi
+    test -d $DOTS && echo 'found' && return
     printf 'dotfiles not found!\nDownloading dotfiles... '
     rm -rf $DOTS NOOP
-    git clone $repo_dl_only $DOTS
+    git clone $repo_guest $DOTS
     test $? -eq 0 && echo 'done' || (echo 'failed!'; exit 1)
     (cd $DOTS && git remote remove origin && git remote add origin $repo) NOOP
-}
--init-ask-sudo() {
-    test -z "$pass" && return 0
-    sudo -k
-    sudo -Sv <<< $pass NOOP
-    put --type=user # placeholder
-    test $? -eq 1 && put --type=fail 'Password incorrect, exiting script.' && exit 1 || put 'Password provided'
-    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-}
--link() {
-    -link-folder $(basename $CLOUD)
-    -link-folder 'var'
-    -link-folder $(basename $DOTS) # overwrites var
-    -link-folder 'env' # overwrites everything
-
-    puti "Linking stackignore file"
-        cd ~
-        rm -rf "$HOME/Library/Application Support/STACK/sync-exclude.lst" &&\
-        ln -sf "$HOME/.stackignore" "$HOME/Library/Application Support/STACK/sync-exclude.lst"
-    put 'Linked stackignore file'
 }
 -link-folder() {
     puti "Linking $1"
@@ -179,17 +174,9 @@ help() {
 
 case "$1" in
     -h|--help) help; exit;;
-    -v|--version) echo $version; exit;;
-    *)
-        tput smcup
-        -init
-        -link
-        -install
-        -verify
-        -cleanup
-        sleep 3
-        tput rmcup
-        ;;
+    install) exit;;
+    *) help; exit;;
 esac
+
 t=$($BIN/format -o short $($BIN/timer get $timefile))
 echo "System updated in $t, enjoy $DEFAULT_USER!"
