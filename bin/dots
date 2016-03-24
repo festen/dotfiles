@@ -12,7 +12,7 @@ ENV=$HOME/env
 BIN=$HOME/bin
 PATH=$BIN:$DOTS/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 repo='git@github.com:festen/dotfiles'
-repo_guest='https://github.com/festen/dotfiles' # credentialless repo
+repo_guest='https://github.com/festen/dotfiles' # credentialess repo
 logfile=$HOME/Library/Logs/festen.update
 linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh|iterm.sh'
 requested_shell=/bin/zsh
@@ -32,7 +32,13 @@ dots-install() {
     -verify
     -cleanup
 }
-
+dots-sync() {
+    cd $DOTS
+    git pull
+    git add .
+    git commit -m 'Updated dotfiles'
+    git push
+}
 log() {
     [ "$(uname)" = 'Darwin' ] && echo $1 | logger -t 'dotupdater'
     echo $1 >> $logfile
@@ -45,6 +51,7 @@ help() {
     echo "  u, upgrade: When using upgrade, will check for dotfile upgrades"
     echo "           Optionally, the --full flag can be passed, this script"
     echo "           will then also verify and upgrade package managers"
+    echo "  s, sync:    Will pull/push latest version"
 }
 -before() {
     sudo -v
@@ -57,7 +64,7 @@ help() {
     $BIN/timer set $timefile
     -link-folder $(basename $DOTS)
     -link-folder 'var'
-    -link-folder 'env'
+    -link-folder '.env'
     source $HOME/.exports
 }
 -ensure-dotfiles() {
@@ -181,6 +188,7 @@ case "$1" in
     -h|--help) help; exit;;
     i|install) dots-install;;
     u|upgrade) dots-upgrade "$2";;
+    s|sync) dots-sync;;
     *) help; exit;;
 esac
 
