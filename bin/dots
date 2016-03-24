@@ -41,15 +41,20 @@ log() {
     echo $1 >> $logfile
 }
 help() {
-    echo "Usage: $name [-hv]"
+    echo "Usage: $name {install,upgrade} [--full]"
     echo 'Updates the dotfiles and runs package managers'
+    echo
+    echo "  i, install: When using install, will install all dependencies."
+    echo "  u, upgrade: When using upgrade, will check for dotfile upgrades"
+    echo "           Optionally, the --full flag can be passed, this script"
+    echo "           will then also verify and upgrade package managers"
 }
 -before() {
-    -ensure-dotfiles
     sudo -v
     while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
     clear
     tput sc
+    -ensure-dotfiles
     [ "$(pwd)" = "$HOME" ] || cd $HOME
     log "Starting @ $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
     $BIN/timer set $timefile
@@ -174,7 +179,8 @@ help() {
 
 case "$1" in
     -h|--help) help; exit;;
-    install) exit;;
+    i|install) dots-install;;
+    u|upgrade) dots-upgrade "$2";;
     *) help; exit;;
 esac
 
