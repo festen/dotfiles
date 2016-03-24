@@ -28,7 +28,7 @@ alias puti="$put --type=info"
 # Functions
 dots-install() {
     -before
-    # -install
+    -install
     -verify
     -cleanup
 }
