@@ -34,10 +34,10 @@ dots-install() {
 }
 dots-sync() {
     cd $DOTS
-    git pull
+    git pull origin master
     git add .
     git commit -m 'Updated dotfiles'
-    git push
+    git push -u origin master
 }
 log() {
     [ "$(uname)" = 'Darwin' ] && echo $1 | logger -t 'dotupdater'
