@@ -100,12 +100,13 @@ help() {
 }
 -install-packages() {
     puti "Checking packages"
+    log '  Brew: upgrading'
+    brew upgrade 2>/dev/null | tr -s "\n" | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" >> $logfile) | /usr/bin/tr -u "\n" "\0" | xargs -0n1 $put -o --type=warn "Updating packages - " 2>/dev/null
+    log '  Brew: upgraded'
+    sleep 10
     log '  Brew: running bundle'
     brew bundle --global 2>/dev/null | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" | sed -e 's/├── Success/└── Success/' >> $logfile) | tr -u "\n" "\0" | xargs -0n1 $put -o --type=warn "Installing packages - " 2>/dev/null
     log '  Brew: bundle ran'
-    log '  Brew: upgrading'
-    brew upgrade 2>/dev/null | tr -s "\n" | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" >> $logfile) | tr -u "\n" "\0" | xargs -0n1 $put -o --type=warn "Updating packages - " 2>/dev/null
-    log '  Brew: upgraded'
     put "Packages installed and updated"
 }
 -install-antigen() {
