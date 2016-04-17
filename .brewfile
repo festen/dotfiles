@@ -31,6 +31,12 @@ brew 'josegonzalez/php/php70-intl'
 brew 'josegonzalez/php/php70-mcrypt'
 brew 'josegonzalez/php/composer'
 
+# Docker
+brew 'docker'
+brew 'docker-compose'
+brew 'docker-machine'
+brew 'docker-machine-parallels'
+
 # Applications
 cask 'atom'
 cask 'chitchat'
