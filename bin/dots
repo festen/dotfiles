@@ -187,12 +187,12 @@ help() {
 
 case "$1" in
     -h|--help) help; exit;;
-    i*) dots-install;;
-    u*) dots-upgrade "$2";;
-    s*) dots-sync; exit;;
     gst|status) (cd $DOTS && git status); exit;;
     gd|diff) shift 1; (cd $DOTS && git diff); exit;;
     git) shift 1; (cd $DOTS && git $@); exit;;
+    i*) dots-install;;
+    u*) dots-upgrade "$2";;
+    s*) dots-sync; exit;;
     *) help; exit;;
 esac
 
