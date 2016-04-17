@@ -52,8 +52,7 @@ help() {
     echo "                Optionally, the --full flag can be passed, this script"
     echo "                will then also verify and upgrade package managers"
     echo "  (s)ync:     Will pull/push latest version"
-    echo "  (st)atus:   Show sync status"
-    echo "  (g)it:      Execute raw git command"
+    echo "  git:        Execute raw git command (shortcuts: gd: diff, gst: status)"
 }
 -before() {
     sudo -v
@@ -188,11 +187,12 @@ help() {
 
 case "$1" in
     -h|--help) help; exit;;
-    i|install) dots-install;;
-    u|upgrade) dots-upgrade "$2";;
-    s|sync) dots-sync;;
-    st|status) (cd $DOTS && git status);;
-    g|git) shift 1; (cd $DOTS && git $@);;
+    i*) dots-install;;
+    u*) dots-upgrade "$2";;
+    s|sync) dots-sync; exit;;
+    gst|status) (cd $DOTS && git status); exit;;
+    gd|diff) shift 1; (cd $DOTS && git diff); exit;;
+    git) shift 1; (cd $DOTS && git $@); exit;;
     *) help; exit;;
 esac
 
