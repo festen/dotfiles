@@ -94,3 +94,7 @@ cleanup() {
         wait
     ) NO2
 }
+
+mkdocker-machine() {
+    docker-machine create --driver parallels --parallels-cpu-count 2 --parallels-memory 4096 default
+}

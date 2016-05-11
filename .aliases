@@ -33,6 +33,16 @@ alias e='edit'
 alias f='fck'
 alias x='extract'
 
+alias ez='edit ~/.zshrc'
+alias ef='edit ~/.functions'
+alias ea='edit ~/.aliases'
+alias rz='source ~/.zshrc'
+
+alias d='docker'
+alias dc='docker-compose'
+alias dr='docker run'
+alias drr='docker run --rm -it'
+
 # TODO
 # List only files/folders --> alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
 # Rest api colorized methods --> for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do alias "$method"="lwp-request -m '$method'"; done
