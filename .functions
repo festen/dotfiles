@@ -98,3 +98,9 @@ cleanup() {
 mkdocker-machine() {
     docker-machine create --driver parallels --parallels-cpu-count 2 --parallels-memory 4096 default
 }
+
+tm() {
+    local TAG=${1:-'tm'}
+    tmux -CC attach -t $TAG
+    test $? -ne 0 && tmux -CC new -s $TAG
+}

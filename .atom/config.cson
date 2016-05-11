@@ -15,10 +15,12 @@
       "tmp"
       "vendor"
     ]
+    openEmptyEditorOnStart: false
   editor:
     fontFamily: "Menlo"
-    fontSize: 13
+    fontSize: 16
     invisibles: {}
+    lineHeight: 1.4
     scrollPastEnd: true
     showIndentGuide: true
     softTabs: false

@@ -10,7 +10,8 @@ source $VAR/antigen.sh
   antigen bundle rupa/z
   antigen bundle zsh-users/zsh-syntax-highlighting
   antigen bundle zsh-users/zsh-completions src
-  antigen theme agnoster
+  antigen bundle mafredri/zsh-async
+  antigen bundle sindresorhus/pure
   antigen apply
 eval $(docker-machine env default 2> /dev/null)
 # eval "$(thefuck --alias fck NOOP)"
