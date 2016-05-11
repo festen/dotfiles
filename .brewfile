@@ -24,6 +24,7 @@ brew 'python3'
 brew 'tree'
 brew 'rsync'
 brew 'thefuck'
+brew 'tmux'
 
 # Php related
 brew 'josegonzalez/php/php70'
