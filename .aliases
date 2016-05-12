@@ -33,15 +33,19 @@ alias e='edit'
 alias f='fck'
 alias x='extract'
 
+# Editables
 alias ez='edit ~/.zshrc'
 alias ef='edit ~/.functions'
 alias ea='edit ~/.aliases'
-alias rz='source ~/.zshrc'
 
+# Docker related
 alias d='docker'
 alias dc='docker-compose'
 alias dr='docker run'
 alias drr='docker run --rm -it'
+
+# Misc
+alias rz='source ~/.zshrc'
 
 # TODO
 # List only files/folders --> alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
