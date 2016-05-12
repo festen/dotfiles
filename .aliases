@@ -6,6 +6,12 @@ alias rm='rm -rfv'
 alias cl='clear && l'
 alias cla='clear && la'
 
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
 # Output suppression
 alias -g NO1='1>/dev/null'
 alias -g NO2='2>/dev/null'
@@ -19,6 +25,28 @@ alias wrapon="printf '\033[?7h'"
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
+# git aliases
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit -v'
+alias gc!='git commit -v --amend'
+alias gca='git commit -va'
+alias gca!='git commit -va --amend'
+alias gcan!='git commit -va --amend --no-edit'
+alias gclean='git clean -fd'
+alias gpristine='git reset --hard && git clean -dfx'
+alias gcm='git checkout master'
+alias gco='git checkout'
+alias gd='git difference'
+alias gl='git pull'
+alias gp='git push'
+alias grh'git reset HEAD'
+alias gss='git status -s'
+alias gst='git status'
+
 # git flow aliases
 alias ff='git flow feature'
 alias ffs='ff start'
@@ -27,13 +55,8 @@ alias fr='git flow release'
 alias frs='fr start'
 alias frf='fr finish'
 
-# Single letter aliases
-alias c='copy'
-alias e='edit'
-alias f='fck'
-alias x='extract'
-
 # Editables
+alias e='edit'
 alias ez='edit ~/.zshrc'
 alias ef='edit ~/.functions'
 alias ea='edit ~/.aliases'
@@ -43,6 +66,14 @@ alias d='docker'
 alias dc='docker-compose'
 alias dr='docker run'
 alias drr='docker run --rm -it'
+
+# Single letter aliases
+alias c='copy'
+alias d='docker'
+alias e='edit'
+alias f='fck'
+alias g='git'
+alias x='extract'
 
 # Misc
 alias rz='source ~/.zshrc'
