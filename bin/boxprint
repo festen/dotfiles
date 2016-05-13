@@ -19,20 +19,11 @@ boxprint-warn()    { -print "$YELLOW" ' ~~ ' "$@" }
 
 # other functions
 -print() {
-    -save-pos
-    test "$overwrite" = 'true' && -clear-line
+    test "$overwrite" = 'true' && tput cuu 1 && tput el
     color="$1"
     content="$2"
     shift 2
-    echo " [$color$content$RESET_COLOR] $@"
-}
--save-pos() {
-    test "$overwrite" = 'true' && return 0
-    tput sc
-}
--clear-line() {
-    tput rc
-    tput el
+    echo " [$color$content$RESET] $@"
 }
 -error() {
     err='Unknown error'
@@ -41,7 +32,7 @@ boxprint-warn()    { -print "$YELLOW" ' ~~ ' "$@" }
         unknown_type) err="Unknown type: $2";;
         flag) err="Unknown argument $2";;
     esac
-    echo ${RED}Error: $err${RESET_COLOR}; -help; exit 1
+    echo ${RED}Error: $err${RESET}; -help; exit 1
 }
 -is-valid-type() {
     type "boxprint-$1" | grep -q 'shell function'
