@@ -11,11 +11,11 @@ default=success # default message (do not forget to update help function)
 . $bin/util/load-dep pipeable $0 $@
 
 # print functions
-boxprint-success() { -print "$GREEN" ' OK ' "$@" }
-boxprint-fail()    { -print "$RED" ' !! ' "$@" }
-boxprint-info()    { -print "$BLUE" ' .. ' "$@" }
-boxprint-user()    { -print "$YELLOW" ' ?? ' "$@" }
-boxprint-warn()    { -print "$YELLOW" ' ~~ ' "$@" }
+boxprint-success() { -print "$GREEN" '  OK  ' "$@" }
+boxprint-fail()    { -print "$RED" ' FAIL ' "$@" }
+boxprint-info()    { -print "$BLUE" '  ..  ' "$@" }
+boxprint-user()    { -print "$YELLOW" 'PROMPT' "$@" }
+boxprint-warn()    { -print "$YELLOW" ' WARN ' "$@" }
 
 # other functions
 -print() {
@@ -24,7 +24,7 @@ boxprint-warn()    { -print "$YELLOW" ' ~~ ' "$@" }
     color="$1"
     content="$2"
     shift 2
-    echo " [$color$content$RESET_COLOR] $@"
+    echo "[ $color$content$RESET_COLOR ] $@"
 }
 -save-pos() {
     test "$overwrite" = 'true' && return 0
