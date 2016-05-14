@@ -3,14 +3,6 @@
 # Generic aliases
 alias copy='rsync -ah --info progress2'
 alias rm='rm -rfv'
-alias cl='clear && l'
-alias cla='clear && la'
-
-# Navigation
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
 
 # Output suppression
 alias -g NO1='1>/dev/null'
@@ -18,12 +10,40 @@ alias -g NO2='2>/dev/null'
 alias -g NO12='NO1 NO2'
 alias -g NOOP='NO1 NO2'
 
-## General
-alias pubkey="cat $HOME/.ssh/personal.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
-alias wrapoff="printf '\033[?7l'" 
-alias wrapon="printf '\033[?7h'"
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# Single letter aliases
+alias c='copy'
+alias d='docker'
+alias e='edit'
+alias f='fck'
+alias g='git'
+alias x='extract'
+
+
+# Docker related
+alias d='docker'
+alias dc='docker-compose'
+alias dr='docker run'
+alias drr='docker run --rm -it'
+
+# Editables
+alias e='edit'
+alias ez='edit ~/.zshrc'
+alias ef='edit ~/.functions'
+alias ea='edit ~/.aliases'
+
+# git flow aliases
+alias ff='git flow feature'
+alias ffs='ff start'
+alias fff='ff finish'
+alias fr='git flow release'
+alias frs='fr start'
+alias frf='fr finish'
 
 # git aliases
 alias g='git'
@@ -47,36 +67,20 @@ alias grh'git reset HEAD'
 alias gss='git status -s'
 alias gst='git status'
 
-# git flow aliases
-alias ff='git flow feature'
-alias ffs='ff start'
-alias fff='ff finish'
-alias fr='git flow release'
-alias frs='fr start'
-alias frf='fr finish'
-
-# Editables
-alias e='edit'
-alias ez='edit ~/.zshrc'
-alias ef='edit ~/.functions'
-alias ea='edit ~/.aliases'
-
-# Docker related
-alias d='docker'
-alias dc='docker-compose'
-alias dr='docker run'
-alias drr='docker run --rm -it'
-
-# Single letter aliases
-alias c='copy'
-alias d='docker'
-alias e='edit'
-alias f='fck'
-alias g='git'
-alias x='extract'
+# List
+alias ls='ls -g --color'
+alias l='ls -gl --color'
+alias la='ls -glA --color'
+alias cl='clear && ls -gl --color'
+alias cla='clear && ls -glA --color'
 
 # Misc
 alias rz='source ~/.zshrc'
+alias pubkey="cat $HOME/.ssh/personal.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
+alias wrapoff="printf '\033[?7l'" 
+alias wrapon="printf '\033[?7h'"
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # TODO
 # List only files/folders --> alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
