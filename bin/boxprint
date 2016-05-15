@@ -11,11 +11,12 @@ default=success # default message (do not forget to update help function)
 . $bin/util/load-dep pipeable $0 $@
 
 # print functions
-boxprint-success() { -print "$GREEN" '  OK  ' "$@" }
-boxprint-fail()    { -print "$RED" ' FAIL ' "$@" }
-boxprint-info()    { -print "$BLUE" '  ..  ' "$@" }
-boxprint-user()    { -print "$YELLOW" 'PROMPT' "$@" }
-boxprint-warn()    { -print "$YELLOW" ' WARN ' "$@" }
+boxprint-success() { -print "$GREEN" '✓' "$@" }
+boxprint-fail()    { -print "$RED" '✗' "$@" }
+boxprint-info()    { -print "$BLUE" '?' "$@" }
+boxprint-user()    { -print "$YELLOW" '~' "$@" }
+boxprint-warn()    { -print "$YELLOW" '⚠' "$@" }
+boxprint-empty()   { -print '' ' ' "$@" }
 
 # other functions
 -print() {
@@ -23,7 +24,7 @@ boxprint-warn()    { -print "$YELLOW" ' WARN ' "$@" }
     color="$1"
     content="$2"
     shift 2
-    echo " [$color$content$RESET] $@"
+    echo "$color$content$RESET $@"
 }
 -error() {
     err='Unknown error'
@@ -32,7 +33,7 @@ boxprint-warn()    { -print "$YELLOW" ' WARN ' "$@" }
         unknown_type) err="Unknown type: $2";;
         flag) err="Unknown argument $2";;
     esac
-    echo ${RED}Error: $err${RESET}; -help; exit 1
+    echo ${RED}Error: $err$RESET; -help; exit 1
 }
 -is-valid-type() {
     type "boxprint-$1" | grep -q 'shell function'
