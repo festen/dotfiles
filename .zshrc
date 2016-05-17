@@ -21,6 +21,8 @@ EOL
 # ZSH options
 setopt extended_glob
 setopt auto_cd
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select
 
 # history search
 zmodload zsh/terminfo
