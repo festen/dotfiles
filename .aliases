@@ -68,11 +68,11 @@ alias gss='git status -s'
 alias gst='git status'
 
 # List
-alias ls='ls -g --color'
-alias l='ls -gl --color'
-alias la='ls -glA --color'
-alias cl='clear && ls -gl --color'
-alias cla='clear && ls -glA --color'
+alias ls='ls -gh --color'
+alias l='ls -l --color'
+alias la='ls -lA --color'
+alias cl='clear && ls'
+alias cla='clear && ls'
 
 # Misc
 alias rz='source ~/.zshrc'

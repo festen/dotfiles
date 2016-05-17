@@ -104,3 +104,48 @@ tm() {
     tmux -CC attach -t $TAG
     test $? -ne 0 && tmux -CC new -s $TAG
 }
+
+start() {
+    local code="$HOME/code"
+    local project_dir="$code/$1"
+    local project="$1"
+    local program="$(basename $0)"
+    local formatted="$RESET$BOLD$project$RESET"
+    local -a start_paths
+    start_paths=("$project_dir/.bin/start" "$project_dir/bin/start")
+
+    help() {
+        echo "Usage: $program [project]"
+        echo ""
+        echo "Known projects:"
+        for p in $code/*; do
+            echo "  $(basename $p)"
+        done
+        exit 0
+    }
+
+    test -z "$1" && help
+
+    for start in $start_paths; do
+        if [ -x $start ]; then
+            echo "Starting project $formatted"
+            eval $start
+            return 0
+        fi
+    done
+
+    if [ -d $project_dir ]; then
+        cd $project_dir
+        if [ $+commands[idea] ]; then
+            echo "Opening $project_dir in Intellij IDEA"
+            idea $project_dir
+        else
+            echo "Opening $project_dir in Finder"
+            open $project_dir
+        fi
+    elif [ -n "$project" ]; then
+        echo "${RED}Project $formatted$RED not found."
+    else
+        help
+    fi
+}
