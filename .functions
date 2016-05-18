@@ -1,5 +1,57 @@
 #!/usr/bin/env zsh
 
+check_updates() {
+    local timefile="$HOME/Library/Application Support/me.festen.update.timefile"
+    local runtimefile="$HOME/Library/Application Support/me.festen.update.runtimefile"
+    test ! -f "$timefile" && echo 0 > "$timefile"
+    test ! -f "$runtimefile" && echo 0 > "$runtimefile"
+    local since=$(format -o %s $(timer get $timefile))
+    local boottime=$(sysctl -n kern.boottime | sed -e 's/{ sec = \([[:digit:]]\+\).*/\1/')
+    local lastcheck=$(format -o %s $(cat $timefile))
+    local cooldown=43200 # 0.5 day in seconds
+
+    -cooldown-expired() { test "$since" -ge "$cooldown"; return $? }
+    -first-check() { test "$lastcheck" -lt "$boottime"; return $? }
+
+    # check if we can skip
+    ! -cooldown-expired && ! -first-check && return 0
+    printf "Update? [y/N] "
+    read -q
+    ans=$?
+    echo
+    test $ans -eq 0 || return 0
+    sudo -v
+    start=$(gdate +%s.%3N)
+    timer set $timefile
+    update
+    cleanup
+    t=$(($(gdate +%s.%3N) - $start))
+    tf=$(format -o short $t)
+    -first-check && echo $t > $runtimefile
+}
+
+cleanup() {
+    sudo -v
+    (
+        find {/opt,/Applications,$HOME} -name '.DS_Store' -delete &
+        sudo rm -rfv /Volumes/*/.Trashes(N) &
+        sudo rm -rfv $HOME/.Trash &
+        sudo rm -rfv /private/var/log/asl/*.asl(N) &
+        sudo rm -rfv $HOME/.{zsh,sh}_history &
+        sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent' &
+        find -L $HOME(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} + &
+        wait
+    ) NO2
+}
+
+# Concat using printf
+# Usage: concat <seperator> <arg1> [... <argN>]
+concat() {
+    local d=$1; shift
+    echo -n "$1"; shift
+    printf "%s" "${@/#/$d}"
+}
+
 # Quick shortcut to an editor.
 # Usage: edit [<path>]
 edit() {
@@ -31,12 +83,8 @@ extract () {
     fi
 }
 
-# Concat using printf
-# Usage: concat <seperator> <arg1> [... <argN>]
-concat() {
-    local d=$1; shift
-    echo -n "$1"; shift
-    printf "%s" "${@/#/$d}"
+mkdocker-machine() {
+    docker-machine create --driver parallels --parallels-cpu-count 2 --parallels-memory 4096 default
 }
 
 # Make dmg from folder
@@ -46,57 +94,20 @@ mkdmg() {
     hdiutil create -ov -volname "$(basename "$1")" -srcfolder "$1" -format UDZO "${2:-1}.dmg"
 }
 
-check_updates() {
-    local timefile="$HOME/Library/Application Support/me.festen.update.timefile"
-    local runtimefile="$HOME/Library/Application Support/me.festen.update.runtimefile"
-    test ! -f "$timefile" && echo 0 > "$timefile"
-    test ! -f "$runtimefile" && echo 0 > "$runtimefile"
-    local since=$(format -o %s $(timer get $timefile))
-    local boottime=$(sysctl -n kern.boottime | sed -e 's/{ sec = \([[:digit:]]\+\).*/\1/')
-    local lastcheck=$(format -o %s $(cat $timefile))
-    local cooldown=43200 # 0.5 day in seconds
-
-    -cooldown-expired() { test "$since" -ge "$cooldown"; return $? }
-    -first-check() { test "$lastcheck" -lt "$boottime"; return $? }
-
-    # check if we can skip
-    ! -cooldown-expired && ! -first-check && return 0
-    printf "Update? [y/N] "
-    read -q
-    ans=$?
-    echo
-    test $ans -eq 0 || return 0
-    sudo -v
-    start=$(gdate +%s.%3N)
-    timer set $timefile
-    update
-    cleanup
-    t=$(($(gdate +%s.%3N) - $start))
-    tf=$(format -o short $t)
-    -first-check && echo $t > $runtimefile
+sierra() {
+    local exitcode=1
+    while [ "$exitcode" -ne 0 ]; do
+        ssh sierra
+        exitcode=$?
+    done
 }
 
-reload() {
-  [ "$1" = "-f" ] && rm "$HOME/Library/Application Support/me.festen.update.timefile"
-  exec $SHELL -l
-}
-
-cleanup() {
-    sudo -v
-    (
-        find {/opt,/Applications,$HOME} -name '.DS_Store' -delete &
-        sudo rm -rfv /Volumes/*/.Trashes(N) &
-        sudo rm -rfv $HOME/.Trash &
-        sudo rm -rfv /private/var/log/asl/*.asl(N) &
-        sudo rm -rfv $HOME/.{zsh,sh}_history &
-        sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent' &
-        find -L $HOME(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} + &
-        wait
-    ) NO2
-}
-
-mkdocker-machine() {
-    docker-machine create --driver parallels --parallels-cpu-count 2 --parallels-memory 4096 default
+sierra.local() {
+    local exitcode=1
+    while [ "$exitcode" -ne 0 ]; do
+        ssh sierra.local
+        exitcode=$?
+    done
 }
 
 tm() {
