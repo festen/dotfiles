@@ -1,11 +1,12 @@
 #!/usr/bin/env zsh
 
 # Source stuff
-source $HOME/.exports
-source $HOME/.aliases
-source $HOME/.functions
-source $VAR/iterm.sh # shell integrations
-source $VAR/angular-cli.sh # angular-cli completions
+load() { test -f "$1" && source "$1" || echo "$1 not found" }
+load "$HOME/.exports"
+load "$HOME/.aliases"
+load "$HOME/.functions"
+load "$VAR/iterm.sh"
+load "$VAR/angular-cli.sh"
 
 # Antibody initialization (and download if not found)
 test $+commands[antibody] -eq 1 || curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -s
