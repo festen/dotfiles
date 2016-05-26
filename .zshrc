@@ -5,6 +5,7 @@ source $HOME/.exports
 source $HOME/.aliases
 source $HOME/.functions
 source $VAR/iterm.sh # shell integrations
+source $VAR/angular-cli.sh # angular-cli completions
 
 # Antibody initialization (and download if not found)
 test $+commands[antibody] -eq 1 || curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -s
