@@ -5,7 +5,7 @@ load() { test -f "$1" && source "$1" || echo "$1 not found" }
 load "$HOME/.exports"
 load "$HOME/.aliases"
 load "$HOME/.functions"
-load "$VAR/iterm.sh"
+# load "$VAR/iterm.sh"
 load "$VAR/angular-cli.sh"
 
 # Antibody initialization (and download if not found)
@@ -35,3 +35,5 @@ autoload -U compinit && compinit
 # Post source evaluation
 eval $(docker-machine env default 2> /dev/null)
 eval "$(thefuck --alias fck)"
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

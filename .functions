@@ -116,7 +116,7 @@ tm() {
     test $? -ne 0 && tmux -CC new -s $TAG
 }
 
-start() {
+project() {
     local code="$HOME/code"
     local project_dir="$code/$1"
     local project="$1"
@@ -126,16 +126,16 @@ start() {
     start_paths=("$project_dir/.bin/start" "$project_dir/bin/start")
 
     help() {
-        echo "Usage: $program [project]"
+        echo "Usage: $program [project-name]"
         echo ""
         echo "Known projects:"
         for p in $code/*; do
             echo "  $(basename $p)"
         done
-        exit 0
+        return 0
     }
 
-    test -z "$1" && help
+    test -z "$1" && help && return 0
 
     for start in $start_paths; do
         if [ -x $start ]; then
