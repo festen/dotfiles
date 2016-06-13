@@ -5,7 +5,6 @@ load() { test -f "$1" && source "$1" || echo "$1 not found" }
 load "$HOME/.exports"
 load "$HOME/.aliases"
 load "$HOME/.functions"
-# load "$VAR/iterm.sh"
 load "$VAR/angular-cli.sh"
 
 # Antibody initialization (and download if not found)
