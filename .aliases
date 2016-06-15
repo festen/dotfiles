@@ -3,6 +3,7 @@
 # Generic aliases
 alias copy='rsync -ah --info progress2'
 alias rm='rm -rfv'
+alias cp='cp -av'
 
 # Output suppression
 alias -g NO1='1>/dev/null'
@@ -23,7 +24,6 @@ alias e='edit'
 alias f='fck'
 alias g='git'
 alias x='extract'
-
 
 # Docker related
 alias d='docker'
