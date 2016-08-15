@@ -1,0 +1,108 @@
+#!/usr/bin/env python
+
+import re, sys
+
+class Version(object):
+
+    def __init__(self, major, minor, patch, stability=None, stability_version=None):
+        self.major = int(major) if major else 1
+        self.minor = int(minor) if minor else 0
+        self.patch = int(patch) if patch else 0
+        self.stability = stability
+        self.stability_version = int(stability_version) if stability_version is not None else None
+
+    @staticmethod
+    def fromString(version_string):
+        regex = r'(?P<major>\d+)(\.(?P<minor>\d+))?(\.(?P<patch>\d+))?(-(?P<stability>dev|alpha|beta|rc))?(\.(?P<stability_version>\d+))?'
+        match = re.match(regex, version_string)
+        part = match.groupdict()
+        return Version(part['major'], part['minor'], part['patch'], part['stability'], part['stability_version'])
+
+    def bump(self, target):
+        copy = self.clone()
+        if target == 'dev':
+            if self.stability != 'dev':
+                copy.major = self.major + 1
+                copy.minor = 0
+                copy.patch = 0
+                copy.stability = 'dev'
+                copy.stability_version = None
+        elif target == 'alpha':
+            if self.stability == 'dev':
+                copy.stability = 'alpha'
+                copy.stability_version = 0
+            elif self.stability == 'alpha':
+                copy.stability_version = self.stability_version + 1
+            else:
+                copy.major = self.major + 1
+                copy.minor = 0
+                copy.patch = 0
+                copy.stability = 'alpha'
+                copy.stability_version = 0
+        elif target == 'beta':
+            if self.stability == 'dev' or self.stability == 'alpha':
+                copy.stability = 'beta'
+                copy.stability_version = 0
+            elif self.stability == 'beta':
+                copy.stability_version = self.stability_version + 1
+            else:
+                copy.major = self.major + 1
+                copy.minor = 0
+                copy.patch = 0
+                copy.stability = 'beta'
+                copy.stability_version = 0
+        elif target == 'rc':
+            if self.stability == 'dev' or self.stability == 'alpha' or self.stability == 'beta':
+                copy.stability = 'rc'
+                copy.stability_version = 0
+            elif self.stability == 'rc':
+                copy.stability_version = self.stability_version + 1
+            else:
+                copy.major = self.major + 1
+                copy.minor = 0
+                copy.patch = 0
+                copy.stability = 'rc'
+                copy.stability_version = 0
+        elif target == 'patch':
+            copy.patch = self.patch + 1 if self.stability is None else 0
+            copy.stability = None
+            copy.stability_version = None
+        elif target == 'minor':
+            copy.patch = 0
+            copy.minor = self.minor + 1 if self.stability is None else 0
+            copy.stability = None
+            copy.stability_version = None
+        elif target == 'major':
+            copy.patch = 0
+            copy.minor = 0
+            copy.major = self.major + 1 if self.stability is None else self.major
+            copy.stability = None
+            copy.stability_version = None
+        else:
+            copy = Version.fromString(target)
+        return copy
+
+    def clone(self):
+        return Version.fromString(str(self))
+
+    def __str__(self):
+        returnFormat = '{}.{}.{}'.format(self.major, self.minor, self.patch)
+        if self.stability is not None:
+            returnFormat += '-{}'.format(self.stability)
+        if self.stability_version is not None:
+            returnFormat += '.{}'.format(self.stability_version)
+        return returnFormat;
+
+
+def help():
+    bin = sys.argv[0].split('/')[-1]
+    print('Usage: {} <version> [major|minor|patch|rc|beta|alpha|dev]'.format(bin))
+    sys.exit(1)
+
+if len(sys.argv) < 2 or len(sys.argv) > 3:
+    help()
+
+version = sys.argv[1]
+operation = sys.argv[2] if len(sys.argv) == 3 else 'patch'
+
+print(Version.fromString(version).bump(operation))
