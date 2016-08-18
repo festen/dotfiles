@@ -24,6 +24,7 @@ setopt extended_glob
 setopt auto_cd
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
+bindkey "^[[3~" delete-char
 
 # history search
 zmodload zsh/terminfo
