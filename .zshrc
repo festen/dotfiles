@@ -5,7 +5,6 @@ load() { test -f "$1" && source "$1" || echo "$1 not found" }
 load "$HOME/.exports"
 load "$HOME/.aliases"
 load "$HOME/.functions"
-load "$VAR/angular-cli.sh"
 
 # Antibody initialization (and download if not found)
 test $+commands[antibody] -eq 1 || curl -s https://raw.githubusercontent.com/getantibody/installer/master/install | bash -s
@@ -33,7 +32,6 @@ bindkey "$terminfo[cud1]" history-substring-search-down
 autoload -U compinit && compinit
 
 # Post source evaluation
-eval $(docker-machine env default 2> /dev/null)
 eval "$(thefuck --alias fck)"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
