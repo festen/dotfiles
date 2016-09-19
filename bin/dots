@@ -16,7 +16,6 @@ repo_guest='https://github.com/festen/dotfiles' # credentialess repo
 logfile=$HOME/Library/Logs/festen.update
 linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh|iterm.sh'
 requested_shell=/bin/zsh
-timefile=$HOME/Library/Application\ Support/me.festen.update.timefile
 
 # shortcuts
 alias -g NOOP="> /dev/null 2>&1"
@@ -203,7 +202,3 @@ case "$1" in
     s*) dots-sync; exit;;
     *) help; exit;;
 esac
-
-echo "Finished in $(format `$BIN/timer get $timefile`) seconds\n" >> $logfile
-t=$($BIN/format -o short $($BIN/timer get $timefile))
-echo "Finished in $t, enjoy $DEFAULT_USER!"
