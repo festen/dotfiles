@@ -3,7 +3,6 @@
 # Generic aliases
 alias copy='rsync -ah --info progress2'
 alias rm='rm -rfv'
-alias cp='cp -av'
 
 # Output suppression
 alias -g NO1='1>/dev/null'
@@ -68,11 +67,11 @@ alias gss='git status -s'
 alias gst='git status'
 
 # List
-alias ls='ls -gh --color'
-alias l='ls -l --color'
-alias la='ls -lA --color'
-alias cl='clear && ls'
-alias cla='clear && ls'
+alias ls='ls -h --color'
+alias l='ls -l'
+alias la='ls -lA'
+alias cl='clear && ls -l'
+alias cla='clear && ls -lA'
 
 # Misc
 alias rz='source ~/.zshrc'

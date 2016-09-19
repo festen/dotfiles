@@ -23,6 +23,7 @@ PATH=''
 nbin=''
 -add-path() { PATH="$PATH:$@" }
 -add-path "./.bin"
+-add-path "./bin"
 -add-path "./node_modules/.bin"
 -add-path "$BIN"
 -add-path "/usr/local/opt/coreutils/libexec/gnubin"
