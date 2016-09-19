@@ -36,4 +36,6 @@ autoload -U compinit && compinit
 # Post source evaluation
 eval "$(thefuck --alias fck)"
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+test -e "${HOME}/.iterm/shell_integration"\
+ && source "${HOME}/.iterm/shell_integration"\
+ || echo "${YELLOW}WARNING:${RESET} No shell integration available."
