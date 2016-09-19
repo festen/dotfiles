@@ -42,8 +42,9 @@ dots-update() {
     dots-sync
     if [ "$1" = '--full' ]; then
         brew update
-        brew bundle --global
-        brew bundle check --global
+        if ! brew bundle check --global; then
+            brew bundle --global
+        fi
     fi
 }
 log() {
