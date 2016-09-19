@@ -38,7 +38,7 @@ dots-sync() {
     git commit -m 'Updated dotfiles'
     git push -u origin master
 }
-dots-upgrade() {
+dots-update() {
     dots-sync
     if [ "$1" = '--full' ]; then
         brew update
@@ -55,9 +55,9 @@ help() {
     echo 'Updates the dotfiles and runs package managers'
     echo
     echo "  (i)nstall:  When using install, will install all dependencies."
-    echo "  (u)pgrade:  When using upgrade, will check for dotfile upgrades"
+    echo "  (u)pdate:  When using upgrade, will check for dotfile update"
     echo "                Optionally, the --full flag can be passed, this script"
-    echo "                will then also verify and upgrade package managers"
+    echo "                will then also verify and update packages"
     echo "  (s)ync:     Will pull/push latest version"
     echo "  git:        Execute raw git command (shortcuts: gd: diff, gst: status)"
 }
@@ -198,7 +198,7 @@ case "$1" in
     gd|diff) shift 1; (cd $DOTS && git diff); exit;;
     git) shift 1; (cd $DOTS && git $@); exit;;
     i*) dots-install;;
-    u*) dots-upgrade "$2";;
+    u*) dots-update "$2";;
     s*) dots-sync; exit;;
     *) help; exit;;
 esac
