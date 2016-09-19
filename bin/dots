@@ -39,6 +39,14 @@ dots-sync() {
     git commit -m 'Updated dotfiles'
     git push -u origin master
 }
+dots-upgrade() {
+    dots-sync
+    if [ "$1" = '--full' ]; then
+        brew update
+        brew bundle --global
+        brew bundle check --global
+    fi
+}
 log() {
     [ "$(uname)" = 'Darwin' ] && echo $1 | logger -t 'dotupdater'
     echo $1 >> $logfile
