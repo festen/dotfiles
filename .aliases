@@ -65,6 +65,7 @@ alias gp='git push'
 alias grh'git reset HEAD'
 alias gss='git status -s'
 alias gst='git status'
+alias gwip='git commit -vam "wip" && git push'
 
 # List
 alias ls='ls -h --color'

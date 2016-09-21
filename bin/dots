@@ -42,7 +42,9 @@ dots-update() {
     dots-sync
     if [ "$1" = '--full' ]; then
         brew update
-        if ! brew bundle check --global; then
+        if brew bundle check --global; then
+            echo 'Packages already up to date'
+        else
             brew bundle --global
         fi
     fi

@@ -46,3 +46,6 @@ cask 'spotify-notifications'
 cask 'steam'
 cask 'transmission'
 cask 'vlc'
+
+# Peer dependencies
+brew 'pcre'
