@@ -41,6 +41,8 @@
     minimumTabs: 1
     modifiedThreshold: 10
     runOnSave: true
+  "tree-view":
+    hideVcsIgnoredFiles: true
   welcome:
     showOnStartup: false
 ".python.regexp.source":
