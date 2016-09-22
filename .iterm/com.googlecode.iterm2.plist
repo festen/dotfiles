@@ -454,11 +454,11 @@
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>269 139 606 456 0 0 2560 1417 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>269 44 937 512 0 0 2560 1417 </string>
+	<string>1047 388 918 512 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>1391 133 1010 867 0 0 2560 1417 </string>
+	<string>1298 25 1261 1392 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>1428 142 1010 867 0 0 2560 1417 </string>
+	<string>1572 252 1010 867 0 0 2560 1417 </string>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -1190,6 +1190,16 @@
 					<true/>
 					<key>regex</key>
 					<string>^Password:</string>
+				</dict>
+				<dict>
+					<key>action</key>
+					<string>ScriptTrigger</string>
+					<key>parameter</key>
+					<string>printf '\e]50;ClearScrollback\a'</string>
+					<key>partial</key>
+					<true/>
+					<key>regex</key>
+					<string>Starting 'build\.dev'</string>
 				</dict>
 			</array>
 			<key>Unlimited Scrollback</key>
@@ -1968,6 +1978,18 @@
 	<true/>
 	<key>NoSyncConfirmBeta</key>
 	<true/>
+	<key>NoSyncConfirmShellIntegrationCommand</key>
+	<true/>
+	<key>NoSyncConfirmShellIntegrationCommand_selection</key>
+	<integer>0</integer>
+	<key>NoSyncDoNotWarnBeforeMultilinePaste</key>
+	<true/>
+	<key>NoSyncDoNotWarnBeforeMultilinePaste_selection</key>
+	<integer>0</integer>
+	<key>NoSyncDoNotWarnBeforePastingOneLineEndingInNewlineAtShellPrompt</key>
+	<true/>
+	<key>NoSyncDoNotWarnBeforePastingOneLineEndingInNewlineAtShellPrompt_selection</key>
+	<integer>1</integer>
 	<key>NoSyncHaveShownPromoWithId_4</key>
 	<true/>
 	<key>NoSyncInstallUtilitiesPackage</key>
@@ -1977,7 +1999,7 @@
 	<key>NoSyncInstallationId</key>
 	<string>E99C2F3B-1AB7-42F3-BD4A-C50FCE36C05C</string>
 	<key>NoSyncLastTipTime</key>
-	<real>492544928.32802999</real>
+	<real>496137987.97261298</real>
 	<key>NoSyncNeverRemindPrefsChangesCopy</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
@@ -2015,6 +2037,32 @@
 		<string>0017</string>
 		<string>0018</string>
 		<string>0019</string>
+		<string>0020</string>
+		<string>0021</string>
+		<string>0022</string>
+		<string>0023</string>
+		<string>0024</string>
+		<string>0025</string>
+		<string>0026</string>
+		<string>0027</string>
+		<string>0028</string>
+		<string>0029</string>
+		<string>0030</string>
+		<string>0031</string>
+		<string>0032</string>
+		<string>0033</string>
+		<string>0034</string>
+		<string>0035</string>
+		<string>0036</string>
+		<string>0037</string>
+		<string>0038</string>
+		<string>0039</string>
+		<string>0040</string>
+		<string>0041</string>
+		<string>0042</string>
+		<string>0043</string>
+		<string>0044</string>
+		<string>0045</string>
 	</array>
 	<key>OnlyWhenMoreTabs</key>
 	<false/>
@@ -2082,7 +2130,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-08-10T18:02:08Z</date>
+	<date>2016-09-21T09:02:50Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
@@ -2124,6 +2172,6 @@
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.0.7</string>
+	<string>3.0.10</string>
 </dict>
 </plist>
