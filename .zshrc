@@ -23,6 +23,8 @@ setopt extended_glob
 setopt auto_cd
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
+zstyle ':completion:*:*:docker:*' option-stacking yes
+zstyle ':completion:*:*:docker-*:*' option-stacking yes
 bindkey "^[[3~" delete-char
 
 # history search
@@ -33,7 +35,8 @@ fpath=(~/.zsh/completion $fpath)
 autoload -U compinit && compinit
 
 # Post source evaluation
-# eval $(docker-machine env default 2> /dev/null)
 eval "$(thefuck --alias fck)"
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+test -e "${HOME}/.iterm/shell_integration"\
+ && source "${HOME}/.iterm/shell_integration"\
+ || echo "${YELLOW}WARNING:${RESET} No shell integration available."
