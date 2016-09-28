@@ -75,12 +75,13 @@ alias cl='clear && ls -l'
 alias cla='clear && ls -lA'
 
 # Misc
-alias rz='source ~/.zshrc'
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 alias pubkey="cat $HOME/.ssh/personal.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
+alias rz='source ~/.zshrc'
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias trash='trash -v'
 alias wrapoff="printf '\033[?7l'" 
 alias wrapon="printf '\033[?7h'"
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # TODO
 # List only files/folders --> alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
