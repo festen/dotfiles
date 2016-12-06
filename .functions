@@ -110,10 +110,21 @@ sierra.local() {
     done
 }
 
-tm() {
-    local TAG=${1:-'tm'}
+tmac() {
+    local TAG=${1:-'sys'}
     tmux -CC attach -t $TAG
     test $? -ne 0 && tmux -CC new -s $TAG
+}
+
+tma() {
+    local TAG=${1:-'sys'}
+    if [ -z "$TMUX" ]; then
+        tmux attach -t $TAG
+        test $? -ne 0 && tmux new -s $TAG
+    else
+        tmux switch -t $TAG
+        test $? -ne 0 && tmux new -s $TAG -d && tmux switch -t $TAG
+    fi
 }
 
 project() {
@@ -158,5 +169,13 @@ project() {
         echo "${RED}Project $formatted$RED not found."
     else
         help
+    fi
+}
+
+exit() {
+    if [ -n "$TMUX" ]; then
+        tmux detach-client
+    else
+        builtin exit
     fi
 }

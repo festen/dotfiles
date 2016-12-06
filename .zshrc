@@ -37,6 +37,15 @@ autoload -U compinit && compinit
 # Post source evaluation
 eval "$(thefuck --alias fck)"
 
+# Enable shell integration
 test -e "${HOME}/.iterm/shell_integration"\
  && source "${HOME}/.iterm/shell_integration"\
  || echo "${YELLOW}WARNING:${RESET} No shell integration available."
+
+# attach to "sys" session
+if [ -z "$TMUX" ]; then
+    tma sys
+    echo "Exiting after 0.3 seconds"
+    sleep 0.3
+    exit
+fi

@@ -1,5 +1,0 @@
-#!/bin/sh
-
-cd code/mc-3.0
-wstorm ./web
-start
