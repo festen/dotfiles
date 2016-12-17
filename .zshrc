@@ -44,8 +44,5 @@ test -e "${HOME}/.iterm/shell_integration"\
 
 # attach to "sys" session
 if [ -z "$TMUX" ]; then
-    tma sys
-    echo "Exiting after 0.3 seconds"
-    sleep 0.3
-    exit
+    tminit && tma sys
 fi

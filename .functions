@@ -111,12 +111,14 @@ sierra.local() {
 }
 
 tmac() {
+    clear
     local TAG=${1:-'sys'}
     tmux -CC attach -t $TAG
     test $? -ne 0 && tmux -CC new -s $TAG
 }
 
 tma() {
+    clear
     local TAG=${1:-'sys'}
     if [ -z "$TMUX" ]; then
         tmux attach -t $TAG
@@ -125,6 +127,22 @@ tma() {
         tmux switch -t $TAG
         test $? -ne 0 && tmux new -s $TAG -d && tmux switch -t $TAG
     fi
+}
+
+tminit() {
+    local skip=true
+    test "$1" = '--force' && skip=false
+    ! tmux has-session -t dev NOOP || ! tmux has-session -t sys NOOP && skip=false
+    test -n "$1" && echo 'usage: tminit [--force]'
+    $skip && return 0
+    tmux kill-session -t sys NOOP
+    tmux kill-session -t dev NOOP
+    tmux new-session -d -s sys -n sys
+    tmux new-session -d -s dev -n mc3
+    tmux split-window -htdev:mc3
+    tmux send-keys -tdev:mc3 '~/code/mc-3.0/web' enter 'clear' enter
+    tmux select-pane -t1
+    tmux send-keys -tdev:mc3 '~/code/mc-3.0' enter 'clear' enter 'start web'
 }
 
 project() {
@@ -174,7 +192,23 @@ project() {
 
 exit() {
     if [ -n "$TMUX" ]; then
-        tmux detach-client
+        clear
+        local windows=$(tmux display-message -p "#{session_windows}")
+        local panes=$(tmux display-message -p "#{window_panes}")
+        local session=$(tmux display-message -p "#S")
+        local window=$(tmux display-message -p "#W")
+        if [ "$session" = 'dev' ] && [ "$window" = 'mc3' ]; then
+            tma sys
+            osascript -e 'tell application "System Events" to keystroke "w" using command down' && clear
+        elif [ "$panes" -gt 1 ]; then
+            tmux kill-pane
+        elif [ "$windows" -gt 1 ]; then
+            tmux kill-window
+        elif [ "$session" != 'sys' ]; then
+            tma sys
+        else
+            builtin exit
+        fi
     else
         builtin exit
     fi

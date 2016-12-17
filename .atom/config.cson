@@ -22,6 +22,7 @@
     fontSize: 16
     invisibles: {}
     lineHeight: 1.4
+    preferredLineLength: 100
     scrollPastEnd: true
     showIndentGuide: true
     softTabs: false
