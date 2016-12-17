@@ -29,7 +29,7 @@ bindkey "^[[3~" delete-char
 zmodload zsh/terminfo
 bindkey "$terminfo[cuu1]" history-substring-search-up
 bindkey "$terminfo[cud1]" history-substring-search-down
-autoload -U compinit && compinit -i -d $ANTIGEN_COMPDUMPFILE
+autoload -U compinit && compinit -d $ANTIGEN_COMPDUMPFILE
 
 # Post source evaluation
 eval "$(thefuck --alias fck)"
