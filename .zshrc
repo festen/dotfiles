@@ -23,16 +23,13 @@ setopt extended_glob
 setopt auto_cd
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
-zstyle ':completion:*:*:docker:*' option-stacking yes
-zstyle ':completion:*:*:docker-*:*' option-stacking yes
 bindkey "^[[3~" delete-char
 
 # history search
 zmodload zsh/terminfo
 bindkey "$terminfo[cuu1]" history-substring-search-up
 bindkey "$terminfo[cud1]" history-substring-search-down
-fpath=(~/.zsh/completion $fpath)
-autoload -U compinit && compinit
+autoload -U compinit && compinit -i -d $ANTIGEN_COMPDUMPFILE
 
 # Post source evaluation
 eval "$(thefuck --alias fck)"
