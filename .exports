@@ -17,6 +17,8 @@ export _Z_NO_RESOLVE_SYMLINKS=true
 export ANTIGEN_COMPDUMPFILE=$VAR/zcompdump
 export ADOTDIR=$VAR/antigen
 export HISTFILE=$VAR/history
+export HISTSIZE=1000
+export SAVEHIST=1000
 
 # PATH
 PATH=''

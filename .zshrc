@@ -19,8 +19,7 @@ sindresorhus/pure
 EOL
 
 # ZSH options
-setopt extended_glob
-setopt auto_cd
+setopt extended_glob auto_cd inc_append_history share_history
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 bindkey "^[[3~" delete-char
