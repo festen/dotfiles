@@ -213,3 +213,22 @@ exit() {
         builtin exit
     fi
 }
+
+pdf() {
+    if [ $# -lt 1 -o "$1" = '--help' ]; then
+        echo "usage: pdf <input1> [input2 .. inputN] <output>"
+        echo "Converts a single or multiple input files (pdf or images) to a single output pdf."
+        return 1
+    fi
+    local infiles=${@: 1:${#}-1}
+    local outfile=${${@: -1}%.*}.pdf
+    local tmpf=$(mktemp -d)
+
+    for i in {1..$((${#}-1))}; do
+        sips -s format pdf "${@:$i:1}" --out "$tmpf/$i.pdf" NOOP
+        rm -f "${@:$i:1}" NOOP
+    done
+    gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress -dNOPAUSE -dQUIET -dBATCH -dDetectDuplicateImages -dCompressFonts=true -r600 -sOutputFile=$(echo $outfile) $(echo $tmpf/*.pdf) NOOP
+    rm -rf $tmpf NOOP
+    echo $outfile
+}

@@ -478,9 +478,9 @@
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>269 139 606 456 0 0 2560 1417 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>354 605 1016 502 0 0 2560 1417 </string>
+	<string>354 555 918 498 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 2560 1440 0 0 2560 1417 </string>
+	<string>0 550 1010 867 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>395 29 1010 867 0 0 2560 1417 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
@@ -656,7 +656,7 @@
 			<key>Background Image Location</key>
 			<string>/Users/david/Library/Mobile Documents/com~apple~CloudDocs/Resources/terminal/terminal-bg-2.jpg</string>
 			<key>Blend</key>
-			<real>0.36633363381410255</real>
+			<real>0.47863706931089745</real>
 			<key>Blink Allowed</key>
 			<false/>
 			<key>Blinking Cursor</key>
@@ -1200,7 +1200,7 @@
 			<key>Terminal Type</key>
 			<string>xterm-256color</string>
 			<key>Transparency</key>
-			<real>0.25258413461538459</real>
+			<real>0.0</real>
 			<key>Triggers</key>
 			<array>
 				<dict>
@@ -2950,7 +2950,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2016-12-15T15:04:02Z</date>
+	<date>2016-12-17T18:36:45Z</date>
 	<key>SavePasteHistory</key>
 	<false/>
 	<key>ShowBookmarkName</key>
