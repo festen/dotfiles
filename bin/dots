@@ -16,16 +16,23 @@ repo_guest='https://github.com/festen/dotfiles' # credentialess repo
 logfile=$HOME/Library/Logs/festen.update
 linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh|iterm.sh'
 requested_shell=/bin/zsh
+sink=$(mktemp)
 
 # shortcuts
 alias -g NOOP="> /dev/null 2>&1"
 alias -g NO2="2> /dev/null"
 if [ -f "$BIN/boxprint" ]; then
-    alias put="$BIN/boxprint -o"
+    alias puts="$BIN/boxprint"
     alias puti="$BIN/boxprint --type=info"
+    alias putw="$BIN/boxprint --type=warn"
+    alias putf="$BIN/boxprint --type=fail"
 else
-    alias put="echo"
-    alias puti="echo"
+    puts() {
+        echo $@
+    }
+    alias puti="$sink <"
+    alias putw="$sink <"
+    alias putf="$sink <"
 fi
 
 # Functions
@@ -73,7 +80,8 @@ help() {
     -ensure-dotfiles
     [ "$(pwd)" = "$HOME" ] || cd $HOME
     log "Starting @ $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-    $BIN/timer set $timefile
+    puti 'Linking icloud'; ln -fs Library/Mobile\ Documents/com~apple~CloudDocs icloud; puts -o 'Linked icloud'
+    puti 'Linking .env'; ln -fs icloud/.env; puts -o 'Linked .env'
     -link-folder $(basename $DOTS)
     -link-folder 'var'
     -link-folder '.env'
@@ -90,20 +98,18 @@ help() {
     (cd $DOTS && git remote remove origin && git remote add origin $repo) NOOP
 }
 -link-folder() {
-    puti "Linking $1"
+    puti "Linking $1 content"
     for x in $(/usr/bin/find "$1/" -depth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
-        cd ~
-        rm -rf "$(basename $x)"
-        ln -fs "$1/$(basename $x)"
+        rm -rf "$(basename $x)" NOOP
+        ln -fs "$1/$(basename $x)" NOOP
     done
-    put "Linked $1"
+    puts -o "Linked $1 content"
     # TODO logging | log "$(echo "$src $dst" | sed -e 's:/Users/david/::g' | sed -e 's:stack/dots:$DOTS:g' | xargs -n2 printf '  Link: %-25s -> %s')"
 }
 -install() {
     [ "$(uname)" = 'Darwin' ] || return 0
     -install-homebrew
     -install-packages
-    -install-antigen
 }
 -install-homebrew() {
     puti "Verifying Homebrew installation"
@@ -114,22 +120,17 @@ help() {
         /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"<<<\n NOOP
         log '  Brew: installed'
     fi
-    put "Homebrew installed and updated"
+    puts -o "Homebrew installed and updated"
 }
 -install-packages() {
     puti "Checking packages"
     log '  Brew: upgrading'
-    brew upgrade 2>/dev/null | tr -s "\n" | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" >> $logfile) | /usr/bin/tr -u "\n" "\0" | xargs -0n1 $put -o --type=warn "Updating packages - " 2>/dev/null
+    brew upgrade 2>/dev/null | tr -s "\n" | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" >> $logfile) | /usr/bin/tr -u "\n" "\0" | xargs -0n1 putw -o "Updating packages - " 2>/dev/null
     log '  Brew: upgraded'
     log '  Brew: running bundle'
-    brew bundle --global 2>/dev/null | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" | sed -e 's/├── Success/└── Success/' >> $logfile) | /usr/bin/tr -u "\n" "\0" | xargs -0n1 $put -o --type=warn "Installing packages - " 2>/dev/null
+    brew bundle --global 2>/dev/null | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" | sed -e 's/├── Success/└── Success/' >> $logfile) | /usr/bin/tr -u "\n" "\0" | xargs -0n1 putw -o "Installing packages - " 2>/dev/null
     log '  Brew: bundle ran'
-    put "Packages installed and updated"
-}
--install-antigen() {
-    puti "Checking antigen"
-    curl -L https://raw.githubusercontent.com/zsh-users/antigen/master/antigen.zsh > $CLOUD/var/antigen.sh 2>/dev/null
-    put "Antigen installed and updated"
+    puts -o "Packages installed and updated"
 }
 -verify() {
     -verify-shell
@@ -139,15 +140,14 @@ help() {
 -verify-shell() {
     puti "Checking shell"
     if [ "$SHELL" = "$requested_shell" ]; then
-        put "Shell is $requested_shell"
+        puts -o "Shell is $requested_shell"
     elif [ -n "$pass" ]; then
         sudo -S chsh -s $requested_shell david <<< $pass NOOP
-        put "Shell set to $requested_shell"
+        puts -o "Shell set to $requested_shell"
         log "  Shell: set to $requested_shell"
     else
-        put --type=fail "Shell is $SHELL instead of $requested_shell."
-        puti '' # needed to NOT overwrite previous line
-        put --type=fail "No sudo pass provided so please change manually."
+        putf -o "Shell is $SHELL instead of $requested_shell."
+        putf "No sudo pass provided so please change manually."
     fi
 }
 -verify-permissions() {
@@ -160,31 +160,32 @@ help() {
     log "  Permissions: ~/.ssh/*.pub -> 444"
     chmod 400 $HOME/.ssh/*.key(N) NOOP
     log "  Permissions: ~/.ssh/*.key -> 400"
-    put "File permissions checked"
+    puts -o "File permissions checked"
 }
 -verify-rc() {
     puti 'Sourcing .zshrc/antigen'
     source $HOME/.zshrc NOOP
-    put 'Sourced .zshrc/antigen'
+    puts -o 'Sourced .zshrc/antigen'
 }
 -cleanup() {
     -cleanup-broken-links
     puti "Cleaning up leftovers"
-    source $HOME/.functions
-    cleanup
-    put "Cleaned up"
+    rm -f $sink NOOP
+    source $HOME/.functions NOOP
+    sudo -S cleanup NOOP
+    puts -o "Cleaned up"
 }
 -cleanup-broken-links() {
     puti 'Removing broken links'
     find -L {/usr/local/bin,/Applications,$HOME,$HOME/Applications}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} +
-    test $? -eq 0 && put 'Removed broken links' || put --type=fail "Removing broken links failed"
+    test $? -eq 0 && puts -o 'Removed broken links' || putf -o "Removing broken links failed"
 }
 -rm-brew() {
     if [ "$(uname)" = 'Darwin' ]; then
         puti 'Uninstalling Homebrew'
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" <<< y NOOP
         rm -rf /usr/local/bin/brew /usr/local/Cellar /opt/hombrew-cask
-        test $? -eq 0 && put 'Uninstalled Homebrew' || put --type=fail "Uninstalling Homebrew failed"
+        test $? -eq 0 && puts  -o'Uninstalled Homebrew' || putf -o "Uninstalling Homebrew failed"
     fi
 }
 -rm-npm() {
@@ -192,7 +193,7 @@ help() {
         puti 'Uninstalling NPM'
         rm -rf /usr/local/{lib/node{,/.npm,_modules},bin,share/man}/npm* NOOP
         rm -rf /usr/local/lib/node_modules NOOP
-        test $? -eq 0 && put 'Uninstalled NPM' || put --type=fail 'Uninstalling NPM failed'
+        test $? -eq 0 && puts -o 'Uninstalled NPM' || putf -o 'Uninstalling NPM failed'
     fi
 }
 
