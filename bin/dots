@@ -20,9 +20,13 @@ requested_shell=/bin/zsh
 # shortcuts
 alias -g NOOP="> /dev/null 2>&1"
 alias -g NO2="2> /dev/null"
-put="$BIN/boxprint"
-alias put="$put -o"
-alias puti="$put --type=info"
+if [ -f "$BIN/boxprint"]; then
+    alias put="$put -o"
+    alias puti="$put --type=info"
+else
+    alias put="echo"
+    alias puti="echo"
+fi
 
 # Functions
 dots-install() {
