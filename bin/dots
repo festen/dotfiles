@@ -20,7 +20,7 @@ requested_shell=/bin/zsh
 # shortcuts
 alias -g NOOP="> /dev/null 2>&1"
 alias -g NO2="2> /dev/null"
-if [ -f "$BIN/boxprint"]; then
+if [ -f "$BIN/boxprint" ]; then
     alias put="$put -o"
     alias puti="$put --type=info"
 else
