@@ -47,6 +47,7 @@ cask 'spotify'
 cask 'spotify-notifications'
 cask 'steam'
 cask 'transmission'
+cask 'veracrypt'
 cask 'vlc'
 
 # Peer dependencies
