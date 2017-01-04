@@ -41,7 +41,7 @@ cleanup() {
         sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent' &
         find -L $HOME(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} + &
         wait
-    ) NO2
+    ) NO2 || return 0
 }
 
 # Concat using printf
