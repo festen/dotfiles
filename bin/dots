@@ -55,11 +55,12 @@ dots-sync() {
 }
 dots-update() {
     dots-sync
-    brew update
-    if brew bundle check --global; then
-        echo 'Packages already up to date'
+    if -is-desktop; then
+        brew update
+        brew bundle check --global && echo 'Packages already up to date' || brew bundle --global
     else
-        brew bundle --global
+        apt update
+        apt upgrade -yq
     fi
 }
 log() {
