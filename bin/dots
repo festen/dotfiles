@@ -114,7 +114,7 @@ help() {
 }
 -link-folder() {
     puti "Linking $1 content"
-    for x in $(/usr/bin/find "$1/" -depth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
+    for x in $(/usr/bin/find "./$1" -mindepth 1 -maxdepth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
         rm -rf "$(basename $x)" NOOP
         ln -fs "$1/$(basename $x)" NOOP
     done
