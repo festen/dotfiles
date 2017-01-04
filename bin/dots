@@ -122,11 +122,11 @@ help() {
     # TODO logging | log "$(echo "$src $dst" | sed -e 's:/Users/david/::g' | sed -e 's:stack/dots:$DOTS:g' | xargs -n2 printf '  Link: %-25s -> %s')"
 }
 -install() {
-    if test -is-server; then
-        -install-apt-packages
-    else
+    if test -is-desktop; then
         -install-homebrew
         -install-homebrew-packages
+    else
+        -install-apt-packages
     fi
 }
 -install-homebrew() {
