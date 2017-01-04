@@ -199,6 +199,7 @@ help() {
 }
 -cleanup() {
     -cleanup-broken-links
+    if ! -is-desktop; then sudo apt autoremove; fi
     puti "Cleaning up leftovers"
     rm -f $sink NOOP
     sudo cleanup NOOP
