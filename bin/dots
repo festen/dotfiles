@@ -8,6 +8,9 @@
 # early exit on error
 set -e
 
+# check if desktop (Darwin, macOS) or server (Linux)
+-is-desktop() { test "$(uname)" = 'Darwin'; return $?; }
+
 # variables
 name=$(basename $0)
 DOTS=$HOME/dots
@@ -76,10 +79,6 @@ help() {
     echo "  (u)pdate:            Updates the dotfiles and brew packages"
     echo "  (s)ync:              Will pull/push latest version of dotfiles"
     echo "  git <git-command>    Executes raw git command (shortcuts: gd: diff, gst: status)"
-}
--is-desktop() {
-    test "$(uname)" = 'Darwin'
-    return $?
 }
 -initialize() {
     log "Starting @ $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
