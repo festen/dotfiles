@@ -5,9 +5,6 @@
 # dots upgrade          upgrades dotfiles and programs
 #
 
-# early exit on error
-set -e
-
 # check if desktop (Darwin, macOS) or server (Linux)
 -is-desktop() { test "$(uname)" = 'Darwin'; return $?; }
 
