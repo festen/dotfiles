@@ -18,10 +18,12 @@ repo_guest='https://github.com/festen/dotfiles' # credentialess repo
 linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh|iterm.sh'
 requested_shell=/bin/zsh
 sink=$(mktemp)
+packagelist="$HOME/packagelist"
 
 # dependent variables
 if -is-desktop; then logfile=$HOME/Library/Logs/dotfiles; else logfile=$HOME/log/dotfiles; fi
 mkdir -p $(dirname $logfile)
+if ! -is-desktop; then touch $packagelist; fi
 
 
 # shortcuts
@@ -153,6 +155,7 @@ help() {
 -install-apt-packages() {
     if which apt NOOP; then
         sudo apt update
+        sudo apt upgrade -fy
         xargs -a <(awk '/^\s*[^#]/' "$packagelist") -r -- sudo apt install
     else
         putf "Could not find apt"
