@@ -34,9 +34,9 @@ if [ -f "$BIN/boxprint" ]; then
     alias putf="$BIN/boxprint --type=fail"
 else
     puts(){ echo $@; }
-    alias puti="$sink <"
-    alias putw="$sink <"
-    alias putf="$sink <"
+    puti(){ echo $@; }
+    putw(){ echo $@; }
+    putd(){ echo $@; }
 fi
 
 # Functions
