@@ -122,7 +122,7 @@ help() {
     # TODO logging | log "$(echo "$src $dst" | sed -e 's:/Users/david/::g' | sed -e 's:stack/dots:$DOTS:g' | xargs -n2 printf '  Link: %-25s -> %s')"
 }
 -install() {
-    if test -is-desktop; then
+    if -is-desktop; then
         -install-homebrew
         -install-homebrew-packages
     else
@@ -181,7 +181,7 @@ help() {
     puti "Checking file permissions"
     chmod 755 $HOME/bin/*(N) NOOP
     log "  Permissions: ~/bin/* -> 755"
-    chmod 644 $HOME/.ssh/{config,known_hosts}
+    chmod 644 $HOME/.ssh/{config,known_hosts} NOOP
     log "  Permissions: ~/.ssh/{config,known_hosts} -> 644"
     chmod 444 $HOME/.ssh/*.pub(N) NOOP
     log "  Permissions: ~/.ssh/*.pub -> 444"
