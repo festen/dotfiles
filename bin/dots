@@ -59,8 +59,8 @@ dots-update() {
         brew update
         brew bundle check --global && echo 'Packages already up to date' || brew bundle --global
     else
-        apt update
-        apt upgrade -yq
+        sudo apt update
+        sudo apt upgrade -yq
     fi
 }
 log() {
@@ -152,7 +152,7 @@ help() {
 }
 -install-apt-packages() {
     if which apt NOOP; then
-        apt update
+        sudo apt update
         xargs -a <(awk '/^\s*[^#]/' "$packagelist") -r -- sudo apt install
     else
         putf "Could not find apt"
