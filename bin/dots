@@ -1,22 +1,30 @@
 #!/usr/bin/env zsh
 #
 # dots --help           help file
-# dots install          (re)installs dotfiles, brews, casks
-# dots upgrade          upgrades dotfiles
-# dots upgrade --full   upgrades dotfiles, brews, casks
+# dots install          (re)installs dotfiles and programs
+# dots upgrade          upgrades dotfiles and programs
 #
 
+# check if desktop (Darwin, macOS) or server (Linux)
+-is-desktop() { test "$(uname)" = 'Darwin'; return $?; }
+
+# variables
 name=$(basename $0)
 DOTS=$HOME/dots
-ENV=$HOME/env
 BIN=$HOME/bin
-PATH=$BIN:$DOTS/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+PATH=$BIN:$DOTS/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 repo='git@github.com:festen/dotfiles'
 repo_guest='https://github.com/festen/dotfiles' # credentialess repo
-logfile=$HOME/Library/Logs/festen.update
 linkignore='.git|.csync_journal*|.owncloudsync|zcompdump*|zdata*|history|antigen|antigen.sh|iterm.sh'
 requested_shell=/bin/zsh
 sink=$(mktemp)
+packagelist="$HOME/.packages"
+
+# dependent variables
+if -is-desktop; then logfile=$HOME/Library/Logs/dotfiles; else logfile=$HOME/log/dotfiles; fi
+mkdir -p $(dirname $logfile)
+if ! -is-desktop; then touch $packagelist; fi
+
 
 # shortcuts
 alias -g NOOP="> /dev/null 2>&1"
@@ -27,17 +35,15 @@ if [ -f "$BIN/boxprint" ]; then
     alias putw="$BIN/boxprint --type=warn"
     alias putf="$BIN/boxprint --type=fail"
 else
-    puts() {
-        echo $@
-    }
-    alias puti="$sink <"
-    alias putw="$sink <"
-    alias putf="$sink <"
+    puts(){ echo $@; }
+    puti(){ echo $@; }
+    putw(){ echo $@; }
+    putd(){ echo $@; }
 fi
 
 # Functions
 dots-install() {
-    -before
+    -initialize
     -install
     -verify
     -cleanup
@@ -51,15 +57,16 @@ dots-sync() {
 }
 dots-update() {
     dots-sync
-    brew update
-    if brew bundle check --global; then
-        echo 'Packages already up to date'
+    if -is-desktop; then
+        brew update
+        brew bundle check --global && echo 'Packages already up to date' || brew bundle --global
     else
-        brew bundle --global
+        sudo apt update
+        sudo apt upgrade -yq
     fi
 }
 log() {
-    [ "$(uname)" = 'Darwin' ] && echo $1 | logger -t 'dotupdater'
+    -is-desktop && echo $1 | logger -t 'dotupdater'
     echo $1 >> $logfile
 }
 help() {
@@ -72,20 +79,29 @@ help() {
     echo "  (s)ync:              Will pull/push latest version of dotfiles"
     echo "  git <git-command>    Executes raw git command (shortcuts: gd: diff, gst: status)"
 }
--before() {
-    sudo -v
-    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-    clear
-    tput sc
-    -ensure-dotfiles
-    [ "$(pwd)" = "$HOME" ] || cd $HOME
+-initialize() {
     log "Starting @ $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-    puti 'Linking icloud'; ln -fs Library/Mobile\ Documents/com~apple~CloudDocs icloud; puts -o 'Linked icloud'
-    puti 'Linking .env'; ln -fs icloud/.env; puts -o 'Linked .env'
+    cd $HOME
+    -verify-shell
+    -ask-password
+    -ensure-dotfiles
+    -is-desktop && -link-icloud
     -link-folder $(basename $DOTS)
     -link-folder 'var'
-    -link-folder '.env'
     source $HOME/.exports
+    source $HOME/.aliases
+    source $HOME/.functions
+}
+-ask-password() {
+    sudo -v
+    while true; do sudo -n true; sleep 20; kill -0 "$$" || exit; done NO2 &
+    clear
+    tput sc
+}
+-link-icloud() {
+    puti 'Linking icloud'; ln -fs Library/Mobile\ Documents/com~apple~CloudDocs icloud; puts -o 'Linked icloud'
+    puti 'Linking .env'; ln -fs icloud/.env; puts -o 'Linked .env'
+    -link-folder '.env'
 }
 -ensure-dotfiles() {
     printf 'Searching for existing dotfiles... '
@@ -93,13 +109,14 @@ help() {
     test -d $DOTS && echo 'found' && return
     printf 'dotfiles not found!\nDownloading dotfiles... '
     rm -rf $DOTS NOOP
+    if ! $(which git NOOP); then echo 'Could not download dotfiles, please install git first'; fi
     git clone $repo_guest $DOTS
     test $? -eq 0 && echo 'done' || (echo 'failed!'; exit 1)
     (cd $DOTS && git remote remove origin && git remote add origin $repo) NOOP
 }
 -link-folder() {
     puti "Linking $1 content"
-    for x in $(/usr/bin/find "$1/" -depth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
+    for x in $(/usr/bin/find "./$1" -mindepth 1 -maxdepth 1 | xargs -I{} basename {} | egrep -vw "$linkignore"); do
         rm -rf "$(basename $x)" NOOP
         ln -fs "$1/$(basename $x)" NOOP
     done
@@ -107,9 +124,12 @@ help() {
     # TODO logging | log "$(echo "$src $dst" | sed -e 's:/Users/david/::g' | sed -e 's:stack/dots:$DOTS:g' | xargs -n2 printf '  Link: %-25s -> %s')"
 }
 -install() {
-    [ "$(uname)" = 'Darwin' ] || return 0
-    -install-homebrew
-    -install-packages
+    if -is-desktop; then
+        -install-homebrew
+        -install-homebrew-packages
+    else
+        -install-apt-packages
+    fi
 }
 -install-homebrew() {
     puti "Verifying Homebrew installation"
@@ -122,7 +142,7 @@ help() {
     fi
     puts -o "Homebrew installed and updated"
 }
--install-packages() {
+-install-homebrew-packages() {
     puti "Checking packages"
     log '  Brew: upgrading'
     brew upgrade 2>/dev/null | tr -s "\n" | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" >> $logfile) | /usr/bin/tr -u "\n" "\0" | xargs -0n1 putw -o "Updating packages - " 2>/dev/null
@@ -131,6 +151,15 @@ help() {
     brew bundle --global 2>/dev/null | tee >(logger -t 'dotupdater') >(xargs -I {} echo '  ├── {}' | tr -s "\n" | sed -e 's/├── Success/└── Success/' >> $logfile) | /usr/bin/tr -u "\n" "\0" | xargs -0n1 putw -o "Installing packages - " 2>/dev/null
     log '  Brew: bundle ran'
     puts -o "Packages installed and updated"
+}
+-install-apt-packages() {
+    if which apt NOOP; then
+        sudo apt update
+        sudo apt upgrade -fy
+        xargs -a <(awk '/^\s*[^#]/' "$packagelist") -r -- sudo apt install
+    else
+        putf "Could not find apt"
+    fi
 }
 -verify() {
     -verify-shell
@@ -142,19 +171,20 @@ help() {
     if [ "$SHELL" = "$requested_shell" ]; then
         puts -o "Shell is $requested_shell"
     elif [ -n "$pass" ]; then
-        sudo -S chsh -s $requested_shell david <<< $pass NOOP
+        chsh -s $requested_shell
         puts -o "Shell set to $requested_shell"
         log "  Shell: set to $requested_shell"
     else
         putf -o "Shell is $SHELL instead of $requested_shell."
-        putf "No sudo pass provided so please change manually."
+        putf "please change manually."
+        exit 1
     fi
 }
 -verify-permissions() {
     puti "Checking file permissions"
     chmod 755 $HOME/bin/*(N) NOOP
     log "  Permissions: ~/bin/* -> 755"
-    chmod 644 $HOME/.ssh/{config,known_hosts}
+    chmod 644 $HOME/.ssh/{config,known_hosts} NOOP
     log "  Permissions: ~/.ssh/{config,known_hosts} -> 644"
     chmod 444 $HOME/.ssh/*.pub(N) NOOP
     log "  Permissions: ~/.ssh/*.pub -> 444"
@@ -169,32 +199,16 @@ help() {
 }
 -cleanup() {
     -cleanup-broken-links
+    if ! -is-desktop; then sudo apt autoremove; fi
     puti "Cleaning up leftovers"
     rm -f $sink NOOP
-    source $HOME/.functions NOOP
-    sudo -S cleanup NOOP
+    sudo cleanup NOOP
     puts -o "Cleaned up"
 }
 -cleanup-broken-links() {
     puti 'Removing broken links'
     find -L {/usr/local/bin,/Applications,$HOME,$HOME/Applications}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} +
     test $? -eq 0 && puts -o 'Removed broken links' || putf -o "Removing broken links failed"
-}
--rm-brew() {
-    if [ "$(uname)" = 'Darwin' ]; then
-        puti 'Uninstalling Homebrew'
-        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)" <<< y NOOP
-        rm -rf /usr/local/bin/brew /usr/local/Cellar /opt/hombrew-cask
-        test $? -eq 0 && puts  -o'Uninstalled Homebrew' || putf -o "Uninstalling Homebrew failed"
-    fi
-}
--rm-npm() {
-    if $(which npm NOOP); then
-        puti 'Uninstalling NPM'
-        rm -rf /usr/local/{lib/node{,/.npm,_modules},bin,share/man}/npm* NOOP
-        rm -rf /usr/local/lib/node_modules NOOP
-        test $? -eq 0 && puts -o 'Uninstalled NPM' || putf -o 'Uninstalling NPM failed'
-    fi
 }
 
 case "$1" in

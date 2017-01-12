@@ -27,6 +27,7 @@
     showIndentGuide: true
     softTabs: false
     tabLength: 4
+    softWrapAtPreferredLineLength: true
     tabType: "soft"
   "merge-conflicts": {}
   minimap: {}

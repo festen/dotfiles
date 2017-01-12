@@ -31,14 +31,11 @@ bindkey "$terminfo[cud1]" history-substring-search-down
 autoload -U compinit && compinit -d $ANTIGEN_COMPDUMPFILE
 
 # Post source evaluation
-eval "$(thefuck --alias fck)"
-
+# test $+commands[thefuck] -eq 1 && eval "$(thefuck --alias fck)"
 # Enable shell integration
-test -e "${HOME}/.iterm/shell_integration"\
- && source "${HOME}/.iterm/shell_integration"\
- || echo "${YELLOW}WARNING:${RESET} No shell integration available."
+# test -e "${HOME}/.iterm/shell_integration" && source "${HOME}/.iterm/shell_integration"
 
 # attach to "sys" session
-if [ -z "$TMUX" ]; then
+if [ -z "$TMUX" ] && [ "$(uname)" = "Darwin" ]; then
     tminit && tma sys
 fi
