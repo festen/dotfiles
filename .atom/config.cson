@@ -26,8 +26,8 @@
     scrollPastEnd: true
     showIndentGuide: true
     softTabs: false
-    tabLength: 4
     softWrapAtPreferredLineLength: true
+    tabLength: 4
     tabType: "soft"
   "merge-conflicts": {}
   minimap: {}

@@ -138,11 +138,13 @@ tminit() {
     tmux kill-session -t sys NOOP
     tmux kill-session -t dev NOOP
     tmux new-session -d -s sys -n sys
-    tmux new-session -d -s dev -n mc3
-    tmux split-window -htdev:mc3
-    tmux send-keys -tdev:mc3 '~/code/mc-3.0/web' enter 'clear' enter
-    tmux select-pane -t1
-    tmux send-keys -tdev:mc3 '~/code/mc-3.0' enter 'clear' enter 'start web'
+    tmux new-session -d -s dev -n dev
+    # mc-3.0
+    # tmux new-session -d -s dev -n mc3
+    # tmux split-window -htdev:mc3
+    # tmux send-keys -tdev:mc3 '~/code/mc-3.0/web' enter 'clear' enter
+    # tmux select-pane -t1
+    # tmux send-keys -tdev:mc3 '~/code/mc-3.0' enter 'clear' enter 'start web'
 }
 
 project() {
