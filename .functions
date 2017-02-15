@@ -94,22 +94,6 @@ mkdmg() {
     hdiutil create -ov -volname "$(basename "$1")" -srcfolder "$1" -format UDZO "${2:-1}.dmg"
 }
 
-sierra() {
-    local exitcode=1
-    while [ "$exitcode" -ne 0 ]; do
-        ssh sierra
-        exitcode=$?
-    done
-}
-
-sierra.local() {
-    local exitcode=1
-    while [ "$exitcode" -ne 0 ]; do
-        ssh sierra.local
-        exitcode=$?
-    done
-}
-
 tmac() {
     clear
     local TAG=${1:-'sys'}
@@ -139,8 +123,6 @@ tminit() {
     tmux kill-session -t dev NOOP
     tmux new-session -d -s sys -n sys
     tmux new-session -d -s dev -n dev
-    # mc-3.0
-    # tmux new-session -d -s dev -n mc3
     # tmux split-window -htdev:mc3
     # tmux send-keys -tdev:mc3 '~/code/mc-3.0/web' enter 'clear' enter
     # tmux select-pane -t1
