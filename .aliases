@@ -1,7 +1,9 @@
 #!/usr/bin/env zsh
 
 # Generic aliases
-alias copy='rsync -ah --info progress2'
+alias copy='rsync --archive --human-readable --info progress2'
+alias copyd='copy --delete'
+alias backup='copyd --acls --archive --delete --hard-links --hfs-compression --one-file-system --protect-decmpfs --sparse --stats --xattrs'
 alias rm='rm -rfv'
 
 # Output suppression
@@ -22,6 +24,7 @@ alias d='docker'
 alias e='edit'
 alias f='fck'
 alias g='git'
+alias p='project'
 alias s='switch'
 alias x='extract'
 
@@ -68,6 +71,14 @@ alias gss='git status -s'
 alias gst='git status'
 alias gwip='git commit -vam "wip" && git push'
 
+# npm aliases
+alias npr='npm run --silent'
+alias nps='npm start --silent'
+alias npi='npm install --save'
+alias npid='npm install --save-dev'
+alias start='npm start --silent'
+alias run='npm run --silent'
+
 # List
 alias ls='ls -h --color'
 alias l='ls -l'
@@ -90,6 +101,7 @@ alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias trash='trash -v'
 alias wrapoff="printf '\033[?7l'" 
 alias wrapon="printf '\033[?7h'"
+alias ip='curl -sS ipinfo.io/ip | tee /dev/tty | pbcopy'
 
 # TODO
 # List only files/folders --> alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"

@@ -83,50 +83,11 @@ extract () {
     fi
 }
 
-mkdocker-machine() {
-    docker-machine create --driver parallels --parallels-cpu-count 2 --parallels-memory 4096 default
-}
-
 # Make dmg from folder
 # Usage: mkdmg <src> [<dest>]
 mkdmg() {
-    if [ -z "$1" -o -z "${2:-1}" ]; then echo "usage: $0 <src> [<dest>]"; exit 1; fi
-    hdiutil create -ov -volname "$(basename "$1")" -srcfolder "$1" -format UDZO "${2:-1}.dmg"
-}
-
-tmac() {
-    clear
-    local TAG=${1:-'sys'}
-    tmux -CC attach -t $TAG
-    test $? -ne 0 && tmux -CC new -s $TAG
-}
-
-tma() {
-    clear
-    local TAG=${1:-'sys'}
-    if [ -z "$TMUX" ]; then
-        tmux attach -t $TAG
-        test $? -ne 0 && tmux new -s $TAG
-    else
-        tmux switch -t $TAG
-        test $? -ne 0 && tmux new -s $TAG -d && tmux switch -t $TAG
-    fi
-}
-
-tminit() {
-    local skip=true
-    test "$1" = '--force' && skip=false
-    ! tmux has-session -t dev NOOP || ! tmux has-session -t sys NOOP && skip=false
-    test -n "$1" && echo 'usage: tminit [--force]'
-    $skip && return 0
-    tmux kill-session -t sys NOOP
-    tmux kill-session -t dev NOOP
-    tmux new-session -d -s sys -n sys
-    tmux new-session -d -s dev -n dev
-    # tmux split-window -htdev:mc3
-    # tmux send-keys -tdev:mc3 '~/code/mc-3.0/web' enter 'clear' enter
-    # tmux select-pane -t1
-    # tmux send-keys -tdev:mc3 '~/code/mc-3.0' enter 'clear' enter 'start web'
+    if [ -z "$1" -o -z "${2:-$1}" ]; then echo "usage: $0 <src> [<dest>]"; exit 1; fi
+    hdiutil create -ov -volname "$(basename "$1")" -srcfolder "$1" -format UDZO "${2:-$1}.dmg"
 }
 
 project() {
@@ -136,7 +97,14 @@ project() {
     local program="$(basename $0)"
     local formatted="$RESET$BOLD$project$RESET"
     local -a start_paths
-    start_paths=("$project_dir/.bin/start" "$project_dir/bin/start")
+    start_paths=(
+        "$project_dir/.bin/start"
+        "$project_dir/bin/start"
+        "$project_dir/.bin/develop"
+        "$project_dir/bin/develop"
+        "$project_dir/start.sh"
+        "$project_dir/develop.sh"
+    )
 
     help() {
         echo "Usage: $program [project-name]"
@@ -148,71 +116,45 @@ project() {
         return 0
     }
 
-    test -z "$1" && help && return 0
-
-    for start in $start_paths; do
-        if [ -x $start ]; then
-            echo "Starting project $formatted"
-            eval $start
+    attemptToOpen() {
+        local ideName=$1
+        local ideCmd=$2
+        local fileType=$3
+        if [ $+commands[$ideCmd] -eq 1 ] || return 1
+        c=$(find $project_dir -name "*.${fileType}" -type f -not -path '*node_modules*' | wc -l)
+        if [ "$c" -gt 0 ]; then
+            echo "Starting $ideName using path $project_dir"
+            eval $ideCmd $project_dir
             return 0
         fi
-    done
+        return 1
+    }
+
+    test -z "$1" && help && return 0
 
     if [ -d $project_dir ]; then
+        echo "Starting project $formatted"
         cd $project_dir
-        if [ $+commands[idea] ]; then
-            echo "Opening $project_dir in Intellij IDEA"
-            idea $project_dir
-        else
-            echo "Opening $project_dir in Finder"
-            open $project_dir
-        fi
+        attemptToOpen "Intellij IDEA" idea java ||
+        attemptToOpen "PyCharm" pycharm py ||
+        attemptToOpen "PhpStorm" phpstorm php ||
+        attemptToOpen "PhpStorm" pstorm php ||
+        attemptToOpen "Webstorm" webstorm ts ||
+        attemptToOpen "Webstorm" webstorm js ||
+        attemptToOpen "Webstorm" wstorm ts ||
+        attemptToOpen "Webstorm" wstorm js ||
+        (echo "Opening $project_dir in Finder" && open $project_dir)
     elif [ -n "$project" ]; then
         echo "${RED}Project $formatted$RED not found."
     else
         help
     fi
-}
 
-exit() {
-    if [ -n "$TMUX" ]; then
-        clear
-        local windows=$(tmux display-message -p "#{session_windows}")
-        local panes=$(tmux display-message -p "#{window_panes}")
-        local session=$(tmux display-message -p "#S")
-        local window=$(tmux display-message -p "#W")
-        if [ "$session" = 'dev' ] && [ "$window" = 'mc3' ]; then
-            tma sys
-            osascript -e 'tell application "System Events" to keystroke "w" using command down' && clear
-        elif [ "$panes" -gt 1 ]; then
-            tmux kill-pane
-        elif [ "$windows" -gt 1 ]; then
-            tmux kill-window
-        elif [ "$session" != 'sys' ]; then
-            tma sys
-        else
-            builtin exit
+    for start in $start_paths; do
+        if [ -x $start ]; then
+            echo "Executing startup script $start"
+            eval $start
+            return 0
         fi
-    else
-        builtin exit
-    fi
-}
-
-pdf() {
-    if [ $# -lt 1 -o "$1" = '--help' ]; then
-        echo "usage: pdf <input1> [input2 .. inputN] <output>"
-        echo "Converts a single or multiple input files (pdf or images) to a single output pdf."
-        return 1
-    fi
-    local infiles=${@: 1:${#}-1}
-    local outfile=${${@: -1}%.*}.pdf
-    local tmpf=$(mktemp -d)
-
-    for i in {1..$((${#}-1))}; do
-        sips -s format pdf "${@:$i:1}" --out "$tmpf/$i.pdf" NOOP
-        rm -f "${@:$i:1}" NOOP
     done
-    gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/prepress -dNOPAUSE -dQUIET -dBATCH -dDetectDuplicateImages -dCompressFonts=true -r600 -sOutputFile=$(echo $outfile) $(echo $tmpf/*.pdf) NOOP
-    rm -rf $tmpf NOOP
-    echo $outfile
 }

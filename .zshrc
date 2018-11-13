@@ -33,9 +33,10 @@ autoload -U compinit && compinit -d $ANTIGEN_COMPDUMPFILE
 # Post source evaluation
 # test $+commands[thefuck] -eq 1 && eval "$(thefuck --alias fck)"
 # Enable shell integration
-# test -e "${HOME}/.iterm/shell_integration" && source "${HOME}/.iterm/shell_integration"
+# test -e "${HOME}/.iterm/shell_integration" && source "${HOME}/.iterm/shell_integration"§
 
-# attach to "sys" session
-if [ -z "$TMUX" ] && [ "$(uname)" = "Darwin" ]; then
-    tminit && tma sys
-fi
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+test $+commands[npm] -eq 1 && source <(npm completion zsh)
+test $+commands[npx] -eq 1 && source <(npx --shell-auto-fallback zsh)
+
+test -e "${HOME}/.npm_completion.sh" && source "${HOME}/.npm_completion.sh"
