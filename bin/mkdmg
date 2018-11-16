@@ -1,4 +1,0 @@
-#!/bin/sh
-# usage: $0 <src> [<dest>]
-if [ -z "$1" -o -z "${2:-$1}" ]; then echo "usage: $0 <src> [<dest>]"; exit 1; fi
-hdiutil create -ov -volname "$(basename "$1")" -srcfolder "$1" -format UDZO "${2:-$1}.dmg"
