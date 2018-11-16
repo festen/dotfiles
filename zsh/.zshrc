@@ -1,48 +1,17 @@
 ################################################################################
-# Plugins
-################################################################################
-source "${HOME}/.zplugin/bin/zplugin.zsh" || { sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)" && source "${HOME}/.zplugin/bin/zplugin.zsh" }
-autoload -Uz _zplugin
-(( ${+_comps} )) && _comps[zplugin]=_zplugin
-ZPLGM[MUTE_WARNINGS]=1
-zplugin ice pick"async.zsh" src"pure.zsh"
-zplugin light sindresorhus/pure
-zplugin light zsh-users/zsh-syntax-highlighting
-zplugin light zsh-users/zsh-history-substring-search
-zplugin ice wait"1" atload'_zsh_autosuggest_start' silent
-zplugin light zsh-users/zsh-autosuggestions
-zplugin ice wait"1" silent
-zplugin light djui/alias-tips
-zplugin ice wait"1" silent
-zplugin light arzzen/calc.plugin.zsh
-zplugin snippet https://iterm2.com/shell_integration/zsh
-zplugin ice blockf wait"1" silent
-zplugin load zsh-users/zsh-completions
-zplugin ice atinit'zpcompinit; zpcdreplay' wait"1" silent
-zplugin load lukechilds/zsh-better-npm-completion
-zmodload zsh/terminfo
-bindkey "$terminfo[cuu1]" history-substring-search-up
-bindkey "$terminfo[cud1]" history-substring-search-down
-setopt extended_glob auto_cd inc_append_history share_history
-test $+commands[npm] -eq 1 && source <(npm completion zsh)
-test $+commands[npx] -eq 1 && source <(npx --shell-auto-fallback zsh)
-
-################################################################################
 # Exports
 ################################################################################
-test -f "$HOME/.private" && source "$HOME/.private"
+mkdir -p $HOME/.cache/zsh $HOME/.config/zsh #$HOME/.local
 
-# Environment
+# ENVIRONMENT
+test -f "$HOME/.private" && source "$HOME/.private"
 export SHELL="/bin/zsh"
 export LESSHISTFILE='-'
-export _Z_DATA=.cache/zdata
-export _Z_NO_RESOLVE_SYMLINKS=true
-export ANTIGEN_COMPDUMPFILE=.cache/zcompdump
-export ADOTDIR=.cache/antigen
 export HISTFILE=.cache/history
 export HISTSIZE=1000
 export SAVEHIST=1000
 export EDITOR='nano'
+export ZDOTDIR="${HOME}/.config/zsh"
 
 # PATH
 PATH=''
@@ -69,6 +38,7 @@ export PATH
 alias ls='ls -h --color'
 alias rm='rm -rfv'
 alias copy='rsync --archive --human-readable --info progress2'
+alias tree="tree -a -I '.git'"
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -132,3 +102,32 @@ alias start='npm start --silent'
 # TODO
 # List only files/folders --> alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
 # Rest api colorized methods --> for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do alias "$method"="lwp-request -m '$method'"; done
+
+################################################################################
+# Plugins
+################################################################################
+source "${ZDOTDIR}/.zplugin/bin/zplugin.zsh" || { sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)" && source "${ZDOTDIR}/.zplugin/bin/zplugin.zsh" }
+autoload -Uz _zplugin
+(( ${+_comps} )) && _comps[zplugin]=_zplugin
+ZPLGM[MUTE_WARNINGS]=1
+zplugin ice pick"async.zsh" src"pure.zsh"
+zplugin light sindresorhus/pure
+zplugin light zsh-users/zsh-syntax-highlighting
+zplugin light zsh-users/zsh-history-substring-search
+zplugin ice wait"1" atload'_zsh_autosuggest_start' silent
+zplugin light zsh-users/zsh-autosuggestions
+zplugin ice wait"1" silent
+zplugin light djui/alias-tips
+zplugin ice wait"1" silent
+zplugin light arzzen/calc.plugin.zsh
+zplugin snippet https://iterm2.com/shell_integration/zsh
+zplugin ice blockf wait"1" silent
+zplugin load zsh-users/zsh-completions
+zplugin ice atinit"autoload compinit; mkdir -p $HOME/.cache/zsh; compinit -d $HOME/.cache/zsh/zcompdump-$ZSH_VERSION; zpcdreplay" wait"1" silent
+zplugin load lukechilds/zsh-better-npm-completion
+zmodload zsh/terminfo
+bindkey "$terminfo[cuu1]" history-substring-search-up
+bindkey "$terminfo[cud1]" history-substring-search-down
+setopt extended_glob auto_cd inc_append_history share_history
+test $+commands[npm] -eq 1 && source <(npm completion zsh)
+test $+commands[npx] -eq 1 && source <(npx --shell-auto-fallback zsh)
