@@ -38,5 +38,3 @@ autoload -U compinit && compinit -d $ANTIGEN_COMPDUMPFILE
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 test $+commands[npm] -eq 1 && source <(npm completion zsh)
 test $+commands[npx] -eq 1 && source <(npx --shell-auto-fallback zsh)
-
-test -e "${HOME}/.npm_completion.sh" && source "${HOME}/.npm_completion.sh"

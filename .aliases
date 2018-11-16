@@ -22,10 +22,7 @@ alias .....='cd ../../../..'
 alias c='copy'
 alias d='docker'
 alias e='edit'
-alias f='fck'
 alias g='git'
-alias p='project'
-alias s='switch'
 alias x='extract'
 
 # Docker related
