@@ -1,0 +1,19 @@
+#!/usr/bin/osascript
+
+tell application "System Preferences"
+	reveal anchor "displaysDisplayTab" of pane "com.apple.preference.displays"
+end tell
+
+tell application "System Events" to tell process "System Preferences" to tell window "Built-in Retina Display"
+	click radio button "Display" of first tab group
+	click radio button "Scaled" of first radio group of first tab group
+	tell first radio group of second group of first tab group
+		set isDefault to get value of second radio button
+	end tell
+	if isDefault then
+		click last radio button of first radio group of second group of first tab group
+	else
+		click second radio button of first radio group of second group of first tab group
+	end if
+end tell
+quit application "System Preferences"

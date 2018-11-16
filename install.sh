@@ -8,7 +8,7 @@
 #RESET='\033[0m'
 #BOLD='\033[1m'
 #DIM='\033[2m'
-mkdir -p $HOME/.config/dotfiles
+mkdir -p $HOME/.config
 dotdir="$HOME/.config/dotfiles"
 shell=/bin/zsh
 repository="https://github.com/festen/dotfiles.git"
@@ -24,10 +24,6 @@ function title {
 
 function prompt  {
     echo -n "\033[00;33m$@\033[0m"
-}
-
-function running {
-    echo "\033[2m$@\033[0m"
 }
 
 function success {
@@ -47,8 +43,7 @@ trap 'cleanup' ERR EXIT
 title "Dotfile installer script"
 echo "This script will (re)install brew packages and casks, (re)link dotfiles and
 fetch dotfiles from git. For the script to work, it needs root privileges, which
-will be prompted after reviewing the installation settings
-"
+will be prompted after reviewing the installation settings"
 
 # Contents:
 # - global vars
@@ -66,13 +61,13 @@ will be prompted after reviewing the installation settings
 title "Prerequisits"
 ###
 
-running "Checking homebrew install"
+echo "Checking homebrew install"
 brew --version > /dev/null 2>&1 && hasHomebrew=1 || hasHomebrew=0
-running "Checking xcode utils"
+echo "Checking xcode utils"
 xcrun --version > /dev/null 2>&1 && hasXCodeUtils=1 || hasXCodeUtils=0
-running "Checking zplugin"
+echo "Checking zplugin"
 test -f $HOME/.zplugin && hasZPlugin=1 || hasZPlugin=0
-running "Checking shell"
+echo "Checking shell"
 test "${SHELL}" = "${shell}" && shellSet=1 || shellSet=0
 
 ###
@@ -80,12 +75,11 @@ title Settings
 ###
 echo "Home location:     $HOME"
 echo "Dotfile location:  $dotdir"
-echo ""
 (($hasXCodeUtils)) || warn "XCode Utils marked for installation"
 (($hasHomebrew)) || warn "Homebrew marked for installation"
 (($shellSet)) || warn "Default shell will change ($SHELL -> $shell)"
 
-echo "\nTo start the installation, enter you root password and press enter"
+echo "To start the installation, enter you root password and press enter"
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
@@ -97,10 +91,8 @@ if [ -d $dotdir ]; then
     error "$dotdir has Uncomitted changes, commit them first"
     exit 3
   fi
-  running 'Pulling any new version'
+  echo 'Pulling any new version'
   git -C $dotdir pull || { error "could not complete pull, do it manually or rerun this script after deleting $dotdir"; exit 5; }
-  running 'Pushing any local changes'
-  git -C $dotdir push || { error "could not complete push, do it manually or rerun this script after deleting $dotdir"; exit 4; }
 fi
 
 ###
@@ -110,7 +102,7 @@ temp=$(mktemp -d)
 
 # xcode
 if [ "${hasXCodeUtils}" -ne 1 ]; then
-    running "Installing XCode Utils"
+    echo "Installing XCode Utils"
     touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
     PROD=$(softwareupdate -l |
       grep "\*.*Command Line" |
@@ -123,49 +115,66 @@ fi
 
 # homebrew
 if [ "${hasHomebrew}" -ne 1 ]; then
-    running "Installing homebrew"
+    echo "Installing homebrew"
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     test $? -eq 0 || { error "Unable to install homebrew"; exit 5; }
 else
-    running "Making sure latest brew is installed"
+    echo "Making sure latest brew is installed"
     brew update
-    running "Updating outdated brew packages"
+    echo "Updating outdated brew packages"
     brew upgrade
 fi
 
 ###
 title Installing managed binaries
 ###
-running Downloading latest brew bundle defintions
+echo Downloading latest brew bundle defintions
 curl -fsSLo ${temp}/Brewfile ${brewfile}
-running Installing brew bundle definitions
+echo Installing brew bundle definitions
 #brew bundle install --file=${temp}/Brewfile
 
 ###
 title Setting up dotfiles
 ###
 if [ ! -d $dotdir ]; then
-    running Dotfiles not found, downloading dotfiles to ${dotdir}
+    echo Dotfiles not found, downloading dotfiles to ${dotdir}
     mkdir -p ${dotdir}
     git clone ${repository} ${dotdir}
 fi
 
-running Making sure GNU stow is installed
+echo Making sure GNU stow is installed
 which stow >/dev/null 2>&1 && echo "GNU stow found at $(which stow)" || brew install stow
-dirsToStow=("$(find $HOME/dots/ -mindepth 1 -maxdepth 1 -type d -not -name '\.*' -exec basename {} \;)")
+dirsToStow=("$(find $dotdir -mindepth 1 -maxdepth 1 -type d -not -name '\.*' -exec basename {} \;)")
 for d in $dirsToStow; do
-    running Linking $d
-    stow -d ${dotdir} $d
+    echo Linking $d
+    stow --dir=${dotdir} --target=${HOME} --restow $d
 done
+echo 'Linking iCloud'
+ln -fs Library/Mobile\ Documents/com~apple~CloudDocs $HOME/icloud
+stow --dir="${HOME}/icloud" --target="${HOME}" --restow 'private-settings'
+
+###
+title Checking file permissions
+zsh -c "chmod 755 \"${HOME}/bin/*(N)\""
+echo "Permissions: ~/bin/* -> 755"
+zsh -c "chmod 644 \"${HOME}/.ssh/{config,known_hosts}\""
+echo "Permissions: ~/.ssh/{config,known_hosts} -> 644"
+zsh -c "chmod 444 \"${HOME}/.ssh/*.pub(N)\""
+echo "Permissions: ~/.ssh/*.pub -> 444"
+zsh -c "chmod 400 \"${HOME}/.ssh/*.key(N)\""
+echo "Permissions: ~/.ssh/*.key -> 400"
 
 ###
 title Installing ui/ux tweaks
 ###
-source ${dotdir}/.macos
+#source ${dotdir}/.macos
 
 ###
 title Cleaning dead links
 ###
-find -L $HOME(N) -maxdepth 1 -name -prune -o -type l -exec rm -rf {} + &
+zsh -c "find -L ${HOME}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rfv {} +"
 
-# echo "3) install ui/ux tweaks"
+###
+title Sourcing .zshrc
+###
+source $HOME/.zshrc

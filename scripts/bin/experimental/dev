@@ -1,0 +1,17 @@
+#!/bin/sh -ex
+target=$MC
+original=$(pwd)
+for sig in INT TERM EXIT; do trap 'restore' $sig; done
+restore() {
+    cd "$original"
+    [ "$sig" = 'EXIT' ] || kill -$sig $$
+    return 1
+}
+
+if [ "$original" != "$target" ]; then cd "$target"; fi
+./bin/dev $@
+if [ $? -ne 0 ]; then
+    restore
+else
+    cd $original
+fi
