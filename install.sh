@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 ### VARS
 #RED='\033[00;31m'
@@ -10,11 +11,13 @@
 #DIM='\033[2m'
 mkdir -p $HOME/.config
 dotdir="$HOME/.config/dotfiles"
-shell=/bin/zsh
+shell=/usr/local/bin/zsh
 repository="https://github.com/festen/dotfiles.git"
 brewfile="https://raw.githubusercontent.com/festen/dotfiles/master/.brewfile"
 
 function cleanup {
+    title Cleanup
+    zsh -c "find -L {/usr/local/bin,/Applications,$HOME,$HOME/Applications}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rfv {} +"
     test -d $temp && rm -rfv $temp
 }
 
@@ -82,6 +85,16 @@ echo "Dotfile location:  $dotdir"
 echo "To start the installation, enter you root password and press enter"
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+###
+title Checking default shell
+###
+if [ "$SHELL" != "$shell" ]; then
+  echo "setting newer homebrew zsh (/usr/local/bin/zsh) as your shell"
+  # TODO only if not present
+  cat /etc/shells | grep $shell >/dev/null || sudo sh -c "echo $shell >> /etc/shells"
+  chsh -s /usr/local/bin/zsh
+fi
 
 ###
 title Checking dotfiles dotdir
@@ -155,26 +168,16 @@ stow --dir="${HOME}/icloud" --target="${HOME}" --restow 'private-settings'
 
 ###
 title Checking file permissions
-zsh -c "chmod 755 \"${HOME}/bin/*(N)\""
+zsh -c "chmod 755 ${HOME}/bin/*(N)"
 echo "Permissions: ~/bin/* -> 755"
-zsh -c "chmod 644 \"${HOME}/.ssh/{config,known_hosts}\""
+zsh -c "chmod 644 ${HOME}/.ssh/{config,known_hosts}"
 echo "Permissions: ~/.ssh/{config,known_hosts} -> 644"
-zsh -c "chmod 444 \"${HOME}/.ssh/*.pub(N)\""
+zsh -c "chmod 444 ${HOME}/.ssh/*.pub(N)"
 echo "Permissions: ~/.ssh/*.pub -> 444"
-zsh -c "chmod 400 \"${HOME}/.ssh/*.key(N)\""
+zsh -c "chmod 400 ${HOME}/.ssh/*.key(N)"
 echo "Permissions: ~/.ssh/*.key -> 400"
 
 ###
 title Installing ui/ux tweaks
 ###
-#source ${dotdir}/.macos
-
-###
-title Cleaning dead links
-###
-zsh -c "find -L ${HOME}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rfv {} +"
-
-###
-title Sourcing .zshrc
-###
-source $HOME/.zshrc
+source ${dotdir}/.macos $hostname $dotdir
