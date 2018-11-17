@@ -180,4 +180,4 @@ echo "Permissions: ~/.ssh/*.key -> 400"
 ###
 title Installing ui/ux tweaks
 ###
-source ${dotdir}/.macos $hostname $dotdir
+source ${dotdir}/macos.sh $hostname $dotdir
