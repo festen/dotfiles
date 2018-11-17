@@ -17,34 +17,25 @@ brew 'gnu-tar', args: ['with-default-names']
 # Other bins
 brew 'git'
 brew 'git-flow'
-brew 'node'
-brew 'python3'
 brew 'tree'
 brew 'rsync'
 
 # Personal
 cask 'atom'
 cask 'docker'
-cask 'flux'
 cask 'iterm2'
 cask 'keka'
-cask 'macdown'
-#cask 'skype'
 cask 'sourcetree'
 cask 'spotify'
-#cask 'steam'
+cask 'steam'
 cask 'transmission'
 cask 'veracrypt'
 cask 'vlc'
-
-# Thesis
-#cask 'mactex'
-#cask 'texmaker'
 
 # Work
 cask 'google-chrome'
 cask 'google-chrome-canary'
 cask 'jetbrains-toolbox'
-#cask 'poedit'
-#cask 'postman'
-#cask 'sequel-pro'
+cask 'poedit'
+cask 'postman'
+cask 'sequel-pro'

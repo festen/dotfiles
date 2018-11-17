@@ -13,7 +13,7 @@ mkdir -p $HOME/.config
 dotdir="$HOME/.config/dotfiles"
 shell=/usr/local/bin/zsh
 repository="https://github.com/festen/dotfiles.git"
-brewfile="https://raw.githubusercontent.com/festen/dotfiles/master/.brewfile"
+brewfile="https://raw.githubusercontent.com/festen/dotfiles/master/Brewfile"
 
 function cleanup {
     title Cleanup
