@@ -35,10 +35,12 @@ function sync {
 }
 
 function help {
-    echo "Usage: $0"
+    echo "Usage: $0 install"
     echo '  Installs updates the dotfiles and runs package managers'
+    # echo '  Optionally, when --only flag is passed, it will run a partial install'
+    # echo '  Possible values for --only flag are check '
     echo ""
-    echo "Alternativley, the following auxillary runs are available"
+    echo "the following auxillary runs are available"
     echo "  $0 sync:   Will commit and pull/push latest version of dotfiles"
     echo "  $0 status: Displays the version control status (git status)"
     echo "  $0 --help: Displays this helper"
@@ -65,32 +67,13 @@ function error {
     echo "\033[00;31m$@\033[0m"
 }
 
-### AUX scripts
-test "${1}" == "--help" && help
-test "${1}" == "sync" && sync
-test "${1}" == 'status' && status
-test "$#" -ge 1 && { error "unknown argument(s): $@"; exit 1; }
-exit 2
-
-
 ### MAIN
+function install {
 trap 'cleanup' ERR EXIT
 title "Dotfile installer script"
 echo "This script will (re)install brew packages and casks, (re)link dotfiles and
 fetch dotfiles from git. For the script to work, it needs root privileges, which
 will be prompted after reviewing the installation settings"
-
-# Contents:
-# - global vars
-# - helper functions
-# - main script
-#  - Homebrew
-#   - check/install homebrew itself
-#   - install brews
-#   - install casks
-#  - link dotfiles
-#  - run .macos tweaks
-
 
 ###
 title "Prerequisits"
@@ -213,3 +196,12 @@ echo "Permissions: ~/.ssh/*.key -> 400"
 title Installing ui/ux tweaks
 ###
 source ${dotdir}/macos.sh $hostname $dotdir
+exit 0
+}
+
+test "${1}" == "--help" && help
+test "${1}" == "sync" && sync
+test "${1}" == 'status' && status
+test "${1}" == "install" && install
+test "$#" -ge 1 && error "unknown argument(s): $@"
+help
