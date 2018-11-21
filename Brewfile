@@ -1,10 +1,10 @@
 # set default appdir to /Applications
-cask_args appdir: '/Applications'
+#cask_args appdir: '/Applications'
 
 # Taps to check
-tap 'caskroom/cask'
-tap 'caskroom/versions'
-tap 'homebrew/bundle'
+#tap 'caskroom/cask'
+#tap 'caskroom/versions'
+#tap 'homebrew/bundle'
 
 # Coreutils
 brew 'coreutils', args: ['with-default-names']
@@ -27,9 +27,9 @@ cask 'iterm2'
 cask 'keka'
 cask 'sourcetree'
 cask 'spotify'
-cask 'steam'
+# cask 'steam'
 cask 'transmission'
-cask 'veracrypt'
+# cask 'veracrypt'
 cask 'vlc'
 
 # Work
@@ -39,3 +39,4 @@ cask 'jetbrains-toolbox'
 cask 'poedit'
 cask 'postman'
 cask 'sequel-pro'
+cask 'visual-studio-code'
