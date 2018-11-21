@@ -15,10 +15,59 @@ shell=/usr/local/bin/zsh
 repository="https://github.com/festen/dotfiles.git"
 brewfile="https://raw.githubusercontent.com/festen/dotfiles/master/Brewfile"
 
+# Run everything be default
+runSyncDotfiles=1
+runChangeShell=1
+runUpdateHomebrew=1
+runInstallBundle=1
+runLinkDotfiles=1
+runCheckPermissions=1
+runInstallTweaks=1
+
 function cleanup {
     title Cleanup
     zsh -c "find -L {/usr/local/bin,/Applications,$HOME,$HOME/Applications}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rfv {} +"
     test -d $temp && rm -rfv $temp
+}
+
+function status {
+    git -C $dotdir status
+    exit 0
+}
+
+function sync {
+    git -C $dotdir add .
+    git -C $dotdir commit --all --message '.'
+    git -C $dotdir pull
+    git -C $dotdir push
+    exit 0
+}
+
+function help {
+    function filename {
+        printf "\033[00;33m$(basename $0) $@\033[0m"
+    }
+    echo "Usage: $(filename install)"
+    echo 'Installs updates the dotfiles and runs package managers'
+    echo ''
+    echo 'Optionally, when --only flag is passed, it will run a partial install'
+    echo 'you can include multiple parts comma seperated, for example --only check,update'
+    echo 'Possible values for --only flag:'
+    echo '  sync:              Check if dotfiles are up to date and sync otherwise'
+    echo '  '
+    # sync dotfiles
+    # change shell
+    # update Homebrew
+    # install bundle
+    # link Dotfiles
+    # check permissions
+    # install tweaks
+    echo ""
+    echo "the following auxillary runs are available"
+    echo "  $(filename sync):   Will commit and pull/push latest version of dotfiles"
+    echo "  $(filename status): Displays the version control status (git status)"
+    echo "  $(filename --help): Displays this helper"
+    exit 0
 }
 
 function title {
@@ -42,23 +91,12 @@ function error {
 }
 
 ### MAIN
+function install {
 trap 'cleanup' ERR EXIT
 title "Dotfile installer script"
 echo "This script will (re)install brew packages and casks, (re)link dotfiles and
 fetch dotfiles from git. For the script to work, it needs root privileges, which
 will be prompted after reviewing the installation settings"
-
-# Contents:
-# - global vars
-# - helper functions
-# - main script
-#  - Homebrew
-#   - check/install homebrew itself
-#   - install brews
-#   - install casks
-#  - link dotfiles
-#  - run .macos tweaks
-
 
 ###
 title "Prerequisits"
@@ -181,3 +219,44 @@ echo "Permissions: ~/.ssh/*.key -> 400"
 title Installing ui/ux tweaks
 ###
 source ${dotdir}/macos.sh $hostname $dotdir
+exit 0
+}
+
+test "${1}" == "--help" && help
+test "${1}" == "sync" && sync
+test "${1}" == 'status' && status
+if [ "${1}" == "install" ]; then
+    if [ "${2}" == "--only" ]; then
+        runSyncDotfiles=0
+        runChangeShell=0
+        runUpdateHomebrew=0
+        runInstallBundle=0
+        runLinkDotfiles=0
+        runCheckPermissions=0
+        runInstallTweaks=0
+        while "${3}"; do
+            echo "FLAG"
+            shift
+        done
+    fi
+
+
+    flags=${@: -3}
+
+
+    echo \$runSyncDotfiles=
+    echo \$runChangeShell=
+    echo \$runUpdateHomebrew=
+    echo \$runInstallBundle=
+    echo \$runLinkDotfiles=
+    echo \$runCheckPermissions=
+    echo \$runInstallTweaks=
+
+    echo \$0=$0
+    echo \$1=$1
+    echo \$2=$2
+    echo \$3=$3
+    #install
+fi
+test "$#" -ge 1 && error "unknown argument(s): $@"
+help
