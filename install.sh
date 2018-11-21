@@ -255,16 +255,7 @@ if [ "${1}" == "install" ]; then
         shift 1
     done
 
-
-    echo \$runSyncDotfiles=$runSyncDotfiles
-    echo \$runChangeShell=$runChangeShell
-    echo \$runUpdateHomebrew=$runUpdateHomebrew
-    echo \$runInstallBundle=$runInstallBundle
-    echo \$runLinkDotfiles=$runLinkDotfiles
-    echo \$runCheckPermissions=$runCheckPermissions
-    echo \$runInstallTweaks=$runInstallTweaks
-    #install
-    exit 0
+    install
 fi
 test "$#" -ge 1 && error "unknown argument(s): $@"
 help
