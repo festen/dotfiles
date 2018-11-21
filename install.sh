@@ -131,10 +131,10 @@ if [ "$runChangeShell" -eq 1 ] && [ "$SHELL" != "$shell" ]; then
   chsh -s /usr/local/bin/zsh
 fi
 
-###
-title Checking dotfiles dotdir
-###
 if [ "$runSyncDotfiles" -eq 1 ] && [ -d $dotdir ]; then
+  ###
+  title Checking dotfiles dotdir
+  ###
   if [ -n "$(git -C $dotdir status --porcelain)" ]; then
     error "$dotdir has Uncomitted changes, commit them first"
     exit 3
