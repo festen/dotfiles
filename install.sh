@@ -27,7 +27,7 @@ runInstallTweaks=1
 function cleanup {
     title Cleanup
     zsh -c "find -L {/usr/local/bin,/Applications,$HOME,$HOME/Applications}(N) -maxdepth 1 -name -prune -o -type l -exec rm -rfv {} +"
-    test -d $temp && rm -rfv $temp
+    test -n "$temp" && test -d $temp && rm -rfv $temp
 }
 
 function status {
@@ -53,15 +53,12 @@ function help {
     echo 'Optionally, when --only flag is passed, it will run a partial install'
     echo 'you can include multiple parts comma seperated, for example --only check,update'
     echo 'Possible values for --only flag:'
-    echo '  sync:              Check if dotfiles are up to date and sync otherwise'
-    echo '  '
-    # sync dotfiles
-    # change shell
-    # update Homebrew
-    # install bundle
-    # link Dotfiles
-    # check permissions
-    # install tweaks
+    echo '  sync:    Check if dotfiles are up to date and sync otherwise'
+    echo '  check:   Check default shell and permissions'
+    echo '  upgrade: Upgrade homebrew installation and installed packages'
+    echo '  update:  Run brew bundle'
+    echo '  link:    Link dotfiles'
+    echo '  tweaks:  Run macos tweaks'
     echo ""
     echo "the following auxillary runs are available"
     echo "  $(filename sync):   Will commit and pull/push latest version of dotfiles"
@@ -127,7 +124,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ###
 title Checking default shell
 ###
-if [ "$SHELL" != "$shell" ]; then
+if [ "$runChangeShell" -eq 1 ] && [ "$SHELL" != "$shell" ]; then
   echo "setting newer homebrew zsh (/usr/local/bin/zsh) as your shell"
   # TODO only if not present
   cat /etc/shells | grep $shell >/dev/null || sudo sh -c "echo $shell >> /etc/shells"
@@ -137,7 +134,7 @@ fi
 ###
 title Checking dotfiles dotdir
 ###
-if [ -d $dotdir ]; then
+if [ "$runSyncDotfiles" -eq 1 ] && [ -d $dotdir ]; then
   if [ -n "$(git -C $dotdir status --porcelain)" ]; then
     error "$dotdir has Uncomitted changes, commit them first"
     exit 3
@@ -146,10 +143,12 @@ if [ -d $dotdir ]; then
   git -C $dotdir pull || { error "could not complete pull, do it manually or rerun this script after deleting $dotdir"; exit 5; }
 fi
 
-###
-title Installing
-###
-temp=$(mktemp -d)
+if [ "${hasXCodeUtils}" -ne 1 -o "${runUpdateHomebrew}" -eq 1 ]; then
+    ###
+    title Installing prerequisits
+    ###
+fi
+
 
 # xcode
 if [ "${hasXCodeUtils}" -ne 1 ]; then
@@ -165,7 +164,7 @@ if [ "${hasXCodeUtils}" -ne 1 ]; then
 fi
 
 # homebrew
-if [ "${hasHomebrew}" -ne 1 ]; then
+if [ "${runUpdateHomebrew}" -eq 1 ] && [ "${hasHomebrew}" -ne 1 ]; then
     echo "Installing homebrew"
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     test $? -eq 0 || { error "Unable to install homebrew"; exit 5; }
@@ -176,50 +175,58 @@ else
     brew upgrade
 fi
 
-###
-title Installing managed binaries
-###
-echo Downloading latest brew bundle defintions
-curl -fsSLo ${temp}/Brewfile ${brewfile}
-echo Installing brew bundle definitions
-#brew bundle install --file=${temp}/Brewfile
+if [ "${runInstallBundle}" -eq 1 ]; then
+    ###
+    title Installing managed binaries
+    ###
+    temp=$(mktemp -d)
+    echo Downloading latest brew bundle defintions
+    curl -fsSLo ${temp}/Brewfile ${brewfile}
+    echo Installing brew bundle definitions
+    brew bundle install --file=${temp}/Brewfile
+fi
 
-###
-title Setting up dotfiles
-###
-if [ ! -d $dotdir ]; then
+if [ "${runLinkDotfiles}" -eq 1 ] && [ ! -d $dotdir ]; then
+    ###
+    title Setting up dotfiles
+    ###
     echo Dotfiles not found, downloading dotfiles to ${dotdir}
     mkdir -p ${dotdir}
     git clone ${repository} ${dotdir}
+
+    echo Making sure GNU stow is installed
+    which stow >/dev/null 2>&1 && echo "GNU stow found at $(which stow)" || brew install stow
+    dirsToStow=("$(find $dotdir -mindepth 1 -maxdepth 1 -type d -not -name '\.*' -exec basename {} \;)")
+    for d in $dirsToStow; do
+        echo Linking $d
+        stow --dir=${dotdir} --target=${HOME} --restow $d
+    done
+    echo 'Linking iCloud'
+    ln -fs Library/Mobile\ Documents/com~apple~CloudDocs $HOME/icloud
+    stow --dir="${HOME}/icloud" --target="${HOME}" --restow 'private-settings'
 fi
 
-echo Making sure GNU stow is installed
-which stow >/dev/null 2>&1 && echo "GNU stow found at $(which stow)" || brew install stow
-dirsToStow=("$(find $dotdir -mindepth 1 -maxdepth 1 -type d -not -name '\.*' -exec basename {} \;)")
-for d in $dirsToStow; do
-    echo Linking $d
-    stow --dir=${dotdir} --target=${HOME} --restow $d
-done
-echo 'Linking iCloud'
-ln -fs Library/Mobile\ Documents/com~apple~CloudDocs $HOME/icloud
-stow --dir="${HOME}/icloud" --target="${HOME}" --restow 'private-settings'
+if [ "$runCheckPermissions" -eq 1 ]; then
+    ###
+    title Checking file permissions
+    ###
+    zsh -c "chmod 755 ${HOME}/bin/*(N)"
+    echo "Permissions: ~/bin/* -> 755"
+    zsh -c "chmod 644 ${HOME}/.ssh/{config,known_hosts}"
+    echo "Permissions: ~/.ssh/{config,known_hosts} -> 644"
+    zsh -c "chmod 444 ${HOME}/.ssh/*.pub(N)"
+    echo "Permissions: ~/.ssh/*.pub -> 444"
+    zsh -c "chmod 400 ${HOME}/.ssh/*.key(N)"
+    echo "Permissions: ~/.ssh/*.key -> 400"
+fi
 
-###
-title Checking file permissions
-zsh -c "chmod 755 ${HOME}/bin/*(N)"
-echo "Permissions: ~/bin/* -> 755"
-zsh -c "chmod 644 ${HOME}/.ssh/{config,known_hosts}"
-echo "Permissions: ~/.ssh/{config,known_hosts} -> 644"
-zsh -c "chmod 444 ${HOME}/.ssh/*.pub(N)"
-echo "Permissions: ~/.ssh/*.pub -> 444"
-zsh -c "chmod 400 ${HOME}/.ssh/*.key(N)"
-echo "Permissions: ~/.ssh/*.key -> 400"
-
-###
-title Installing ui/ux tweaks
-###
-source ${dotdir}/macos.sh $hostname $dotdir
-exit 0
+if [ "$runInstallTweaks" -eq 1 ]; then
+    ###
+    title Installing ui/ux tweaks
+    ###
+    source ${dotdir}/macos.sh $hostname $dotdir
+    exit 0
+fi
 }
 
 test "${1}" == "--help" && help
@@ -234,29 +241,30 @@ if [ "${1}" == "install" ]; then
         runLinkDotfiles=0
         runCheckPermissions=0
         runInstallTweaks=0
-        while "${3}"; do
-            echo "FLAG"
-            shift
-        done
     fi
 
+    shift 2
+    while test -n "$1"; do
+        test "$1" = 'sync' && runSyncDotfiles=1
+        test "$1" = 'check' && runChangeShell=1
+        test "$1" = 'upgrade' && runUpdateHomebrew=1
+        test "$1" = 'update' && runInstallBundle=1
+        test "$1" = 'link' && runLinkDotfiles=1
+        test "$1" = 'check' && runCheckPermissions=1
+        test "$1" = 'tweaks' && runInstallTweaks=1
+        shift 1
+    done
 
-    flags=${@: -3}
 
-
-    echo \$runSyncDotfiles=
-    echo \$runChangeShell=
-    echo \$runUpdateHomebrew=
-    echo \$runInstallBundle=
-    echo \$runLinkDotfiles=
-    echo \$runCheckPermissions=
-    echo \$runInstallTweaks=
-
-    echo \$0=$0
-    echo \$1=$1
-    echo \$2=$2
-    echo \$3=$3
+    echo \$runSyncDotfiles=$runSyncDotfiles
+    echo \$runChangeShell=$runChangeShell
+    echo \$runUpdateHomebrew=$runUpdateHomebrew
+    echo \$runInstallBundle=$runInstallBundle
+    echo \$runLinkDotfiles=$runLinkDotfiles
+    echo \$runCheckPermissions=$runCheckPermissions
+    echo \$runInstallTweaks=$runInstallTweaks
     #install
+    exit 0
 fi
 test "$#" -ge 1 && error "unknown argument(s): $@"
 help
