@@ -45,7 +45,7 @@ function sync {
 
 function help {
     function filename {
-        printf "\033[00;33m$(basename $0) $@\033[0m"
+        printf "\033[00;33mdots $@\033[0m"
     }
     echo "Usage: $(filename install)"
     echo 'Installs updates the dotfiles and runs package managers'
@@ -114,17 +114,17 @@ title Settings
 echo "Home location:     $HOME"
 echo "Dotfile location:  $dotdir"
 (($hasXCodeUtils)) || warn "XCode Utils marked for installation"
-(($hasHomebrew)) || warn "Homebrew marked for installation"
-(($shellSet)) || warn "Default shell will change ($SHELL -> $shell)"
+if [ "$runUpdateHomebrew" -eq 1 ]; then (($hasHomebrew)) || warn "Homebrew marked for installation"; fi
+if [ "$runChangeShell" -eq 1 ]; then (($shellSet)) || warn "Default shell will change ($SHELL -> $shell)"; fi
 
 echo "To start the installation, enter you root password and press enter"
 sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-###
-title Checking default shell
-###
 if [ "$runChangeShell" -eq 1 ] && [ "$SHELL" != "$shell" ]; then
+  ###
+  title Checking default shell
+  ###
   echo "setting newer homebrew zsh (/usr/local/bin/zsh) as your shell"
   # TODO only if not present
   cat /etc/shells | grep $shell >/dev/null || sudo sh -c "echo $shell >> /etc/shells"
@@ -225,8 +225,9 @@ if [ "$runInstallTweaks" -eq 1 ]; then
     title Installing ui/ux tweaks
     ###
     source ${dotdir}/macos.sh $hostname $dotdir
-    exit 0
 fi
+
+exit 0
 }
 
 test "${1}" == "--help" && help
