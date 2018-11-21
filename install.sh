@@ -55,8 +55,8 @@ function help {
     echo 'Possible values for --only flag:'
     echo '  sync:    Check if dotfiles are up to date and sync otherwise'
     echo '  check:   Check default shell and permissions'
-    echo '  upgrade: Upgrade homebrew installation and installed packages'
-    echo '  update:  Run brew bundle'
+    echo '  update: Upgrade homebrew installation and installed packages'
+    echo '  install:  Run brew bundle'
     echo '  link:    Link dotfiles'
     echo '  tweaks:  Run macos tweaks'
     echo ""
@@ -233,30 +233,25 @@ exit 0
 test "${1}" == "--help" && help
 test "${1}" == "sync" && sync
 test "${1}" == 'status' && status
-if [ "${1}" == "install" ]; then
-    if [ "${2}" == "--only" ]; then
-        runSyncDotfiles=0
-        runChangeShell=0
-        runUpdateHomebrew=0
-        runInstallBundle=0
-        runLinkDotfiles=0
-        runCheckPermissions=0
-        runInstallTweaks=0
-    fi
-
-    shift 2
+if [ "${1}" == "--only" ]; then
+    runSyncDotfiles=0
+    runChangeShell=0
+    runUpdateHomebrew=0
+    runInstallBundle=0
+    runLinkDotfiles=0
+    runCheckPermissions=0
+    runInstallTweaks=0
+    shift 1
     while test -n "$1"; do
         test "$1" = 'sync' && runSyncDotfiles=1
         test "$1" = 'check' && runChangeShell=1
-        test "$1" = 'upgrade' && runUpdateHomebrew=1
-        test "$1" = 'update' && runInstallBundle=1
+        test "$1" = 'update' && runUpdateHomebrew=1
+        test "$1" = 'install' && runInstallBundle=1
         test "$1" = 'link' && runLinkDotfiles=1
         test "$1" = 'check' && runCheckPermissions=1
         test "$1" = 'tweaks' && runInstallTweaks=1
         shift 1
     done
-
-    install
 fi
 test "$#" -ge 1 && error "unknown argument(s): $@"
-help
+install

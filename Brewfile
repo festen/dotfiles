@@ -19,6 +19,7 @@ brew 'git'
 brew 'git-flow'
 brew 'tree'
 brew 'rsync'
+brew 'node'
 
 # Personal
 cask 'atom'

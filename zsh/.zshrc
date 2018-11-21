@@ -5,7 +5,6 @@ mkdir -p $HOME/.cache/zsh $HOME/.config/zsh #$HOME/.local
 
 # ENVIRONMENT
 test -f "$HOME/.private" && source "$HOME/.private"
-export SHELL="/bin/zsh"
 export LESSHISTFILE='-'
 export HISTFILE=.cache/history
 export HISTSIZE=1000
