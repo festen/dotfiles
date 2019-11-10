@@ -7,12 +7,12 @@
 #tap 'homebrew/bundle'
 
 # Coreutils
-brew 'coreutils', args: ['with-default-names']
-brew 'findutils', args: ['with-default-names']
-brew 'gnu-indent', args: ['with-default-names']
-brew 'gnu-sed', args: ['with-default-names']
-brew 'grep', args: ['with-default-names']
-brew 'gnu-tar', args: ['with-default-names']
+brew 'coreutils'
+brew 'findutils'
+brew 'gnu-indent'
+brew 'gnu-sed'
+brew 'grep'
+brew 'gnu-tar'
 
 # Other bins
 brew 'git'
@@ -20,6 +20,7 @@ brew 'git-flow'
 brew 'tree'
 brew 'rsync'
 brew 'node'
+brew 'testdisk'
 
 # Personal
 cask 'atom'

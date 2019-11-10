@@ -1,8 +1,8 @@
 [hub]
         protocol = https
 [user]
-        name = D. Festen
-        email = d.festen@gmail.com
+	name = David Festen
+	email = d.festen@gmail.com
 [alias]
     count   = !git shortlog -sn
     logx = log --all --graph --decorate=short --color --format=format:'%C(bold blue)%h%C(reset)+%C(dim black)(%cr)%C(reset)+%C(auto)%d%C(reset)++\n+++       %C(bold black)%an%C(reset)%C(black): %s%C(reset)'
@@ -24,7 +24,7 @@
         branch = auto
         ui = true
 [core]
-	excludesfile = /Users/david/.gitignore
+	excludesfile = /Users/david/.gitignore_global
 	editor = atom --wait
 [apply]
     whitespace = nowarn
