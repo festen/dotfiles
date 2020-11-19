@@ -111,8 +111,8 @@ test "${SHELL}" = "${shell}" && shellSet=1 || shellSet=0
 ###
 title Settings
 ###
-echo "Home location:    $HOME"
-echo "Dotfile location:  $dotdir"
+echo "Home location:   $HOME"
+echo "Dotfile location: $dotdir"
 (($hasXCodeUtils)) || warn "XCode Utils marked for installation"
 if [ "$runUpdateHomebrew" -eq 1 ]; then (($hasHomebrew)) || warn "Homebrew marked for installation"; fi
 if [ "$runChangeShell" -eq 1 ]; then (($shellSet)) || warn "Default shell will change ($SHELL -> $shell)"; fi
