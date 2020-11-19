@@ -109,6 +109,7 @@ source "${ZDOTDIR}/.zplugin/bin/zplugin.zsh" || { sh -c "$(curl -fsSL https://ra
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 ZPLGM[MUTE_WARNINGS]=1
+zplugin light rupa/z
 zplugin light mafredri/zsh-async
 zplugin ice pick"async.zsh" src"pure.zsh"
 zplugin light sindresorhus/pure
