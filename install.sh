@@ -55,8 +55,8 @@ function help {
     echo 'Possible values for --only flag:'
     echo '  sync:    Check if dotfiles are up to date and sync otherwise'
     echo '  check:   Check default shell and permissions'
-    echo '  update: Upgrade homebrew installation and installed packages'
-    echo '  install:  Run brew bundle'
+    echo '  update:  Upgrade homebrew installation and installed packages'
+    echo '  install: Run brew bundle'
     echo '  link:    Link dotfiles'
     echo '  tweaks:  Run macos tweaks'
     echo ""
