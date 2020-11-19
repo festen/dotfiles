@@ -11,7 +11,7 @@ set -e
 #DIM='\033[2m'
 mkdir -p $HOME/.config
 dotdir="$HOME/.config/dotfiles"
-shell=/usr/local/bin/zsh
+shell=/bin/zsh
 repository="https://github.com/festen/dotfiles.git"
 brewfile="https://raw.githubusercontent.com/festen/dotfiles/master/Brewfile"
 
