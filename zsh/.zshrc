@@ -105,10 +105,14 @@ alias start='npm start --silent'
 ################################################################################
 # Plugins
 ################################################################################
+declare -A ZPLGM
+ZPLGM[MUTE_WARNINGS]=1
+ZPLGM[BIN_DIR]="${ZDOTDIR}/.zplugin/bin/zplugin.zsh"
+ZPLGM[HOME_DIR]="${ZDOTDIR}/.zplugin"
+
 source "${ZDOTDIR}/.zplugin/bin/zplugin.zsh" || { sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)" && source "${ZDOTDIR}/.zplugin/bin/zplugin.zsh" }
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
-ZPLGM[MUTE_WARNINGS]=1
 zplugin light rupa/z
 zplugin light mafredri/zsh-async
 zplugin ice pick"async.zsh" src"pure.zsh"
@@ -132,3 +136,6 @@ bindkey "$terminfo[cud1]" history-substring-search-down
 setopt extended_glob auto_cd inc_append_history share_history
 test $+commands[npm] -eq 1 && source <(npm completion zsh)
 test $+commands[npx] -eq 1 && source <(npx --shell-auto-fallback zsh)
+
+test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
+

@@ -196,7 +196,7 @@ if [ "${runLinkDotfiles}" -eq 1 ] && [ ! -d $dotdir ]; then
 
     echo Making sure GNU stow is installed
     which stow >/dev/null 2>&1 && echo "GNU stow found at $(which stow)" || brew install stow
-    dirsToStow=("$(find $dotdir -mindepth 1 -maxdepth 1 -type d -not -name '\.*' -exec basename {} \;)")
+    dirsToStow=("$(gfind $dotdir -mindepth 1 -maxdepth 1 -type d -not -name '\.*' -printf "%f\n")")
     for d in $dirsToStow; do
         echo Linking $d
         stow --dir=${dotdir} --target=${HOME} --restow $d
