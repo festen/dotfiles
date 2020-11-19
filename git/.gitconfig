@@ -1,5 +1,5 @@
 [hub]
-        protocol = https
+    protocol = https
 [user]
 	name = David Festen
 	email = d.festen@gmail.com
@@ -19,32 +19,15 @@
             printf \"%${timelength}s    %s %s %s\n\" \"$time\" \"$hash\" \"$branch\" \"$message\";  \
         done < <(git logx -n 25 && echo);"'
 [color]
-        diff = auto
-        status = auto
-        branch = auto
-        ui = true
+    diff = auto
+    status = auto
+    branch = auto
+    ui = true
 [core]
 	excludesfile = /Users/david/.gitignore_global
-	editor = atom --wait
 [apply]
     whitespace = nowarn
 [help]
     autocorrect = 1
 [push]
     default = simple
-[diff]
-    tool = pstorm
-[difftool]
-    prompt = true
-[difftool.pstorm]
-    cmd = /usr/local/bin/pstorm diff "$LOCAL" "$REMOTE"
-[merge]
-    tool = pstorm
-[mergetool.pstorm]
-    cmd = /usr/local/bin/pstorm merge "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
