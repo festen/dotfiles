@@ -1,7 +1,12 @@
 ################################################################################
 # Exports
 ################################################################################
-mkdir -p $HOME/.cache/zsh $HOME/.config/zsh #$HOME/.local
+#init
+mkdir -p $HOME/.cache/zsh $HOME/.config/zsh/.zplugin/bin #$HOME/.local
+chmod 755 /usr/local/share/zsh/site-functions
+chmod 755 /usr/local/share/zsh
+
+#export
 
 # ENVIRONMENT
 test -f "$HOME/.private" && source "$HOME/.private"
@@ -107,10 +112,14 @@ alias start='npm start --silent'
 ################################################################################
 declare -A ZPLGM
 ZPLGM[MUTE_WARNINGS]=1
-ZPLGM[BIN_DIR]="${ZDOTDIR}/.zplugin/bin/zplugin.zsh"
+ZPLGM[BIN_DIR]="${ZDOTDIR}/.zplugin/bin"
 ZPLGM[HOME_DIR]="${ZDOTDIR}/.zplugin"
+ZPLGM[BIN]="${ZDOTDIR}/.zplugin/bin/zplugin.zsh"
 
-source "${ZDOTDIR}/.zplugin/bin/zplugin.zsh" || { sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)" && source "${ZDOTDIR}/.zplugin/bin/zplugin.zsh" }
+
+test -f "${ZPLGM[BIN]}" || git clone https://github.com/zdharma/zplugin.git "${ZPLGM[BIN_DIR]}"
+source "${ZPLGM[BIN]}"
+
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 zplugin light rupa/z
@@ -134,8 +143,8 @@ zmodload zsh/terminfo
 bindkey "$terminfo[cuu1]" history-substring-search-up
 bindkey "$terminfo[cud1]" history-substring-search-down
 setopt extended_glob auto_cd inc_append_history share_history
+
 test $+commands[npm] -eq 1 && source <(npm completion zsh)
 test $+commands[npx] -eq 1 && source <(npx --shell-auto-fallback zsh)
-
 test -e "${ZDOTDIR}/.iterm2_shell_integration.zsh" && source "${ZDOTDIR}/.iterm2_shell_integration.zsh"
 
