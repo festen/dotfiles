@@ -1,0 +1,37 @@
+# Taps
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-versions"
+tap "homebrew/core"
+
+# Coreutils
+brew "coreutils"
+brew "findutils"
+
+# Other bins
+brew "git"
+brew "tree"
+brew "rsync"
+brew "mas" # must come before using mas
+
+# Personal
+cask "adobe-acrobat-reader"
+cask "bettertouchtool"
+cask "iterm2"
+cask "keka"
+cask "macfuse" # used in veracrypt
+cask "raycast"
+cask "transmission"
+cask "veracrypt"
+cask "vlc"
+mas "Amphetamine", id: 937984704
+mas "Things", id: 904280696
+mas "WhatsApp", id: 1147396723
+mas "Wipr", id: 1320666476
+
+# Work
+cask "google-chrome"
+cask "jetbrains-toolbox"
+mas "Slack", id: 803453959
+
+

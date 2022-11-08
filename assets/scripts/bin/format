@@ -1,0 +1,129 @@
+#!/usr/bin/env zsh
+#
+# Formats time in seconds to human readable strings
+#
+# Depends on: date or gdate (gnu-date) w/ fallback to date (bsd-date)
+#
+
+# check dependencies
+
+# variables
+version=1.0.1
+name=$(basename $0)
+bin=$(dirname $0)
+output=long
+
+# dependencies
+. $bin/util/load-dep pipeable $0 $@
+
+# format functions
+format-long() {
+    parts=()
+    -extract-parts "$@"
+    if [ "$d" -eq 1 ]; then
+        echo "$d day"
+        return 0
+    elif [ "$d" -gt 1 ]; then
+        echo "$d days"
+        return 0
+    fi
+
+    if [ "$h" -eq 1 ]; then
+        parts+="$h hour"
+    elif [ "$h" -gt 1 ]; then
+        parts+="$h hours"
+    fi
+    if [ "$m" -eq 1 ]; then
+        parts+="$m minute"
+    elif [ "$m" -gt 1 ]; then
+        parts+="$m minutes"
+    fi
+    if [ "$h" -eq 0 ]; then
+        test "$tms" -ne 0 && sms="$s.$tms" || sms="$s"
+        if [ "$s" -eq 1 ] && [ "$s" = "$sms" ]; then
+            parts+="$sms second"
+        else
+            parts+="$sms seconds"
+        fi
+    fi
+    -concat ', ' $parts
+    echo ''
+}
+format-short() {
+    -extract-parts "$@"
+    if [ "$td" -gt 86400 ]; then
+        echo "${d}d ${h}h${m}m"
+    elif [ "$td" -gt 3600 ]; then
+        printf "%d:%02d:%02d\n" $h $m $s
+    elif [ "$td" -gt 60 ]; then
+        echo $m\'$s\"$tms
+    else
+        echo $s\"$tms
+    fi
+}
+
+# other functions
+-help() {
+    echo "Usage: $name [OPTION] <timestamp>"
+    echo "Formats the given datetime to the given datetime"
+    echo
+    echo '  -h, --help              Displays this help function'
+    echo "  -o, --output=FORMAT     Forces output format [default: $output]"
+    echo '  -v, --version           Displays the version number'
+    echo
+    echo "FORMAT can either be 'short', 'long' or a format string as described in gdate"
+}
+-extract-parts() {
+    d=$(($td/86400))
+    h=$((($td-$d*86400)/3600))
+    m=$((($td-$d*86400-$h*3600)/60))
+    s=$(($td-$d*86400-$h*3600-$m*60))
+}
+-concat() {
+    local d=$1; shift
+    echo -n "$1"; shift
+    printf "%s" "${@/#/$d}"
+}
+-error() {
+    err='Unknown error'
+    case "$1" in
+        args) err="Missing argument for $2";;
+        flag) err="Unknown argument $2";;
+    esac
+    echo ${RED}Error: $err${RESET_COLOR}; -help; exit 1
+}
+
+# read the options
+set -- $(echo $@ | tr '=' ' ')
+while [ "${1:0:1}" = '-' ]; do
+    case "$1" in
+        -h|--help) -help; exit;;
+        -o|--output)
+            test -z "$2" && -error args "$1"
+            output="$2"
+            shift 2
+            ;;
+        -v|--version) echo $version; exit;;
+        *)
+            if [ "${#1}" -gt 2 ] && ! [ "${1:1:1}" = '-' ]; then
+                set -- -${1:1:1} -${1:2} ${@:2}
+            else
+                -error flag "$1"
+            fi
+            ;;
+    esac
+done
+
+# set time variables
+t=$(date -ud @${1:-0} +%s.%N)
+td=$(printf %d $t)
+tms=$(printf %03d $((($t-$td)*1000)) )
+
+# evaluate input into output
+if [ "$output" = 'short' ]; then
+    format-short $t
+elif [ "$output" = 'long' ]; then
+    format-long $t
+else
+    date -u -d @$t +$output
+fi

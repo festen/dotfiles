@@ -1,0 +1,10 @@
+- [ ] prerun / handover to node (need node) / maybe `pkg` as alternative?
+- [ ] check versions / Node /check prerequisists (git/brew)
+- [ ] Sync dotfiles
+- [ ] Change shell/Shell
+- [ ] Update homebrew/Homebrew
+- [ ] Install bundle /brew bundle
+- [ ] link dotfiles (dots/icloud)
+- [ ] Check permissions /chmod maxos.sh / fix permissions (~/.ssh, ~/bin)
+- [ ] Install tweaks /maxos.sh tweaks
+- [ ] cleanup (~/.git, symlinks)

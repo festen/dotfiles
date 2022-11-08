@@ -1,0 +1,35 @@
+[hub]
+    protocol = https
+[user]
+	name = David Festen
+	email = d.festen@gmail.com
+[alias]
+    count = !git shortlog -sn
+    logx = log --all --graph --decorate=short --color --format=format:'%C(bold blue)%h%C(reset)+%C(dim black)(%cr)%C(reset)+%C(auto)%d%C(reset)++\n+++       %C(bold black)%an%C(reset)%C(black): %s%C(reset)'
+    stree = !zsh -c '"                                                                             \
+        while IFS=+ read -r hash time branch message; do                                            \
+            timelength=$(echo \"$time\" | sed -E \"s:[^ ][[]([0-9]{1,2}(;[0-9]{1,2})?)?m::g\");     \
+            timelength=$(echo \"16+${#time}-${#timelength}\" | bc);                                 \
+            printf \"%${timelength}s    %s %s %s\n\" \"$time\" \"$hash\" \"$branch\" \"\";          \
+        done < <(git logx -n 12 && echo);"'
+    vtree = !zsh -c '"                                                                             \
+        while IFS=+ read -r hash time branch message; do                                            \
+            timelength=$(echo \"$time\" | sed -E \"s:[^ ][[]([0-9]{1,2}(;[0-9]{1,2})?)?m::g\");     \
+            timelength=$(echo \"16+${#time}-${#timelength}\" | bc);                                 \
+            printf \"%${timelength}s    %s %s %s\n\" \"$time\" \"$hash\" \"$branch\" \"$message\";  \
+        done < <(git logx -n 25 && echo);"'
+[color]
+    diff = auto
+    status = auto
+    branch = auto
+    ui = true
+[core]
+    excludesfile = ~/.gitignore
+[apply]
+    whitespace = nowarn
+[help]
+    autocorrect = 1
+[push]
+    default = simple
+[pull]
+	rebase = false

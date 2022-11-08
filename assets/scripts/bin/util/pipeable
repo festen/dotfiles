@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+if ! [ -t 0 ]; then
+    while read line; do
+        for arg in $(echo $line | tr " " "\n"); do
+            eval ${@:2} $arg
+        done
+        exit 0
+    done
+fi

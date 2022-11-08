@@ -1,0 +1,142 @@
+#!/usr/bin/env zsh
+
+# variables
+version=1.0.3
+name=$(basename $0)
+bin=$(dirname $0)
+speed=0.25
+default=spinner
+
+# functions
+indicator-dots() {
+    while kill -0 "$child_pid" 2>/dev/null; do
+        sleep $speed
+        printf .
+    done
+}
+indicator-spinner() {
+    local chars='\|/-'
+    local speed=$(eval "python -c 'print $speed/${#chars}.0'")
+    local i=0
+    while kill -0 "$child_pid" 2>/dev/null; do
+        i=$(( (i+1) % ${#chars} ))
+        printf "${chars:$i:1}"
+        sleep $speed
+        printf '\b'
+    done
+}
+indicator-countdown-1() {
+    indicator-countdown-using-2 milliseconds $1
+}
+indicator-countdown-using-2() {
+    case "$1" in
+        s|second|seconds)
+            unit=s
+            count_format='%s'
+            output_format='long'
+            ;;
+        ms|millisecond|milliseconds)
+            count_format='%s.%N'
+            output_format='short'
+            ;;
+        *) -error flag "$1";;
+    esac
+
+    -is-numeric $2 || -error flag $2
+
+    local target=$(date -d "NOW + $2 seconds" +"$count_format")
+    local chars='\|/-'
+    local speed=$(eval "python -c 'print $speed/${#chars}.0'")
+    local i=0
+
+    while kill -0 "$child_pid" 2>/dev/null; do
+        i=$(( (i+1) % ${#chars} ))
+        t=$(($target - $(date +"$count_format")))
+        if [ ${t:0:1} = '-' ]; then
+            output="${chars:$i:1}"
+        else
+            output="${chars:$i:1} $($bin/format -o "$output_format" ${t:-0})"
+        fi
+        test "${#output}" -eq "$prev_out_len" || tput el
+        printf $output
+        prev_out_len=${#output}
+        tput cub $prev_out_len
+        sleep $speed
+    done
+}
+-help() {
+    echo "Usage: $name [OPTION] <cmd>"
+    echo "Displays an indicator while running command"
+    echo "Example: $name -t dots sleep 5"
+    echo
+    echo "  -h, --help            Displays this help text."
+    echo "  -s, --silent          Do not print output of running command"
+    echo "      --speed=SPEED     Adjust animation speed [default: $speed]."
+    echo "  -t, --type=TYPE       Type of indicator to use [default: $default]."
+    echo "                        TYPE is on of the following: spinner, dots."
+    echo "  -v, --version         Displays version number."
+}
+-error() {
+    err='Unknown error'
+    case "$1" in
+        args) err="Missing argument(s) for $2";;
+        no_command) err='No command given';;
+        unknown_indicator) err="Unknown progress indicator: $2";;
+        flag) err="Unknown argument $2";;
+    esac
+    echo ${RED}Error: $err${RESET_COLOR}; -help; exit 1
+}
+-is-indicator() {
+    type "indicator-$1" | grep -q 'shell function'
+}
+-is-numeric() {
+    [[ $1 =~ ^([0-9]+|[0-9]*\.[0-9]+)$ ]]
+}
+
+# check flags
+set -- $(echo $@ | tr '=' ' ')
+indicator=$default
+while [ "${1:0:1}" = '-' ]; do
+    case "$1" in
+        -h|--help) -help; exit 0;;
+        -v|--version) echo $version; exit 0;;
+        -s|--silent) silent=true; shift;;
+        --speed) speed="$1"; shift;;
+        -t|--type)
+            if [ -z "$2" ]; then
+                -error args "$1"
+            elif -is-indicator "$2"; then
+                indicator="$2"
+                shift 2
+            else
+                for (( n = 1; n < 10; n++ )); do
+                    if -is-indicator "$2-$n"; then # TODO 1 --> general case
+                        test "${#@}" -lt "$((n+2))" && -error args $2
+                        indicator="$2-$n"
+                        args="${@:3:$n}"
+                        shift $((n+2))
+                        found='true'
+                    fi
+                done
+                test "$found" = 'true' || -error unknown_indicator "$2"
+            fi;;
+        *)
+            if [ "${#1}" -gt 2 ] && ! [ "${1:1:1}" = '-' ]; then
+                set -- -${1:1:1} -${1:2} ${@:2}
+            else
+                -error flag "$1"
+            fi;;
+    esac
+done
+
+test ${#@} -eq 0 && -error no_command
+
+if [ "$silent" = 'true' ]; then
+    eval "$@" >/dev/null 2>&1 &
+else
+    eval "$@" &
+fi
+child_pid=$!
+eval "indicator-$indicator $args" 2>/dev/null
+
+# countdown-2 ontvangt args niet ? excode 1
