@@ -3,18 +3,31 @@
 ################################################################################
 mkdir -p $HOME/.cache/zsh $HOME/.config/zsh/.zplugin/bin
 
-# ENVIRONMENT
+# PRIVATE
+export PRIVATE="${HOME}/.private"
 test -f "$HOME/.private" && source "$HOME/.private"
-export LESSHISTFILE='-'
-export HISTFILE="${HOME}/.cache/history"
+export AWS_SHARED_CREDENTIALS_FILE="${PRIVATE}/aws/credentials"
+export AWS_CONFIG_FILE="${PRIVATE}/aws/config"
+
+# CACHES
+export CACHE="${HOME}/.cache"
+export HISTFILE="${CACHE}/history"
+export npm_config_cache="${CACHE}/npm"
+export ZSHZ_DATA="${CACHE}/zshz"
+export LESSHISTFILE=-
+
+# CONFIGS
+export CONFIG="${HOME}/.config"
+export ZDOTDIR="${CONFIG}/zsh"
+export NVM_DIR="${CONFIG}/nvm"
+export HOMEBREW_BUNDLE_FILE="${CONFIG}/Brewfile"
+
+# ENVIRONMENT
 export HISTSIZE=1000
 export SAVEHIST=1000
 export EDITOR='nano'
-export ZDOTDIR="${HOME}/.config/zsh"
-export NVM_DIR="${HOME}/.nvm"
 export NVM_LAZY_LOAD=false
 export NVM_AUTO_USE=true
-export HOMEBREW_BUNDLE_FILE="${HOME}/.homebrew/Brewfile"
 
 # PATH
 PATH=''
@@ -34,7 +47,6 @@ PATH=''
 -add-path "/usr/sbin"
 -add-path "/bin"
 -add-path "/sbin"
--add-path "$BUN_INSTALL/bin"
 eval $(/opt/homebrew/bin/brew shellenv)
 export PATH
 

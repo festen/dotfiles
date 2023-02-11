@@ -1,6 +1,0 @@
-#!/usr/bin/env zsh
-realpath=$(dirname "$(readlink -f "$0")")
-dotfiles=$(dirname $(dirname $(dirname "$realpath")))
-cd "${dotfiles}/installer" || exit 101
-source ~/.nvm/nvm.sh && nvm use || exit 102
-npm start --silent install || exit 103

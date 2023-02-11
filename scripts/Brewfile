@@ -9,21 +9,18 @@ brew "coreutils"
 brew "findutils"
 
 # Other bins
+brew "nvm"
 brew "git"
 brew "tree"
 brew "rsync"
 brew "mas" # must come before using mas
 
 # Personal
-cask "adobe-acrobat-reader"
-cask "bettertouchtool"
 cask "iterm2"
 cask "keka"
-cask "macfuse" # used in veracrypt
-cask "raycast"
 cask "transmission"
-cask "veracrypt"
 cask "vlc"
+cask "bettertouchtool"
 mas "Amphetamine", id: 937984704
 mas "Things", id: 904280696
 mas "WhatsApp", id: 1147396723

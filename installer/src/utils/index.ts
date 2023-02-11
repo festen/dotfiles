@@ -1,5 +1,0 @@
-export * from './extract-version'
-export * from './register-install-task'
-export * from './verify'
-export * from './version-like'
-export * from './zx-nvm'
