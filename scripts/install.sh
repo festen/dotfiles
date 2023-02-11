@@ -1,5 +1,5 @@
 set -v
-REPO_URL=${REPO_URL:-"git@github.com:festen/dotfiles.git"}
+REPO_URL=${REPO_URL:-"https://github.com/festen/dotfiles.git"}
 
 cd ~ || exit 1
 tmpdir=$(mktemp -d)
