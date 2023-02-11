@@ -31,5 +31,6 @@
     autocorrect = 1
 [push]
     default = simple
+	autoSetupRemote = true
 [pull]
 	rebase = false

@@ -11,7 +11,6 @@ export HISTSIZE=1000
 export SAVEHIST=1000
 export EDITOR='nano'
 export ZDOTDIR="${HOME}/.config/zsh"
-export AWS_PROFILE=saml
 export NVM_DIR="${HOME}/.nvm"
 export NVM_LAZY_LOAD=false
 export NVM_AUTO_USE=true
