@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -e
 sudo -v
-RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v15"
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v18"
 
 function remoteExecute {
    curl -s "$RAW_URL"/scripts/"$1" | /usr/bin/env zsh
