@@ -13,7 +13,7 @@ https://dev.to/bowmanjd/dotfiles-the-easy-way-3iio
 ### Step one: git clone
 ```shell
 cd ~ || exit 1
-git clone -c status.showUntrackedFiles=no -n --separate-git-dir .git $REPO_URL tmpdir
+git clone -c status.showUntrackedFiles=no -n --separate-git-dir .git "$REPO_URL" tmpdir
 rm -r tmpdir
 ```
 Rationale:

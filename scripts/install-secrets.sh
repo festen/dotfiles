@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 SECRETS="$HOME/Library/Mobile Documents/com~apple~CloudDocs/private-settings"
 
 for secretPath in "$SECRETS"/*; do

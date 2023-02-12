@@ -1,11 +1,12 @@
-set -v
-REPO_URL=${REPO_URL:-"https://github.com/festen/dotfiles.git"}
+#!/usr/bin/env zshz
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/HEAD"
 
-cd ~ || exit 1
-tmpdir=$(mktemp -d)
-git clone -c status.showUntrackedFiles=no -n --separate-git-dir "$HOME/.git" "$REPO_URL" "$tmpdir"
-rm -r "$tmpdir"
+function remoteExecute {
+  source <(curl -s "$RAW_URL"/scripts/"$1")
+}
+
+remoteExecute install-secrets.sh
+remoteExecute install-dotfiles.sh
 git checkout -f
-source "$HOME/scripts/install-secrets.sh"
-source "$HOME/scripts/install-brewfile.sh"
-source "$HOME/scripts/install-tweaks.sh"
+remoteExecute install-brewfile.sh
+remoteExecute install-tweaks.sh
