@@ -1,11 +1,6 @@
 ################################################################################
 # Exports
 ################################################################################
-mkdir -p\
- $HOME/.cache/zsh\
- $HOME/.cache/zshz\
- $HOME/.config/zsh/.zplugin/bin
-
 # PRIVATE
 export PRIVATE="${HOME}/.private"
 test -f "$HOME/.private" && source "$HOME/.private"
@@ -142,6 +137,7 @@ ZPLGM[BIN_DIR]="${ZDOTDIR}/.zplugin/bin"
 ZPLGM[HOME_DIR]="${ZDOTDIR}/.zplugin"
 ZPLGM[BIN]="${ZDOTDIR}/.zplugin/bin/zplugin.zsh"
 
+mkdir -p $HOME/.config/zsh/.zplugin/bin
 test -f "${ZPLGM[BIN]}" || git clone https://github.com/festen/zplugin.git "${ZPLGM[BIN_DIR]}"
 source "${ZPLGM[BIN]}"
 
