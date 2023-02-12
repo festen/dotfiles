@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -e
 sudo -v
-RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v22"
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v23"
 
 function remoteExecute {
    curl -s "$RAW_URL"/scripts/"$1" | /usr/bin/env zsh
@@ -15,7 +15,7 @@ git checkout -f
 "$HOME"/scripts/install-brewfile.sh || true
 "$HOME"/scripts/install-tweaks.sh || true
 
-
+eval "$(/opt/homebrew/bin/brew shellenv)"
 export NVM_DIR="${CONFIG}/nvm"
 source "$(brew --prefix nvm)/nvm.sh"
 nvm install --lts

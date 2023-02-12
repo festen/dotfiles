@@ -39,7 +39,6 @@ PATH=''
 -add-path "../../../node_modules/.bin"
 -add-path "$NVM_DIR/current"
 -add-path "$HOME/bin"
--add-path "/opt/homebrew/bin/"
 -add-path "/opt/bin"
 -add-path "/usr/local/bin"
 -add-path "/usr/bin"
