@@ -151,7 +151,7 @@ autoload -Uz _zplugin
 #zplugin ice wait"1" silent
 #zplugin light djui/alias-tips
 #zplugin ice wait"1" silent
-#zplugin light arzzen/calc.plugin.zsh
+zplugin light arzzen/calc.plugin.zsh
 #zplugin light buonomo/yarn-completion
 #zplugin snippet https://iterm2.com/shell_integration/zsh
 #zplugin light mafredri/zsh-async
