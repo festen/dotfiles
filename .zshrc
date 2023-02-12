@@ -153,7 +153,7 @@ autoload -Uz _zplugin
 #zplugin ice wait"1" silent
 #zplugin light arzzen/calc.plugin.zsh
 #zplugin light buonomo/yarn-completion
-zplugin snippet https://iterm2.com/shell_integration/zsh
+#zplugin snippet https://iterm2.com/shell_integration/zsh
 #zplugin light mafredri/zsh-async
 #zplugin ice pick"async.zsh" src"pure.zsh"
 #zplugin light sindresorhus/pure
