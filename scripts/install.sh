@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
-set -euo pipefail
+set -eo pipefail
 
-RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v7"
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v8"
 
 function remoteExecute {
   source <(curl -s "$RAW_URL"/scripts/"$1")
