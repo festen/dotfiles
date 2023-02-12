@@ -130,6 +130,8 @@ alias tzx='zx "$HOME/code/me/tzx/register.js"'
 ################################################################################
 # Plugins
 ################################################################################
+source $(brew --prefix nvm)/nvm.sh
+
 declare -A ZPLGM
 ZPLGM[MUTE_WARNINGS]=1
 ZPLGM[BIN_DIR]="${ZDOTDIR}/.zplugin/bin"
