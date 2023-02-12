@@ -1,5 +1,5 @@
-#!/usr/bin/env zshz
-RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v2"
+#!/usr/bin/env zsh
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v3"
 
 function remoteExecute {
   source <(curl -s "$RAW_URL"/scripts/"$1")
@@ -8,5 +8,5 @@ function remoteExecute {
 remoteExecute install-secrets.sh
 remoteExecute install-dotfiles.sh
 git checkout -f
-remoteExecute install-brewfile.sh
-remoteExecute install-tweaks.sh
+$HOME/scripts/install-brewfile.sh.sh
+$HOME/scripts/install-tweaks.sh
