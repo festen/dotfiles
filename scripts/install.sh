@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -eo pipefail
 
-RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v8"
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v9"
 
 function remoteExecute {
   source <(curl -s "$RAW_URL"/scripts/"$1")
@@ -11,6 +11,8 @@ sudo -v
 
 remoteExecute install-secrets.sh
 remoteExecute install-dotfiles.sh
+
+set +eo pipefail
 
 git checkout -f
 source "$HOME"/.zshrc
