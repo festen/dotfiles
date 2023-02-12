@@ -7,15 +7,14 @@ function remoteExecute {
    curl -s "$RAW_URL"/scripts/"$1" | /usr/bin/env zsh
 }
 
+cd "$HOME" || exit 1
 remoteExecute install-secrets.sh
 remoteExecute install-dotfiles.sh
 
 git checkout -f
-cd $HOME || exit 1
-source .zshrc || true
-source .zshrc || true
+"$HOME"/scripts/install-brewfile.sh || true
+"$HOME"/scripts/install-tweaks.sh || true
+
+source "$(brew --prefix nvm)/nvm.sh"
 nvm install --lts
 nvm alias default node
-
-#"$HOME"/scripts/install-brewfile.sh || true
-#"$HOME"/scripts/install-tweaks.sh || true
