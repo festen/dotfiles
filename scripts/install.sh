@@ -12,7 +12,7 @@ remoteExecute install-dotfiles.sh
 
 git checkout -f
 cd $HOME || exit 1
-source .zshrc
+source .zshrc || true
 nvm install --lts
 nvm alias default node
 
