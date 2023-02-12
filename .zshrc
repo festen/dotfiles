@@ -27,6 +27,7 @@ export SAVEHIST=1000
 export EDITOR='nano'
 export NVM_LAZY_LOAD=false
 export NVM_AUTO_USE=true
+export HOMEBREW_NO_ANALYTICS=1
 
 # PATH
 PATH=''
