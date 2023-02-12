@@ -1,5 +1,5 @@
 #!/usr/bin/env zshz
-RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/HEAD"
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v2"
 
 function remoteExecute {
   source <(curl -s "$RAW_URL"/scripts/"$1")
