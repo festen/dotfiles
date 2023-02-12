@@ -19,7 +19,7 @@ export LESSHISTFILE=-
 export CONFIG="${HOME}/.config"
 export ZDOTDIR="${CONFIG}/zsh"
 export NVM_DIR="${CONFIG}/nvm"
-export HOMEBREW_BUNDLE_FILE="${CONFIG}/Brewfile"
+export HOMEBREW_BUNDLE_FILE="${HOME}/scripts/Brewfile"
 
 # ENVIRONMENT
 export HISTSIZE=1000

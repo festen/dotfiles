@@ -3,31 +3,41 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/cask-versions"
 tap "homebrew/core"
+tap "buo/cask-upgrade"
 
-# Coreutils
+# Prio
+brew "mas" # must come before using mas
+
+# Core Utils
 brew "coreutils"
 brew "findutils"
 
 # Other bins
-brew "nvm"
 brew "git"
-brew "tree"
+brew "nvm"
 brew "rsync"
-brew "mas" # must come before using mas
+brew "tree"
 
 # Personal
+cask "bettertouchtool"
 cask "iterm2"
 cask "keka"
+cask "raycast"
 cask "transmission"
 cask "vlc"
-cask "bettertouchtool"
+cask "warp"
+mas "AutoRefresh", id: 1592466003
 mas "Amphetamine", id: 937984704
+mas "Bear", id: 1091189122
+mas "Keynote", id: 409183694
+mas "Numbers", id: 409203825
 mas "Things", id: 904280696
 mas "WhatsApp", id: 1147396723
 mas "Wipr", id: 1320666476
 
 # Work
 cask "google-chrome"
+cask "google-chrome-canary"
 cask "jetbrains-toolbox"
 mas "Slack", id: 803453959
 
