@@ -154,19 +154,19 @@ autoload -Uz _zplugin
 #zplugin light arzzen/calc.plugin.zsh
 #zplugin light buonomo/yarn-completion
 #zplugin snippet https://iterm2.com/shell_integration/zsh
-#zplugin light mafredri/zsh-async
-#zplugin ice pick"async.zsh" src"pure.zsh"
-#zplugin light sindresorhus/pure
-#zplugin ice blockf wait"1" silent
-#zplugin load zsh-users/zsh-completions
-#zplugin load agkozak/zsh-z
-#zplugin ice atinit"autoload compinit; compinit -d $HOME/.cache/zsh/zcompdump-$ZSH_VERSION; zpcdreplay" wait"1" silent
-#zplugin load lukechilds/zsh-better-npm-completion
-#zplugin ice blockf wait"1" silent
-#zplugin load lukechilds/zsh-nvm
-#zmodload zsh/terminfo
-#bindkey "$terminfo[cuu1]" history-substring-search-up
-#bindkey "$terminfo[cud1]" history-substring-search-down
+zplugin light mafredri/zsh-async
+zplugin ice pick"async.zsh" src"pure.zsh"
+zplugin light sindresorhus/pure
+zplugin ice blockf wait"1" silent
+zplugin load zsh-users/zsh-completions
+zplugin load agkozak/zsh-z
+zplugin ice atinit"autoload compinit; compinit -d $HOME/.cache/zsh/zcompdump-$ZSH_VERSION; zpcdreplay" wait"1" silent
+zplugin load lukechilds/zsh-better-npm-completion
+zplugin ice blockf wait"1" silent
+zplugin load lukechilds/zsh-nvm
+zmodload zsh/terminfo
+bindkey "$terminfo[cuu1]" history-substring-search-up
+bindkey "$terminfo[cud1]" history-substring-search-down
 setopt extended_glob auto_cd inc_append_history share_history
 
 test $+commands[npm] -eq 1 && source <(npm completion zsh) # npm completions

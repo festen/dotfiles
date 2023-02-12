@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -e
 sudo -v
-RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v14"
+RAW_URL="https://raw.githubusercontent.com/festen/dotfiles/v15"
 
 function remoteExecute {
    curl -s "$RAW_URL"/scripts/"$1" | /usr/bin/env zsh
@@ -16,5 +16,7 @@ source .zshrc
 nvm install --lts
 nvm alias default node
 
-"$HOME"/scripts/install-brewfile.sh
-"$HOME"/scripts/install-tweaks.sh
+echo "SKIPPING BREWFILE/TWEAKS"
+#"$HOME"/scripts/install-brewfile.sh || true
+#"$HOME"/scripts/install-tweaks.sh || true
+echo 'DONE'
