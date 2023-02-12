@@ -1,7 +1,10 @@
 ################################################################################
 # Exports
 ################################################################################
-mkdir -p $HOME/.cache/zsh $HOME/.config/zsh/.zplugin/bin
+mkdir -p\
+ $HOME/.cache/zsh\
+ $HOME/.cache/zshz\
+ $HOME/.config/zsh/.zplugin/bin
 
 # PRIVATE
 export PRIVATE="${HOME}/.private"
@@ -15,6 +18,7 @@ export HISTFILE="${CACHE}/history"
 export npm_config_cache="${CACHE}/npm"
 export ZSHZ_DATA="${CACHE}/zshz"
 export LESSHISTFILE=-
+
 
 # CONFIGS
 export CONFIG="${HOME}/.config"
@@ -143,7 +147,7 @@ source "${ZPLGM[BIN]}"
 
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
-zplugin light rupa/z
+zplugin light agkozak/zsh-z
 zplugin light mafredri/zsh-async
 zplugin ice pick"async.zsh" src"pure.zsh"
 zplugin light sindresorhus/pure
