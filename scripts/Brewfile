@@ -25,7 +25,6 @@ cask "keka"
 cask "raycast"
 cask "transmission"
 cask "vlc"
-cask "warp"
 mas "AutoRefresh", id: 1592466003
 mas "Amphetamine", id: 937984704
 mas "Bear", id: 1091189122
