@@ -2,10 +2,10 @@
 # Exports
 ################################################################################
 # PRIVATE
-export PRIVATE="${HOME}/.private"
-test -f "$HOME/.private" && source "$HOME/.private"
-export AWS_SHARED_CREDENTIALS_FILE="${PRIVATE}/aws/credentials"
-export AWS_CONFIG_FILE="${PRIVATE}/aws/config"
+export PRIVATE="$HOME/.private"
+test -f "$PRIVATE" && source "$PRIVATE"
+#export AWS_SHARED_CREDENTIALS_FILE="${PRIVATE}/aws/credentials"
+#export AWS_CONFIG_FILE="${PRIVATE}/aws/config"
 
 # CACHES
 export CACHE="${HOME}/.cache"
@@ -14,7 +14,6 @@ export npm_config_cache="${CACHE}/npm"
 export ZSHZ_DATA="${CACHE}/zshz"
 export LESSHISTFILE=-
 
-
 # CONFIGS
 export CONFIG="${HOME}/.config"
 export ZDOTDIR="${CONFIG}/zsh"
@@ -22,12 +21,14 @@ export NVM_DIR="${CONFIG}/nvm"
 export HOMEBREW_BUNDLE_FILE="${HOME}/scripts/Brewfile"
 
 # ENVIRONMENT
-export HISTSIZE=1000
-export SAVEHIST=1000
 export EDITOR='nano'
-export NVM_LAZY_LOAD=false
+export NVM_COMPLETION=true
 export NVM_AUTO_USE=true
 export HOMEBREW_NO_ANALYTICS=1
+export HISTSIZE=100000 # 100k
+export SAVEHIST=100000
+export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
+export HISTORY_SUBSTRING_SEARCH_FUZZY=true
 
 # PATH
 PATH=''
@@ -129,8 +130,6 @@ alias tzx='zx "$HOME/code/me/tzx/register.js"'
 ################################################################################
 # Plugins
 ################################################################################
-#source $(brew --prefix nvm)/nvm.sh
-
 declare -A ZINIT
 ZINIT[MUTE_WARNINGS]=1
 ZINIT[OPTIMIZE_OUT_DISK_ACCESSES]=0 # gives 10ms speedup if set to 1
@@ -162,11 +161,11 @@ zinit lucid for\
     src"pure.zsh"\
     light-mode\
   sindresorhus/pure\
-    bindmap'!UPAR->history-substring-search-up;DOWNAR->history-substring-search-down'\
-    wait\
+    atload'bindkey "^[[A" history-substring-search-up; bindkey "^[[B" history-substring-search-down'\
+    wait"1"\
   zsh-users/zsh-history-substring-search
 
-setopt extended_glob auto_cd inc_append_history share_history
-#test $+commands[npm] -eq 1 && source <(npm completion zsh) # npm completions
+setopt extended_glob auto_cd inc_append_history share_history HIST_IGNORE_ALL_DUPS
 
 return 0 # avoids running anything that is auto added below
+
