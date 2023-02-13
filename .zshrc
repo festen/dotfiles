@@ -129,46 +129,44 @@ alias tzx='zx "$HOME/code/me/tzx/register.js"'
 ################################################################################
 # Plugins
 ################################################################################
-source $(brew --prefix nvm)/nvm.sh
+#source $(brew --prefix nvm)/nvm.sh
 
-declare -A ZPLGM
-ZPLGM[MUTE_WARNINGS]=1
-ZPLGM[BIN_DIR]="${ZDOTDIR}/.zplugin/bin"
-ZPLGM[HOME_DIR]="${ZDOTDIR}/.zplugin"
-ZPLGM[BIN]="${ZDOTDIR}/.zplugin/bin/zplugin.zsh"
+declare -A ZINIT
+ZINIT[MUTE_WARNINGS]=1
+ZINIT[OPTIMIZE_OUT_DISK_ACCESSES]=0 # gives 10ms speedup if set to 1
+ZINIT[COMPINIT_OPTS]="-C"
+ZINIT[BIN_DIR]="${CONFIG}/zinit/bin"
+ZINIT[HOME_DIR]="${CONFIG}/zinit"
+ZINIT[BIN]="${CONFIG}/zinit/bin/zinit.zsh"
+mkdir -p $ZINIT[BIN_DIR]
+test -f "${ZINIT[BIN]}" || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
+source "${ZINIT[BIN]}"
 
-mkdir -p $HOME/.config/zsh/.zplugin/bin
-test -f "${ZPLGM[BIN]}" || git clone https://github.com/festen/zplugin.git "${ZPLGM[BIN_DIR]}"
-source "${ZPLGM[BIN]}"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-autoload -Uz _zplugin
-(( ${+_comps} )) && _comps[zplugin]=_zplugin
 
-zplugin light zsh-users/zsh-syntax-highlighting
-zplugin light zsh-users/zsh-history-substring-search
-zplugin ice wait"1" atload'_zsh_autosuggest_start' silent
-zplugin light zsh-users/zsh-autosuggestions
-zplugin ice wait"1" silent
-zplugin light djui/alias-tips
-zplugin ice wait"1" silent
-zplugin light arzzen/calc.plugin.zsh
-zplugin light buonomo/yarn-completion
-zplugin snippet https://iterm2.com/shell_integration/zsh
-zplugin light mafredri/zsh-async
-zplugin ice pick"async.zsh" src"pure.zsh"
-zplugin light sindresorhus/pure
-zplugin ice blockf wait"1" silent
-zplugin load zsh-users/zsh-completions
-zplugin load agkozak/zsh-z
-zplugin ice atinit"autoload compinit; compinit -d $HOME/.cache/zsh/zcompdump-$ZSH_VERSION; zpcdreplay" wait"1" silent
-zplugin load lukechilds/zsh-better-npm-completion
-zplugin ice blockf wait"1" silent
-zplugin load lukechilds/zsh-nvm
-zmodload zsh/terminfo
-bindkey "$terminfo[cuu1]" history-substring-search-up
-bindkey "$terminfo[cud1]" history-substring-search-down
+# turbo mode (async loaded)
+zinit wait lucid light-mode for\
+  atload"!_zsh_autosuggest_start"\
+ zsh-users/zsh-autosuggestions\
+ zsh-users/zsh-syntax-highlighting\
+ djui/alias-tips\
+ agkozak/zsh-z\
+ lukechilds/zsh-nvm
+
+# loaded sync
+zinit lucid for\
+  https://iterm2.com/shell_integration/zsh\
+    pick"async.zsh"\
+    src"pure.zsh"\
+    light-mode\
+  sindresorhus/pure\
+    bindmap'!UPAR->history-substring-search-up;DOWNAR->history-substring-search-down'\
+    wait\
+  zsh-users/zsh-history-substring-search
+
 setopt extended_glob auto_cd inc_append_history share_history
+#test $+commands[npm] -eq 1 && source <(npm completion zsh) # npm completions
 
-test $+commands[npm] -eq 1 && source <(npm completion zsh) # npm completions
-
-return 0
+return 0 # avoids running anything that is auto added below

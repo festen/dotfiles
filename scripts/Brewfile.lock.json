@@ -11,7 +11,7 @@
         "revision": "100a9f95d68ff428e456d1e4549f5f094a7faab6"
       },
       "homebrew/core": {
-        "revision": "afc9c5cbc427072b427fd85725c93a3997c09b7f"
+        "revision": "1bde743365a79e59bc676cff7045bf9c6c050269"
       },
       "buo/cask-upgrade": {
         "revision": "ea639b582bd93e24a5670da7b72e57b82dbb2cbf"
@@ -314,7 +314,7 @@
     },
     "cask": {
       "bettertouchtool": {
-        "version": "4.023,2240",
+        "version": "3.826,1972",
         "options": {
           "full_name": "bettertouchtool"
         }
@@ -418,7 +418,7 @@
       "ventura": {
         "HOMEBREW_VERSION": "3.6.21",
         "HOMEBREW_PREFIX": "/opt/homebrew",
-        "Homebrew/homebrew-core": "afc9c5cbc427072b427fd85725c93a3997c09b7f",
+        "Homebrew/homebrew-core": "1bde743365a79e59bc676cff7045bf9c6c050269",
         "CLT": "14.1.0.0.1.1666437224",
         "Xcode": "14.1",
         "macOS": "13.0.1"
