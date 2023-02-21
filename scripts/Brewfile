@@ -12,6 +12,7 @@ brew "git"
 brew "nvm"
 brew "rsync"
 brew "tree"
+brew "act"
 
 cask "bettertouchtool"
 cask "google-chrome"
