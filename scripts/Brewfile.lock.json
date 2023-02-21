@@ -310,50 +310,6 @@
             }
           }
         }
-      },
-      "glab": {
-        "version": "1.25.3",
-        "bottle": {
-          "rebuild": 0,
-          "root_url": "https://ghcr.io/v2/homebrew/core",
-          "files": {
-            "arm64_ventura": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/glab/blobs/sha256:f40bfcbc4e1402c456d268b900c45d556ed14f0c5ace47f73bae1f1ee9a1a0ee",
-              "sha256": "f40bfcbc4e1402c456d268b900c45d556ed14f0c5ace47f73bae1f1ee9a1a0ee"
-            },
-            "arm64_monterey": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/glab/blobs/sha256:dc461b0469f87205a69052ba91e89bdd9cd92e8dd2402691f248c20750b1c38a",
-              "sha256": "dc461b0469f87205a69052ba91e89bdd9cd92e8dd2402691f248c20750b1c38a"
-            },
-            "arm64_big_sur": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/glab/blobs/sha256:0f4584e799ed7e597c66a26f9ddb9cb0d8acef20e043f9569bd3cca02a17dfae",
-              "sha256": "0f4584e799ed7e597c66a26f9ddb9cb0d8acef20e043f9569bd3cca02a17dfae"
-            },
-            "ventura": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/glab/blobs/sha256:9b22511978208d021d4264607b2d714aa24f0f047947850e72fbee13474ec07a",
-              "sha256": "9b22511978208d021d4264607b2d714aa24f0f047947850e72fbee13474ec07a"
-            },
-            "monterey": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/glab/blobs/sha256:91ac9fac41ac358ecef0916f107f1b954223b4062d230ea5821efdc5dae06d38",
-              "sha256": "91ac9fac41ac358ecef0916f107f1b954223b4062d230ea5821efdc5dae06d38"
-            },
-            "big_sur": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/glab/blobs/sha256:6f87092ccdc358e684fb273105b12b7263b9c962d5cf066a7f8d112168c5fffd",
-              "sha256": "6f87092ccdc358e684fb273105b12b7263b9c962d5cf066a7f8d112168c5fffd"
-            },
-            "x86_64_linux": {
-              "cellar": ":any_skip_relocation",
-              "url": "https://ghcr.io/v2/homebrew/core/glab/blobs/sha256:963a6d9f6edaf7ddde938a124397ef98d14bdf523ad10b4231087f6df6af2477",
-              "sha256": "963a6d9f6edaf7ddde938a124397ef98d14bdf523ad10b4231087f6df6af2477"
-            }
-          }
-        }
       }
     },
     "cask": {
@@ -363,10 +319,28 @@
           "full_name": "bettertouchtool"
         }
       },
+      "google-chrome": {
+        "version": "110.0.5481.100",
+        "options": {
+          "full_name": "google-chrome"
+        }
+      },
+      "google-chrome-canary": {
+        "version": "112.0.5594.0",
+        "options": {
+          "full_name": "google-chrome-canary"
+        }
+      },
       "iterm2": {
         "version": "3.4.19",
         "options": {
           "full_name": "iterm2"
+        }
+      },
+      "jetbrains-toolbox": {
+        "version": "1.27.2,1.27.2.13801",
+        "options": {
+          "full_name": "jetbrains-toolbox"
         }
       },
       "keka": {
@@ -392,30 +366,6 @@
         "options": {
           "full_name": "vlc"
         }
-      },
-      "warp": {
-        "version": "0.2023.02.07.08.03.stable_01",
-        "options": {
-          "full_name": "warp"
-        }
-      },
-      "google-chrome": {
-        "version": "110.0.5481.100",
-        "options": {
-          "full_name": "google-chrome"
-        }
-      },
-      "google-chrome-canary": {
-        "version": "112.0.5594.0",
-        "options": {
-          "full_name": "google-chrome-canary"
-        }
-      },
-      "jetbrains-toolbox": {
-        "version": "1.27.2,1.27.2.13801",
-        "options": {
-          "full_name": "jetbrains-toolbox"
-        }
       }
     },
     "mas": {
@@ -423,9 +373,25 @@
         "id": "937984704",
         "version": "5.2.2"
       },
+      "AutoRefresh": {
+        "id": "1592466003",
+        "version": "2.0.0"
+      },
       "Bear": {
         "id": "1091189122",
         "version": "1.9.6"
+      },
+      "Keynote": {
+        "id": "409183694",
+        "version": "12.2.1"
+      },
+      "Numbers": {
+        "id": "409203825",
+        "version": "12.2.1"
+      },
+      "Slack": {
+        "id": "803453959",
+        "version": "4.29.149"
       },
       "Things": {
         "id": "904280696",
@@ -438,22 +404,6 @@
       "Wipr": {
         "id": "1320666476",
         "version": "1.39"
-      },
-      "AutoRefresh": {
-        "id": "1592466003",
-        "version": "2.0.0"
-      },
-      "Slack": {
-        "id": "803453959",
-        "version": "4.29.149"
-      },
-      "Keynote": {
-        "id": "409183694",
-        "version": "12.2.1"
-      },
-      "Numbers": {
-        "id": "409203825",
-        "version": "12.2.1"
       }
     }
   },
