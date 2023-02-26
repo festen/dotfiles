@@ -39,7 +39,7 @@ PATH=''
 -add-path "../node_modules/.bin"
 -add-path "../../node_modules/.bin"
 -add-path "../../../node_modules/.bin"
--add-path "$NVM_DIR/current"
+-add-path "$NVM_DIR/current/bin"
 -add-path "$HOME/bin"
 -add-path "/opt/bin"
 -add-path "/usr/local/bin"
@@ -137,17 +137,19 @@ ZINIT[COMPINIT_OPTS]="-C"
 ZINIT[BIN_DIR]="${CONFIG}/zinit/bin"
 ZINIT[HOME_DIR]="${CONFIG}/zinit"
 ZINIT[BIN]="${CONFIG}/zinit/bin/zinit.zsh"
+ZINIT[REPO]="https://github.com/zdharma-continuum/zinit.git"
+ZINIT[BRANCH]="v3.9.0"
 mkdir -p $ZINIT[BIN_DIR]
-test -f "${ZINIT[BIN]}" || git clone https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}"
+test -f "${ZINIT[BIN]}" || git clone --branch "${ZINIT[BRANCH]}" "${ZINIT[REPO]}" "${ZINIT[BIN_DIR]}"
 source "${ZINIT[BIN]}"
 
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-
 # turbo mode (async loaded)
 zinit wait lucid light-mode for\
   atload"!_zsh_autosuggest_start"\
+  atinit"zicompinit; zicdreplay"\
  zsh-users/zsh-autosuggestions\
  zsh-users/zsh-syntax-highlighting\
  djui/alias-tips\
@@ -165,6 +167,8 @@ zinit lucid for\
     wait"1"\
   zsh-users/zsh-history-substring-search
 
+# if no match, case-insensitive,partial-word and then substring completion
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 setopt extended_glob auto_cd inc_append_history share_history HIST_IGNORE_ALL_DUPS
 
 return 0 # avoids running anything that is auto added below
