@@ -1,34 +1,14 @@
 ################################################################################
 # Exports
 ################################################################################
-# PRIVATE
-export PRIVATE="$HOME/.private"
-test -f "$PRIVATE" && source "$PRIVATE"
-#export AWS_SHARED_CREDENTIALS_FILE="${PRIVATE}/aws/credentials"
-#export AWS_CONFIG_FILE="${PRIVATE}/aws/config"
-
-# CACHES
-export CACHE="${HOME}/.cache"
-export HISTFILE="${CACHE}/history"
-export npm_config_cache="${CACHE}/npm"
-export ZSHZ_DATA="${CACHE}/zshz"
-export LESSHISTFILE=-
-
-# CONFIGS
-export CONFIG="${HOME}/.config"
-export ZDOTDIR="${CONFIG}/zsh"
-export NVM_DIR="${CONFIG}/nvm"
-export HOMEBREW_BUNDLE_FILE="${HOME}/scripts/Brewfile"
-
 # ENVIRONMENT
-export EDITOR='nano'
+test -f /opt/bin/storm\
+ && export EDITOR='/opt/bin/storm'\
+ || export EDITOR='nano'
 export NVM_COMPLETION=true
 export NVM_AUTO_USE=true
 export HOMEBREW_NO_ANALYTICS=1
-export HISTSIZE=100000 # 100k
-export SAVEHIST=100000
-export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
-export HISTORY_SUBSTRING_SEARCH_FUZZY=true
+export ZDOTDIR="$HOME/.config/zsh"
 
 # PATH
 PATH=''
@@ -54,7 +34,6 @@ export PATH
 # Aliases
 ################################################################################
 # Basics
-#alias ls='ls -h --color'
 alias rm='rm -rfv'
 alias copy='rsync --archive --human-readable --info progress2'
 alias tree="tree -a -I '.git,.idea,node_modules'"
