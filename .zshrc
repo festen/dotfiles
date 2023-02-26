@@ -10,6 +10,13 @@ export NVM_AUTO_USE=true
 export HOMEBREW_NO_ANALYTICS=1
 export ZDOTDIR="$HOME/.config/zsh"
 
+# CACHES
+export CACHE="${HOME}/.cache"
+export HISTFILE="${CACHE}/history"
+export npm_config_cache="${CACHE}/npm"
+export ZSHZ_DATA="${CACHE}/zshz"
+export LESSHISTFILE=-
+
 # PATH
 PATH=''
 -add-path() { PATH="$PATH:$@" }

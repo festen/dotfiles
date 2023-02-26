@@ -2,13 +2,6 @@
 export PRIVATE="$HOME/.private"
 test -f "$PRIVATE" && source "$PRIVATE"
 
-# CACHES
-export CACHE="${HOME}/.cache"
-export HISTFILE="${CACHE}/history"
-export npm_config_cache="${CACHE}/npm"
-export ZSHZ_DATA="${CACHE}/zshz"
-export LESSHISTFILE=-
-
 # CONFIGS
 export CONFIG="${HOME}/.config"
 export NVM_DIR="${CONFIG}/nvm"
