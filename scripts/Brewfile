@@ -7,12 +7,12 @@ tap "buo/cask-upgrade"
 brew "mas" # must come before using mas
 
 brew "coreutils"
+brew "deno"
 brew "findutils"
 brew "git"
 brew "nvm"
 brew "rsync"
 brew "tree"
-brew "act"
 
 cask "bettertouchtool"
 cask "google-chrome"

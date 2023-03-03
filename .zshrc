@@ -159,3 +159,4 @@ setopt extended_glob auto_cd inc_append_history share_history HIST_IGNORE_ALL_DU
 
 return 0 # avoids running anything that is auto added below
 
+

@@ -2,13 +2,13 @@
   "entries": {
     "tap": {
       "homebrew/bundle": {
-        "revision": "0e7f68a1fd619cc3524ff59d81512edd43f7ecb5"
+        "revision": "99dc787b5095521ef071fbca970c822936733009"
       },
       "homebrew/cask": {
         "revision": "868d8f3fe24a7491b85d14a756282e2403d211df"
       },
       "homebrew/cask-versions": {
-        "revision": "fd1b4455771f7fccc5bdfccc135a1064e1af80d9"
+        "revision": "db932d036874773c73f8c9131fbc874807b2374e"
       },
       "homebrew/core": {
         "revision": "e16f3ba881dfb7489510f275fa66418ae7f44df3"
@@ -354,23 +354,67 @@
             }
           }
         }
+      },
+      "deno": {
+        "version": "1.31.1",
+        "bottle": {
+          "rebuild": 0,
+          "root_url": "https://ghcr.io/v2/homebrew/core",
+          "files": {
+            "arm64_ventura": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/deno/blobs/sha256:44ef5aa97de2c15ff84acd11fdc26757e7cdf85add89cf24f62f77baab22c2b9",
+              "sha256": "44ef5aa97de2c15ff84acd11fdc26757e7cdf85add89cf24f62f77baab22c2b9"
+            },
+            "arm64_monterey": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/deno/blobs/sha256:b8e132732de9d39bea44ba45d1a62431ca2670bbe419df91517c5ce117947523",
+              "sha256": "b8e132732de9d39bea44ba45d1a62431ca2670bbe419df91517c5ce117947523"
+            },
+            "arm64_big_sur": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/deno/blobs/sha256:d024586fd5acf202c7ebad04cecaa578044fbc985b47006f7b3fe995e4c1e2ef",
+              "sha256": "d024586fd5acf202c7ebad04cecaa578044fbc985b47006f7b3fe995e4c1e2ef"
+            },
+            "ventura": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/deno/blobs/sha256:83f603ab32b29f88531e0efb74b477771af8853352ffd23ab006546c5099e61c",
+              "sha256": "83f603ab32b29f88531e0efb74b477771af8853352ffd23ab006546c5099e61c"
+            },
+            "monterey": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/deno/blobs/sha256:44296854e2c31e9863faa533aca442a93a18a64ce85c1eaf4b0ab04812d0c535",
+              "sha256": "44296854e2c31e9863faa533aca442a93a18a64ce85c1eaf4b0ab04812d0c535"
+            },
+            "big_sur": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/deno/blobs/sha256:62da1c5fae6fa0942ff13c03185abd14812c034be77b2f16cf99d84fd24e194c",
+              "sha256": "62da1c5fae6fa0942ff13c03185abd14812c034be77b2f16cf99d84fd24e194c"
+            },
+            "x86_64_linux": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/deno/blobs/sha256:90bc33e668e3c95139d414c05c162ef3ed7a2b56c404c08b8f74c87017e2ece7",
+              "sha256": "90bc33e668e3c95139d414c05c162ef3ed7a2b56c404c08b8f74c87017e2ece7"
+            }
+          }
+        }
       }
     },
     "cask": {
       "bettertouchtool": {
-        "version": "4.034,2252",
+        "version": "4.053,2272",
         "options": {
           "full_name": "bettertouchtool"
         }
       },
       "google-chrome": {
-        "version": "110.0.5481.100",
+        "version": "111.0.5563.50",
         "options": {
           "full_name": "google-chrome"
         }
       },
       "google-chrome-canary": {
-        "version": "112.0.5594.0",
+        "version": "113.0.5620.0",
         "options": {
           "full_name": "google-chrome-canary"
         }
@@ -382,25 +426,25 @@
         }
       },
       "jetbrains-toolbox": {
-        "version": "1.27.2,1.27.2.13801",
+        "version": "1.27.3,1.27.3.14493",
         "options": {
           "full_name": "jetbrains-toolbox"
         }
       },
       "keka": {
-        "version": "1.2.60",
+        "version": "1.2.61",
         "options": {
           "full_name": "keka"
         }
       },
       "raycast": {
-        "version": "1.47.3",
+        "version": "1.48.5",
         "options": {
           "full_name": "raycast"
         }
       },
       "transmission": {
-        "version": "4.0.0",
+        "version": "4.0.1",
         "options": {
           "full_name": "transmission"
         }
@@ -454,7 +498,7 @@
   "system": {
     "macos": {
       "ventura": {
-        "HOMEBREW_VERSION": "4.0.3",
+        "HOMEBREW_VERSION": "4.0.4",
         "HOMEBREW_PREFIX": "/opt/homebrew",
         "Homebrew/homebrew-core": "api",
         "CLT": "14.1.0.0.1.1666437224",
