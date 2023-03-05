@@ -8,13 +8,16 @@
         "revision": "868d8f3fe24a7491b85d14a756282e2403d211df"
       },
       "homebrew/cask-versions": {
-        "revision": "db932d036874773c73f8c9131fbc874807b2374e"
+        "revision": "dc6c9e270da1572c8662e90761a7c7f8bff968bf"
       },
       "homebrew/core": {
         "revision": "e16f3ba881dfb7489510f275fa66418ae7f44df3"
       },
       "buo/cask-upgrade": {
         "revision": "8239f3b7063f0cea966bc822cab34f741dd8a8e0"
+      },
+      "oven-sh/bun": {
+        "revision": "34bfed00fd3f588ad603ca91a59e642b1aa91d8c"
       }
     },
     "brew": {
@@ -398,6 +401,10 @@
             }
           }
         }
+      },
+      "bun": {
+        "version": "0.5.7",
+        "bottle": false
       }
     },
     "cask": {

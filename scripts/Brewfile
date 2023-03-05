@@ -4,8 +4,10 @@ tap "homebrew/cask"
 tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "buo/cask-upgrade"
+tap "oven-sh/bun"
 brew "mas" # must come before using mas
 
+brew "bun"
 brew "coreutils"
 brew "deno"
 brew "findutils"
