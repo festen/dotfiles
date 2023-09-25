@@ -18,6 +18,13 @@
             timelength=$(echo \"16+${#time}-${#timelength}\" | bc);                                 \
             printf \"%${timelength}s    %s %s %s\n\" \"$time\" \"$hash\" \"$branch\" \"$message\";  \
         done < <(git logx -n 25 && echo);"'
+	mr = push \
+	    -o merge_request.create \
+        -o merge_request.target=master \
+        -o merge_request.merge_when_pipeline_succeeds \
+        -o merge_request.remove_source_branch \
+        -o merge_request.assign="@David"
+
 [color]
     diff = auto
     status = auto
@@ -25,6 +32,7 @@
     ui = true
 [core]
     excludesfile = ~/.gitignore
+	editor = nano
 [apply]
     whitespace = nowarn
 [help]

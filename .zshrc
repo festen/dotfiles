@@ -94,6 +94,7 @@ alias gcm='git checkout master'
 alias gco='git checkout'
 alias gd='git diff'
 alias gl='git pull'
+alias gmr='git push -o merge_request.create -o merge_request.target=master -o merge_request.merge_when_pipeline_succeeds -o merge_request.remove_source_branch -o merge_request.assign="@David" -o merge_request.title="$(git log -1 --pretty=%B | head -n1)"'
 alias gp='git push'
 alias grh='git reset HEAD'
 alias gss='git status -s'
@@ -157,6 +158,4 @@ zinit lucid for\
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 setopt extended_glob auto_cd inc_append_history share_history HIST_IGNORE_ALL_DUPS
 
-return 0 # avoids running anything that is auto added below
-
-
+  return 0 # avoids running anything that is auto added below
