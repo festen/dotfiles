@@ -29,6 +29,7 @@ PATH=''
 -add-path "$NVM_DIR/current/bin"
 -add-path "$HOME/bin"
 -add-path "/opt/bin"
+-add-path "/opt/homebrew/bin"
 -add-path "/usr/local/bin"
 -add-path "/usr/bin"
 -add-path "/usr/sbin"
@@ -100,6 +101,7 @@ alias grh='git reset HEAD'
 alias gss='git status -s'
 alias gst='git status'
 alias gwip='git commit -vam "wip" && git push'
+alias hb='handbrake --preset="Very Fast 1080p30"'
 alias la='ls -lA'
 alias nxtest='nx affected:test --parallel --maxParallel=5 --only-failed --head=HEAD --base=master'
 alias run='npm run --silent'
