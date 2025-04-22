@@ -1,6 +1,11 @@
 ################################################################################
 # Exports
 ################################################################################
+
+if [ -z "$INTELLIJ_ENVIRONMENT_READER" ]; then
+  return
+fi
+
 # ENVIRONMENT
 test -f /opt/bin/storm\
  && export EDITOR='/opt/bin/storm'\
