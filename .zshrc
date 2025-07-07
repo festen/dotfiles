@@ -2,9 +2,9 @@
 # Exports
 ################################################################################
 
-if [ -z "$INTELLIJ_ENVIRONMENT_READER" ]; then
-  return
-fi
+#if [ -z "$INTELLIJ_ENVIRONMENT_READER" ]; then
+#  return
+#fi
 
 # ENVIRONMENT
 test -f /opt/bin/storm\
@@ -62,6 +62,8 @@ alias pubkey="cat $HOME/.ssh/personal.pub | pbcopy | echo '=> Public key copied 
 alias trash='trash -v'
 alias ip='curl -sS ipinfo.io/ip | tee /dev/tty | pbcopy'
 alias edit='storm'
+alias startdev='source ~/code/cibg/start.sh'
+alias stopdev='source ~/code/cibg/stop.sh'
 
 # Single letter aliases
 alias c='copy'
@@ -76,16 +78,8 @@ alias x='extract'
 alias cl='clear && ls -l'
 alias cla='clear && ls -lA'
 alias copyd='copy --delete'
-alias cy='(cd "$HOME/code/essent/mijn" && yarn e2e-cypress --app mijn-essent --environment localhost --serve serve --tags manual)'
 alias dc='docker-compose'
 alias ez='edit ~/.zshrc'
-alias ff='git flow feature'
-alias ffs='ff start'
-alias fff='ff finish'
-alias fr='git flow release'
-alias frs='fr start'
-alias frf='fr finish'
-alias ga='git add'
 alias gaa='git add --all'
 alias gb='git branch'
 alias gba='git branch -a'
@@ -108,14 +102,14 @@ alias gst='git status'
 alias gwip='git commit -vam "wip" && git push'
 alias hb='handbrake --preset="Very Fast 1080p30"'
 alias la='ls -lA'
-alias nxtest='nx affected:test --parallel --maxParallel=5 --only-failed --head=HEAD --base=master'
+alias nxtest='nx affected:test --parallel --maxParallel=5 --only-failed --head=HEAD --base=main'
 alias run='npm run --silent'
 alias runit='docker run --rm -it'
-alias save='npm install --save'
-alias savedev='npm install --save-dev'
-alias start='npm start --silent'
-alias swagger='$HOME/code/essent/swagger/run.sh'
-alias tzx='zx "$HOME/code/me/tzx/register.js"'
+
+function fixics {
+  curl -s https://gist.githubusercontent.com/festen/3fa31d22747d987282d7717ca8e3910e/raw/329fc2c131f8a3f418abc9785f14a35f9c73acd2/removeInvitees.sh | bash -s -- "$1" "$1.tmp"
+  mv "$1.tmp" "$1"
+}
 
 # TODO
 # List only files/folders --> alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
@@ -165,4 +159,4 @@ zinit lucid for\
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 setopt extended_glob auto_cd inc_append_history share_history HIST_IGNORE_ALL_DUPS
 
-  return 0 # avoids running anything that is auto added below
+return 0 # avoids running anything that is auto added below

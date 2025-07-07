@@ -57,3 +57,6 @@ node_modules
 # Ignore ~/var files except for scripts
 var/*
 var/!*.sh
+
+# Special case for nuget package
+nuget.config
