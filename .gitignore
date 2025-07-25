@@ -60,3 +60,4 @@ var/!*.sh
 
 # Special case for nuget package
 nuget.config
+.*_cache.json
