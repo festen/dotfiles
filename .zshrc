@@ -2,9 +2,7 @@
 # Exports
 ################################################################################
 
-#if [ -z "$INTELLIJ_ENVIRONMENT_READER" ]; then
-#  return
-#fi
+test -f $HOME/.private && source $HOME/.private
 
 # ENVIRONMENT
 test -f /opt/bin/storm\
@@ -33,6 +31,7 @@ PATH=''
 -add-path "../../../node_modules/.bin"
 -add-path "$NVM_DIR/current/bin"
 -add-path "$HOME/bin"
+-add-path "$HOME/.local/bin"
 -add-path "/opt/bin"
 -add-path "/opt/homebrew/bin"
 -add-path "/usr/local/bin"
@@ -109,6 +108,40 @@ alias runit='docker run --rm -it'
 function fixics {
   curl -s https://gist.githubusercontent.com/festen/3fa31d22747d987282d7717ca8e3910e/raw/329fc2c131f8a3f418abc9785f14a35f9c73acd2/removeInvitees.sh | bash -s -- "$1" "$1.tmp"
   mv "$1.tmp" "$1"
+}
+
+export GGML_METAL_PATH_RESOURCES="$(brew --prefix whisper-cpp)/share/whisper-cpp"
+hear() {
+  input="$1"
+  base="${input%.*}"
+  ext="${input##*.}"
+
+  # Check if input is a video format
+  case "${ext:l}" in
+    mp4|mov|avi|mkv|flv|wmv|webm|m4v|mpg|mpeg|3gp)
+      echo "Detected video format, converting to WAV first..."
+      temp_wav=$(mktemp).wav
+      ffmpeg -i "$input" -vn "$temp_wav"
+      process_file="$temp_wav"
+      echo "temporary WAV file created at $temp_wav"
+      ;;
+    *)
+      process_file="$input"
+      ;;
+  esac
+
+  whisper-cli \
+    --language nl \
+    --print-colors \
+    --model $HOME/models/ggml-large-v3-turbo.bin \
+    --output-vtt \
+    --output-json-full \
+    --file "$process_file" \
+    --tinydiarize \
+    --output-file "$base"
+
+  # Clean up temp file if it was created
+  [[ -n "$temp_wav" ]] && rm -f "$temp_wav"
 }
 
 # TODO
@@ -305,3 +338,10 @@ ghce() {
 }
 
 return 0 # avoids running anything that is auto added below
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/david/.lmstudio/bin"
+# End of LM Studio CLI section
+
