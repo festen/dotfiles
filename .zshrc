@@ -6,7 +6,7 @@ test -f $HOME/.private && source $HOME/.private
 
 # ENVIRONMENT
 test -f /opt/bin/storm\
- && export EDITOR='/opt/bin/storm'\
+ && export EDITOR='/opt/bin/storm -e'\
  || export EDITOR='nano'
 export NVM_COMPLETION=true
 export NVM_AUTO_USE=true
@@ -60,7 +60,7 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET
 alias pubkey="cat $HOME/.ssh/personal.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
 alias trash='trash -v'
 alias ip='curl -sS ipinfo.io/ip | tee /dev/tty | pbcopy'
-alias edit='storm'
+alias edit='storm -e'
 alias startdev='source ~/code/cibg/start.sh'
 alias stopdev='source ~/code/cibg/stop.sh'
 
