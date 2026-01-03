@@ -76,6 +76,7 @@ alias x='extract'
 # all other aliases
 alias cl='clear && ls -l'
 alias cla='clear && ls -lA'
+alias claude='claude --dangerously-skip-permissions'
 alias copyd='copy --delete'
 alias dc='docker-compose'
 alias ez='edit ~/.zshrc'
