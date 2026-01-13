@@ -77,6 +77,7 @@ alias x='extract'
 alias cl='clear && ls -l'
 alias cla='clear && ls -lA'
 alias claude='claude --dangerously-skip-permissions'
+alias copilot='copilot --model claude-opus-4.5'
 alias copyd='copy --delete'
 alias dc='docker-compose'
 alias ez='edit ~/.zshrc'
@@ -193,150 +194,93 @@ zinit lucid for\
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 setopt extended_glob auto_cd inc_append_history share_history HIST_IGNORE_ALL_DUPS
 
-ghcs() {
-	FUNCNAME="$funcstack[1]"
-	TARGET="shell"
-	local GH_DEBUG="$GH_DEBUG"
-	local GH_HOST="$GH_HOST"
+# GitHub Copilot Suggest - Mimics the old gh copilot suggest using new copilot CLI
+# Add this to your ~/.zshrc
 
-	read -r -d '' __USAGE <<-EOF
-	Wrapper around \`gh copilot suggest\` to suggest a command based on a natural language description of the desired output effort.
-	Supports executing suggested commands if applicable.
+# Suggest a shell command using Copilot
+# Usage: suggest "your request here"
+# Example: suggest "find all files larger than 100MB"
+suggest() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: suggest \"your request\""
+        echo "Example: suggest \"find all files larger than 100MB\""
+        return 1
+    fi
 
-	USAGE
-	  $FUNCNAME [flags] <prompt>
+    local query="$*"
+    local prompt="You are a shell command suggestion assistant. The user needs a command for: ${query}
 
-	FLAGS
-	  -d, --debug           Enable debugging
-	  -h, --help            Display help usage
-	      --hostname        The GitHub host to use for authentication
-	  -t, --target target   Target for suggestion; must be shell, gh, git
-	                        default: "$TARGET"
+IMPORTANT: Respond with ONLY the shell command, nothing else. No explanation, no markdown formatting, no code blocks, just the raw command that can be executed directly.
 
-	EXAMPLES
+Context:
+- Shell: zsh
+- OS: $(uname -s)
+- Current directory: $(pwd)"
 
-	- Guided experience
-	  $ $FUNCNAME
+    echo "Thinking..."
+    local cmd
+    cmd=$(copilot -p "$prompt" 2>/dev/null)
 
-	- Git use cases
-	  $ $FUNCNAME -t git "Undo the most recent local commits"
-	  $ $FUNCNAME -t git "Clean up local branches"
-	  $ $FUNCNAME -t git "Setup LFS for images"
+    if [[ -z "$cmd" ]]; then
+        echo "Error: Could not get suggestion from Copilot"
+        return 1
+    fi
 
-	- Working with the GitHub CLI in the terminal
-	  $ $FUNCNAME -t gh "Create pull request"
-	  $ $FUNCNAME -t gh "List pull requests waiting for my review"
-	  $ $FUNCNAME -t gh "Summarize work I have done in issues and pull requests for promotion"
+    # Clean up the command (remove any accidental markdown or whitespace)
+    cmd=$(echo "$cmd" | sed 's/^```[a-z]*//; s/```$//; s/^[[:space:]]*//; s/[[:space:]]*$//' | head -1)
 
-	- General use cases
-	  $ $FUNCNAME "Kill processes holding onto deleted files"
-	  $ $FUNCNAME "Test whether there are SSL/TLS issues with github.com"
-	  $ $FUNCNAME "Convert SVG to PNG and resize"
-	  $ $FUNCNAME "Convert MOV to animated PNG"
-	EOF
+    echo ""
+    echo "Suggested command:"
+    echo "  \033[1;32m$cmd\033[0m"
+    echo ""
 
-	local OPT OPTARG OPTIND
-	while getopts "dht:-:" OPT; do
-		if [ "$OPT" = "-" ]; then     # long option: reformulate OPT and OPTARG
-			OPT="${OPTARG%%=*}"       # extract long option name
-			OPTARG="${OPTARG#"$OPT"}" # extract long option argument (may be empty)
-			OPTARG="${OPTARG#=}"      # if long option argument, remove assigning `=`
-		fi
+    # Ask user what to do
+    echo -n "Execute? [y]es / [n]o / [c]opy / [e]dit: "
+    read -r choice
 
-		case "$OPT" in
-			debug | d)
-				GH_DEBUG=api
-				;;
-
-			help | h)
-				echo "$__USAGE"
-				return 0
-				;;
-
-			hostname)
-				GH_HOST="$OPTARG"
-				;;
-
-			target | t)
-				TARGET="$OPTARG"
-				;;
-		esac
-	done
-
-	# shift so that $@, $1, etc. refer to the non-option arguments
-	shift "$((OPTIND-1))"
-
-	TMPFILE="$(mktemp -t gh-copilotXXXXXX)"
-	trap 'rm -f "$TMPFILE"' EXIT
-	if GH_DEBUG="$GH_DEBUG" GH_HOST="$GH_HOST" gh copilot suggest -t "$TARGET" "$@" --shell-out "$TMPFILE"; then
-		if [ -s "$TMPFILE" ]; then
-			FIXED_CMD="$(cat $TMPFILE)"
-			print -s -- "$FIXED_CMD"
-			echo
-			eval -- "$FIXED_CMD"
-		fi
-	else
-		return 1
-	fi
+    case "$choice" in
+        y|Y|yes|Yes)
+            echo "Executing..."
+            eval "$cmd"
+            # Add to history
+            print -s "$cmd"
+            ;;
+        c|C|copy|Copy)
+            echo -n "$cmd" | pbcopy
+            echo "Copied to clipboard!"
+            ;;
+        e|E|edit|Edit)
+            # Pre-fill the command line for editing
+            print -z "$cmd"
+            ;;
+        *)
+            echo "Cancelled."
+            ;;
+    esac
 }
 
-ghce() {
-	FUNCNAME="$funcstack[1]"
-	local GH_DEBUG="$GH_DEBUG"
-	local GH_HOST="$GH_HOST"
+# Shorter alias
+alias cs='suggest'
 
-	read -r -d '' __USAGE <<-EOF
-	Wrapper around \`gh copilot explain\` to explain a given input command in natural language.
+# Explain a command using Copilot
+# Usage: explain "command to explain"
+explain() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: explain \"command to explain\""
+        echo "Example: explain \"tar -xzvf archive.tar.gz\""
+        return 1
+    fi
 
-	USAGE
-	  $FUNCNAME [flags] <command>
+    local cmd="$*"
+    local prompt="Explain this shell command in simple terms: ${cmd}
 
-	FLAGS
-	  -d, --debug      Enable debugging
-	  -h, --help       Display help usage
-	      --hostname   The GitHub host to use for authentication
+Be concise but thorough. Break down each part of the command."
 
-	EXAMPLES
-
-	# View disk usage, sorted by size
-	$ $FUNCNAME 'du -sh | sort -h'
-
-	# View git repository history as text graphical representation
-	$ $FUNCNAME 'git log --oneline --graph --decorate --all'
-
-	# Remove binary objects larger than 50 megabytes from git history
-	$ $FUNCNAME 'bfg --strip-blobs-bigger-than 50M'
-	EOF
-
-	local OPT OPTARG OPTIND
-	while getopts "dh-:" OPT; do
-		if [ "$OPT" = "-" ]; then     # long option: reformulate OPT and OPTARG
-			OPT="${OPTARG%%=*}"       # extract long option name
-			OPTARG="${OPTARG#"$OPT"}" # extract long option argument (may be empty)
-			OPTARG="${OPTARG#=}"      # if long option argument, remove assigning `=`
-		fi
-
-		case "$OPT" in
-			debug | d)
-				GH_DEBUG=api
-				;;
-
-			help | h)
-				echo "$__USAGE"
-				return 0
-				;;
-
-			hostname)
-				GH_HOST="$OPTARG"
-				;;
-		esac
-	done
-
-	# shift so that $@, $1, etc. refer to the non-option arguments
-	shift "$((OPTIND-1))"
-
-	GH_DEBUG="$GH_DEBUG" GH_HOST="$GH_HOST" gh copilot explain "$@"
+    copilot -p "$prompt"
 }
+
+# Shorter alias
+alias ce='explain'
 
 return 0 # avoids running anything that is auto added below
 
