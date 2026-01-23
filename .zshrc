@@ -61,14 +61,11 @@ alias pubkey="cat $HOME/.ssh/personal.pub | pbcopy | echo '=> Public key copied 
 alias trash='trash -v'
 alias ip='curl -sS ipinfo.io/ip | tee /dev/tty | pbcopy'
 alias edit='storm -e'
-alias startdev='source ~/code/cibg/start.sh'
-alias stopdev='source ~/code/cibg/stop.sh'
 
 # Single letter aliases
 alias c='copy'
 alias d='docker'
 alias e='edit'
-alias g='git'
 alias l='ls -l'
 alias t='trash'
 alias x='extract'
@@ -91,7 +88,7 @@ alias gca!='git commit -va --amend'
 alias gcan!='git commit -va --amend --no-edit'
 alias gclean='git clean -fd'
 alias gpristine='git reset --hard && git clean -dfx'
-alias gcm='git checkout master'
+alias gcm='git checkout main'
 alias gco='git checkout'
 alias gd='git diff'
 alias gl='git pull'
@@ -110,6 +107,11 @@ alias runit='docker run --rm -it'
 function fixics {
   curl -s https://gist.githubusercontent.com/festen/3fa31d22747d987282d7717ca8e3910e/raw/329fc2c131f8a3f418abc9785f14a35f9c73acd2/removeInvitees.sh | bash -s -- "$1" "$1.tmp"
   mv "$1.tmp" "$1"
+}
+
+function cdp {
+  mkdir -p "$1"
+  cd "$1"
 }
 
 export GGML_METAL_PATH_RESOURCES="$(brew --prefix whisper-cpp)/share/whisper-cpp"
