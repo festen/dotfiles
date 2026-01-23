@@ -114,6 +114,13 @@ function cdp {
   cd "$1"
 }
 
+function tryout {
+  mkdir -p "$HOME/code/playground/$1"
+  cd "$HOME/code/playground/$1"
+  git init .
+  storm "$HOME/code/playground/$1"
+}
+
 export GGML_METAL_PATH_RESOURCES="$(brew --prefix whisper-cpp)/share/whisper-cpp"
 hear() {
   input="$1"
