@@ -293,9 +293,3 @@ alias ce='explain'
 
 return 0 # avoids running anything that is auto added below
 
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/david/.lmstudio/bin"
-# End of LM Studio CLI section
-
